@@ -1,0 +1,83 @@
+// Scene entities & configuration
+
+using ship_happens
+using ship_happens.assets
+using flecs.script
+using flecs.engine.*
+
+cfg {
+    export const office: ShipOffice = {x0: -10, z0: -6, tile: 2}
+    export const standOff: f32 = 0.85
+    export const walkSpeed: f32 = 3.4
+    export const doorZ: f32 = 0
+    export const doorInX: f32 = 9.6
+    export const queueX: f32 = 12.8
+    export const queueGap: f32 = 1.15
+    export const spawnX: f32 = 16.5
+    export const applyInterval: f32 = 3
+    export const maxApplicants: i32 = 3
+    export const needSeek: f32 = 0.3
+    export const caffeineSeek: f32 = 0.75
+    export const drainCaffeine: f32 = 0.03
+    export const drainFood: f32 = 0.01
+    export const drainFun: f32 = 0.005
+    export const salary: f32 = 4
+    export const payInterval: f32 = 5
+    export const progressRate: f32 = 0.22
+    export const featureWork: f32 = 100
+    export const featureRevenue: i32 = 5000
+    export const startFeatures: i32 = 3
+    export const deadline: f32 = 180
+    export const startMoney: i32 = 0
+}
+
+tiles {
+    for r in 0..7 {
+        for c in 0..11 {
+            "tile_{r}_{c}" {
+                Position3: {cfg.office.x0 + c * cfg.office.tile, -0.15, cfg.office.z0 + r * cfg.office.tile}
+                Box: {cfg.office.tile - 0.06, 0.3, cfg.office.tile - 0.06}
+                Rgba: {70 + 36 * ((r + c) % 2), 80 + 38 * ((r + c) % 2), 98 + 42 * ((r + c) % 2), 255}
+            }
+        }
+    }
+}
+
+furniture { }
+staff { }
+dollars { }
+
+$ {
+    ShipGame: {
+        money: cfg.startMoney,
+        features_total: cfg.startFeatures,
+        features_done: 0,
+        feature_progress: 0,
+        deadline_left: cfg.deadline,
+        work_rate: 0,
+        behind_frac: -1,
+        game_name: "",
+        feature_name: "",
+        clock: "",
+        devs: 0,
+        applicants: 0,
+        selected: Desk,
+        bulldoze: false,
+        crunch: false,
+        avg_mood: 1,
+        morale_bonus: true,
+        apply_timer: 2,
+        camera: camera,
+        furniture: furniture,
+        staff: staff,
+        dollars: dollars,
+        dollar_prefab: DollarSign,
+        marker_prefab: TileMarker,
+        fx_pool: fx,
+        glow_pool: glow,
+        poof_burst: PoofBurst,
+        ship_burst: ShipBurst
+    }
+
+    (ShipGameState, Playing)
+}

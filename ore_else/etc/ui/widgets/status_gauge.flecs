@@ -1,0 +1,56 @@
+// Status bar gauge: an icon, an optional readout and an optional meter
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const GaugeIcon = 22
+const GaugeIconY = 8
+const GaugeSlot = 28
+const GaugeLabelY = 11
+const GaugeFont = 15
+const GaugeBarY = 13
+const GaugeBarH = 12
+const GaugeRadius = 2
+const GaugeWell: Rgba = {13, 14, 17, 255}
+
+template StatusGauge {
+    prop iconTexture: entity = 0
+    prop text = ""
+    prop bar: f32 = 0
+    prop barX: f32 = 28
+    prop frac: f32 = 0
+    prop color: Rgba = {124, 226, 148, 255}
+
+    icon {
+        Position: {0, GaugeIconY}
+        Rect: {GaugeIcon, GaugeIcon}
+        Image: {texture: iconTexture, fit: Contain}
+    }
+
+    if text != "" {
+        label {
+            Position: {GaugeSlot, GaugeLabelY}
+            Text: {text: text, size: GaugeFont}
+            Rgba: color
+        }
+    }
+
+    if bar > 0 {
+        bg {
+            Position: {barX, GaugeBarY}
+            Rect: {bar, GaugeBarH}
+            Border: {radius: GaugeRadius}
+            Rgba: GaugeWell
+        }
+
+        fill {
+            Position: {barX, GaugeBarY}
+            Rect: {3 + (bar - 3) * frac, GaugeBarH}
+            Border: {radius: GaugeRadius}
+            Rgba: color
+        }
+    }
+}

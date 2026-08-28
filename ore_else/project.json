@@ -1,0 +1,14 @@
+{
+    "id": "ore_else",
+    "type": "application",
+    "value": {
+        "use": ["flecs_engine"]
+    },
+    "lang.c": {
+        "${target em}": {
+            "embed": ["etc"],
+            "shell": "../../shell.html",
+            "ldflags": ["-Wl,-u,ntohs"]
+        }
+    }
+}

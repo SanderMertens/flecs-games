@@ -1,0 +1,56 @@
+// Corpse embers
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+const emberHot: Rgba = {255, 138, 52, 255}
+const emberDim: Rgba = {236, 92, 34, 255}
+
+@tree Parent
+prefab CorpseEmbers {
+    ParticleEmitter: {
+        pool: ember,
+        rate: 8,
+        size: 0.048,
+        size_variance: 0.022,
+        max_age: 1.2,
+        max_age_variance: 0.5,
+        color: emberHot,
+        color_ramp: {
+            mid: emberDim,
+            end: {58, 26, 16, 140},
+            mid_pos: 0.45
+        },
+        velocity: {0, 0.7, 0},
+        velocity_variance: {0.2, 0.25, 0.2},
+        offset: {0, 0.05, 0},
+        shape: ParticleShapeDisc,
+        shape_radius: 0.2,
+        radial: 0.25,
+        brightness_variance: 0.45,
+        enabled: true
+    }
+
+    speck_a {
+        Position3: {0.16, 0.03, 0.1}
+        Sphere: {segments: 6, smooth: true, radius: 0.045}
+        Rgba: emberHot
+        Emissive: {strength: 3.6, color: emberHot}
+    }
+
+    speck_b {
+        Position3: {-0.13, 0.05, -0.14}
+        Sphere: {segments: 6, smooth: true, radius: 0.035}
+        Rgba: emberDim
+        Emissive: {strength: 3.0, color: emberDim}
+    }
+
+    speck_c {
+        Position3: {0.02, 0.02, -0.22}
+        Sphere: {segments: 6, smooth: true, radius: 0.028}
+        Rgba: emberHot
+        Emissive: {strength: 3.2, color: emberHot}
+    }
+}

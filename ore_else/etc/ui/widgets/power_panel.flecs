@@ -1,0 +1,114 @@
+// Power allocator: mining / weapons / construction, four bars each
+
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+const PowerW = 264
+const PowerH = 158
+const PowerPad = 12
+const ColW = 74
+const ColPitch = 83
+const SegX = 11
+const SegW = 52
+const SegH = 11
+const SegPitch = 16
+const SegTop = 38
+const IconX = 24
+const IconY = 104
+const IconSize = 26
+const CaptionY = 136
+const FontCaption = 10
+const FontTitle = 13
+
+const ColMining = 12
+const ColWeapons = 95
+const ColConstruction = 178
+
+const TitleColor: Rgba = {240, 176, 58, 255}
+const CaptionColor: Rgba = {146, 154, 166, 255}
+
+power_panel {
+    if !$?[(GameState, Playing)] {
+        flecs.core.Disabled
+    }
+
+    Anchor: {h: Left, v: Bottom, x: 18, y: -18}
+    Panel: {w: PowerW, h: PowerH, capH: 7}
+
+    title {
+        Position: {PowerPad, PowerPad}
+        Text: {text: "POWER", size: FontTitle}
+        Rgba: TitleColor
+    }
+
+    PowerFree free_label(x: PowerPad, y: PowerPad, w: PowerW - PowerPad * 2,
+        size: FontTitle)
+
+    PowerSegment mining_4(kind: Mining, level: 4,
+        x: ColMining + SegX, y: SegTop, w: SegW, h: SegH)
+    PowerSegment mining_3(kind: Mining, level: 3,
+        x: ColMining + SegX, y: SegTop + SegPitch, w: SegW, h: SegH)
+    PowerSegment mining_2(kind: Mining, level: 2,
+        x: ColMining + SegX, y: SegTop + SegPitch * 2, w: SegW, h: SegH)
+    PowerSegment mining_1(kind: Mining, level: 1,
+        x: ColMining + SegX, y: SegTop + SegPitch * 3, w: SegW, h: SegH)
+
+    mining_icon {
+        Position: {ColMining + IconX, IconY}
+        Rect: {IconSize, IconSize}
+        Image: {texture: icons.drill, fit: Contain}
+    }
+
+    mining_caption {
+        Position: {ColMining, CaptionY}
+        Layout: {width: ColW}
+        Text: {text: "MINING", size: FontCaption, align: Center}
+        Rgba: CaptionColor
+    }
+
+    PowerSegment weapons_4(kind: Weapons, level: 4,
+        x: ColWeapons + SegX, y: SegTop, w: SegW, h: SegH)
+    PowerSegment weapons_3(kind: Weapons, level: 3,
+        x: ColWeapons + SegX, y: SegTop + SegPitch, w: SegW, h: SegH)
+    PowerSegment weapons_2(kind: Weapons, level: 2,
+        x: ColWeapons + SegX, y: SegTop + SegPitch * 2, w: SegW, h: SegH)
+    PowerSegment weapons_1(kind: Weapons, level: 1,
+        x: ColWeapons + SegX, y: SegTop + SegPitch * 3, w: SegW, h: SegH)
+
+    weapons_icon {
+        Position: {ColWeapons + IconX, IconY}
+        Rect: {IconSize, IconSize}
+        Image: {texture: icons.gun_turret, fit: Contain}
+    }
+
+    weapons_caption {
+        Position: {ColWeapons, CaptionY}
+        Layout: {width: ColW}
+        Text: {text: "WEAPONS", size: FontCaption, align: Center}
+        Rgba: CaptionColor
+    }
+
+    PowerSegment construction_4(kind: Construction, level: 4,
+        x: ColConstruction + SegX, y: SegTop, w: SegW, h: SegH)
+    PowerSegment construction_3(kind: Construction, level: 3,
+        x: ColConstruction + SegX, y: SegTop + SegPitch, w: SegW, h: SegH)
+    PowerSegment construction_2(kind: Construction, level: 2,
+        x: ColConstruction + SegX, y: SegTop + SegPitch * 2, w: SegW, h: SegH)
+    PowerSegment construction_1(kind: Construction, level: 1,
+        x: ColConstruction + SegX, y: SegTop + SegPitch * 3, w: SegW, h: SegH)
+
+    construction_icon {
+        Position: {ColConstruction + IconX, IconY}
+        Rect: {IconSize, IconSize}
+        Image: {texture: icons.factory, fit: Contain}
+    }
+
+    construction_caption {
+        Position: {ColConstruction, CaptionY}
+        Layout: {width: ColW}
+        Text: {text: "CONSTRUCTION", size: FontCaption, align: Center}
+        Rgba: CaptionColor
+    }
+}

@@ -1,0 +1,109 @@
+// Craft queue row
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const FontRow = 15
+const RowWell: Rgba = {15, 16, 20, 255}
+const RowEmpty: Rgba = {0, 0, 0, 0}
+const RowFill: Rgba = {102, 74, 26, 255}
+const RowStalled: Rgba = {104, 36, 30, 255}
+const RowText: Rgba = {224, 229, 237, 255}
+const RowSub: Rgba = {146, 154, 166, 255}
+const RowTick: Rgba = {92, 98, 112, 255}
+const RowShort: Rgba = {228, 96, 84, 255}
+const RowHover: Rgba = {52, 56, 66, 255}
+const RowHoverEdge: Rgba = {228, 96, 84, 255}
+const RowNoEdge: Rgba = {0, 0, 0, 0}
+const RowBorder: Border = {radius: 3, width: 1, color: RowNoEdge}
+const RowBorderHover: Border = {radius: 3, width: 1, color: RowHoverEdge}
+
+template QueueRow {
+    prop row: f32 = 0
+    prop item: entity = 0
+    prop icon: entity = 0
+    prop text = ""
+    prop order: i32 = 0
+    prop active = false
+    prop stalled = false
+    prop cancel = false
+    prop sub = false
+    prop progress: f32 = 0
+
+    const w = 228
+    const h = 26
+    const indent: f32 = match sub {
+        true: 16
+        false: 0
+    }
+
+    Slot: {item: item, order: order, cancel: cancel}
+    WidgetState
+
+    const rowHot = cancel && $this[WidgetState].hover
+    const rowFill: Rgba = match active {
+        true: RowWell
+        false: RowEmpty
+    }
+    const labelSub: Rgba = match sub {
+        true: RowSub
+        false: RowText
+    }
+
+    Position: {12, 11 + row * 28}
+    Rect: {w, h}
+    Border: match rowHot {
+        true: RowBorderHover
+        false: RowBorder
+    }
+    Rgba: match rowHot {
+        true: RowHover
+        false: rowFill
+    }
+
+    back {
+        Position: {0, 0}
+        Rect: {w, h}
+        Rgba: RowEmpty
+
+        if active {
+            fill {
+                Position: {0, 0}
+                Rect: {3 + (w - 3) * progress, h}
+                Border: {radius: 3}
+                Rgba: match stalled {
+                    true: RowStalled
+                    false: RowFill
+                }
+            }
+        }
+    }
+
+    if sub {
+        tick {
+            Position: {7, 12}
+            Rect: {7, 2}
+            Rgba: RowTick
+        }
+    }
+
+    if icon {
+        icon_img {
+            Position: {4 + indent, 2}
+            Rect: {22, 22}
+            Image: {texture: icon, fit: Contain}
+        }
+    }
+
+    label {
+        Position: {32 + indent, 5}
+        Text: {text: text, size: FontRow}
+        Rgba: match stalled {
+            true: RowShort
+            false: labelSub
+        }
+    }
+}

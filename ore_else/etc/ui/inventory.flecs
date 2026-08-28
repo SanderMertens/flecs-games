@@ -1,0 +1,282 @@
+// Inventory & collect screen (toggled with E, enabled from C)
+
+using flecs.engine.*
+using flecs.script
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+const playing = $?[(GameState, Playing)]
+const invOpen = UiState[UiState].open && playing
+
+const ScreenColor: Rgba = {17, 18, 22, 244}
+const SectionColor: Rgba = {26, 28, 33, 236}
+const SectionEdge: Rgba = {58, 63, 73, 255}
+const GridColor: Rgba = {0, 0, 0, 0}
+const TitleColor: Rgba = {226, 231, 238, 255}
+const SubTitleColor: Rgba = {146, 154, 166, 255}
+const AmberColor: Rgba = {240, 176, 58, 255}
+const ShortColor: Rgba = {228, 96, 84, 255}
+
+const FontTitle = 20
+const FontSub = 14
+const SectionPad = 14
+const PageWidth = 312
+const PageHeight = 232
+
+const CapPad = 20
+const ScreenPad = 14
+const StockW = 420
+const CollectW = 340
+const SectionH = 334
+const ScreenW = 802
+const ScreenH = 368
+
+const InfoW = 560
+const InfoH = 154
+const InfoCapH = 7
+const InfoCapPad = 8
+const InfoFont = 15
+
+inventory_screen {
+    if !invOpen {
+        flecs.core.Disabled
+    }
+
+    Anchor: {h: Center, v: Middle, y: -60}
+    Panel: {w: ScreenW, h: ScreenH, capH: 8, fill: ScreenColor}
+
+    stock_section {
+        Position: {ScreenPad, CapPad}
+        Panel: {
+            w: StockW, h: SectionH, cap: false,
+            fill: SectionColor, edge: SectionEdge
+        }
+        Layout: {direction: Column, padding: SectionPad, spacing: 12}
+
+        title {
+            Text: {text: "INVENTORY", size: FontTitle}
+            Rgba: TitleColor
+        }
+
+        stock_body {
+            Layout: {direction: Column, padding: 0, spacing: 8}
+
+            sub_title {
+                Text: {
+                    text: "Click a building to place it - 15 slots",
+                    size: FontSub
+                }
+                Rgba: SubTitleColor
+            }
+
+            stock_grid {
+                Layout: {width: 392, height: 232}
+                Rect: {392, 232}
+                Rgba: GridColor
+
+                for i in 0..15 {
+                    const s = UiState[UiState].slots[i]
+
+                    StockSlot "slot_{i}"(
+                        col: i % 5,
+                        row: math.floor(i / 5),
+                        item: s.item,
+                        icon: s.icon,
+                        count: s.count,
+                        place: s.place,
+                        filled: s.item != 0,
+                        active: s.active)
+                }
+            }
+        }
+    }
+
+    collect_section {
+        Position: {ScreenPad + StockW + ScreenPad, CapPad}
+        Panel: {
+            w: CollectW, h: SectionH, cap: false,
+            fill: SectionColor, edge: SectionEdge
+        }
+        Layout: {direction: Column, padding: SectionPad, spacing: 12}
+
+        title {
+            Text: {text: "CONSTRUCT", size: FontTitle}
+            Rgba: TitleColor
+        }
+
+        tabs {
+            Layout: {direction: Row, padding: 0, spacing: 8}
+
+            TabButton tab_buildings(label: "Buildings", tab: 0)
+            TabButton tab_rocket(label: "Rocket", tab: 1)
+        }
+
+        pages {
+            Layout: {direction: Column, padding: 0, spacing: 0,
+                width: PageWidth, height: PageHeight}
+
+            buildings_page {
+                Layout: {direction: Column, padding: 0, spacing: 8}
+
+                if UiState[UiState].tab != 0 {
+                    flecs.core.Disabled
+                }
+
+                row_base {
+                    Layout: {direction: Row, padding: 0, spacing: 8}
+
+                    SlotButton build_wall(item: Wall, craft: true,
+                        icon: icons.wall)
+                    SlotButton build_drill(item: Drill, craft: true,
+                        icon: icons.drill)
+                    SlotButton build_solar(item: SolarPanel, craft: true,
+                        icon: icons.solar)
+                }
+
+                row_turrets {
+                    Layout: {direction: Row, padding: 0, spacing: 8}
+
+                    SlotButton build_gun(item: GunTurret, craft: true,
+                        icon: icons.gun_turret)
+                    SlotButton build_laser(item: LaserTurret, craft: true,
+                        icon: icons.laser_turret)
+                    SlotButton build_missile(item: MissileTurret, craft: true,
+                        icon: icons.missile_turret)
+                }
+
+                row_late {
+                    Layout: {direction: Row, padding: 0, spacing: 8}
+
+                    SlotButton build_factory(item: Factory, craft: true,
+                        icon: icons.factory)
+                    SlotButton build_pad(item: RocketPad, craft: true,
+                        icon: icons.rocket_pad)
+                    SlotButton build_drone_pad(item: DronePad, craft: true,
+                        icon: icons.drone_pad)
+                }
+            }
+
+            rocket_page {
+                Layout: {direction: Column, padding: 0, spacing: 8}
+
+                if UiState[UiState].tab != 1 {
+                    flecs.core.Disabled
+                }
+
+                row_rocket {
+                    Layout: {direction: Row, padding: 0, spacing: 8}
+
+                    SlotButton craft_engine(item: RocketEngine, craft: true,
+                        icon: icons.rocket_engine, key: "F", hotKey: "f")
+                    SlotButton craft_fuel(item: RocketFuelStorage, craft: true,
+                        icon: icons.rocket_fuel, key: "G", hotKey: "g")
+                    SlotButton craft_cargo(item: RocketCargoBay, craft: true,
+                        icon: icons.rocket_cargo, key: "H", hotKey: "h")
+                    SlotButton craft_life(item: RocketLifeSupport, craft: true,
+                        icon: icons.rocket_life, key: "J", hotKey: "j")
+                }
+            }
+        }
+    }
+}
+
+if UiState[UiState].hovering {
+    const ui = UiState[UiState]
+
+    info_panel {
+        Anchor: {h: Center, v: Middle, y: 224}
+        Panel: {w: InfoW, h: InfoH, capH: InfoCapH}
+
+        if ui.hover_item {
+            icon {
+                Position: {14, 14 + InfoCapPad}
+                Rect: {56, 56}
+                Image: {texture: ui.hover_item[Icon].texture, fit: Contain}
+            }
+        }
+
+        name {
+            Position: {82, 14 + InfoCapPad}
+            Text: {text: "{ui.hover_name}", size: 22}
+            Rgba: TitleColor
+        }
+
+        note {
+            Position: {82, 46 + InfoCapPad}
+            Text: {text: "{ui.hover_note}", size: InfoFont}
+            Rgba: AmberColor
+        }
+
+        detail {
+            Position: {82, 68 + InfoCapPad}
+            Text: {text: "{ui.hover_detail}", size: InfoFont}
+            Rgba: SubTitleColor
+        }
+
+        if ui.hover_raw_count > 0 {
+            needs_label {
+                Position: {14, 104 + InfoCapPad}
+                Text: {text: "NEEDS", size: InfoFont}
+                Rgba: AmberColor
+            }
+
+            needs_list {
+                Position: {82, 100 + InfoCapPad}
+                Layout: {direction: Row, padding: 0, spacing: 18}
+
+                for (resource, i, amount) in ui.hover_raw {
+                    "need_{i}" {
+                        Layout: {direction: Row, padding: 0, spacing: 6}
+
+                        icon {
+                            Rect: {26, 26}
+                            Image: {
+                                texture: resource[Icon].texture,
+                                fit: Contain
+                            }
+                        }
+
+                        amount_label {
+                            Layout: {height: 26}
+                            Text: {
+                                text: "{ui.hover_have[resource]}/{amount}",
+                                size: InfoFont
+                            }
+                            Rgba: match ui.hover_have[resource] < amount {
+                                true: ShortColor
+                                false: TitleColor
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+inventory_button {
+    if !playing {
+        flecs.core.Disabled
+    }
+
+    Anchor: {h: Center, v: Bottom, y: -22}
+    ActionButton: {action: ore_else.actions.Inventory, label: "Inventory (E)"}
+}
+
+tab_hotkey {
+    Tab: {index: -1}
+    Hotkey: {key: "\t"}
+}
+
+build_hotkeys {
+    BuildHotkey key_wall(item: Wall, hotKey: "1")
+    BuildHotkey key_drill(item: Drill, hotKey: "2")
+    BuildHotkey key_solar(item: SolarPanel, hotKey: "3")
+    BuildHotkey key_gun(item: GunTurret, hotKey: "4")
+    BuildHotkey key_laser(item: LaserTurret, hotKey: "5")
+    BuildHotkey key_missile(item: MissileTurret, hotKey: "6")
+    BuildHotkey key_pad(item: RocketPad, hotKey: "8")
+    BuildHotkey key_factory(item: Factory, hotKey: "0")
+    BuildHotkey key_drone_pad(item: DronePad, hotKey: "9")
+}

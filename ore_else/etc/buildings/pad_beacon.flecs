@@ -1,0 +1,35 @@
+// Corner beacon for the rocket pad
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const steelShade: Rgba = {112, 120, 136, 255}
+const steelDeep: Rgba = {56, 62, 76, 255}
+const hazard: Rgba = {240, 176, 58, 255}
+
+template PadBeacon {
+    post {
+        Position3: {0, 0.34, 0}
+        Box: {0.18, 0.68, 0.18}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.6, roughness: 0.4}
+    }
+
+    collar {
+        Position3: {0, 0.7, 0}
+        Box: {0.26, 0.08, 0.26}
+        Rgba: steelDeep
+    }
+
+    lamp {
+        Position3: {0, 0.74, 0}
+        Light: {
+            color: hazard, w: 0.22, d: 0.22, h: 0.14,
+            strength: 2.6
+        }
+    }
+}

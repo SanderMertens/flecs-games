@@ -1,0 +1,358 @@
+// Drill
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const steel: Rgba = {172, 180, 194, 255}
+const steelDeep: Rgba = {56, 62, 76, 255}
+const hazard: Rgba = {240, 176, 58, 255}
+const lampLive: Rgba = {92, 236, 222, 255}
+const lampDead: Rgba = {248, 84, 72, 255}
+
+@detail "Mines ore deposits."
+@tree Parent
+@name "Drill"
+prefab Drill {
+    Icon: {texture: icons.drill}
+    Recipe: {inputs: [IronPlate: 6], craft_time: 1}
+    Health: {value: 100, max: 100}
+    PowerConsumer: {watts: 4}
+    PowerCategory: {kind: Mining}
+    DrillState: {}
+
+    beam_front {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.11, 0.76}
+        Box: {1.86, 0.22, 0.34}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    beam_back {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.11, -0.76}
+        Box: {1.86, 0.22, 0.34}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    beam_left {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {-0.76, 0.11, 0}
+        Box: {0.34, 0.22, 1.18}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    beam_right {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0.76, 0.11, 0}
+        Box: {0.34, 0.22, 1.18}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    lip : HazardTrim {
+        SurfaceWear: {dust: 0.3, grime: 0.55}
+        Position3: {0, 0.25, 0.76}
+        Box: {1.86, 0.06, 0.34}
+    }
+
+    leg_l {
+        SurfaceWear: {dust: 0.6, grime: 0.65}
+        Position3: {-0.74, 1.06, 0}
+        Box: {0.2, 1.68, 0.28}
+        Rgba: steel
+        PbrMaterial: {metallic: 0.5, roughness: 0.45}
+
+        rail {
+            SurfaceWear: {dust: 0.5, grime: 0.5}
+            Position3: {0, 0, 0}
+            Box: {0.3, 1.46, 0.1}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+        }
+    }
+
+    leg_r {
+        SurfaceWear: {dust: 0.6, grime: 0.65}
+        Position3: {0.74, 1.06, 0}
+        Box: {0.2, 1.68, 0.28}
+        Rgba: steel
+        PbrMaterial: {metallic: 0.5, roughness: 0.45}
+
+        rail {
+            SurfaceWear: {dust: 0.5, grime: 0.5}
+            Position3: {0, 0, 0}
+            Box: {0.3, 1.46, 0.1}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+        }
+    }
+
+    crown {
+        SurfaceWear: {dust: 0.75, grime: 0.3}
+        Position3: {0, 1.98, 0}
+        Box: {1.7, 0.22, 0.42}
+        Rgba: steel
+        PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+        stripe {
+            SurfaceWear: {dust: 0.3, grime: 0.4}
+            Position3: {0, 0, 0.23}
+            Box: {1.7, 0.09, 0.05}
+            Rgba: hazard
+        }
+
+        ram_ear_l {
+            SurfaceWear: {dust: 0.65, grime: 0.4}
+            Position3: {-0.42, -0.13, 0.24}
+            Box: {0.28, 0.14, 0.3}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.55, roughness: 0.42}
+        }
+
+        ram_ear_r {
+            SurfaceWear: {dust: 0.65, grime: 0.4}
+            Position3: {0.42, -0.13, 0.24}
+            Box: {0.28, 0.14, 0.3}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.55, roughness: 0.42}
+        }
+
+        sleeve_l {
+            SurfaceWear: {dust: 0.5, grime: 0.35}
+            Position3: {-0.42, -0.34, 0.26}
+            Cylinder: {segments: 10, smooth: true, length: 0.46}
+            Scale3: {0.16, 1, 0.16}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.6, roughness: 0.38}
+        }
+
+        sleeve_r {
+            SurfaceWear: {dust: 0.5, grime: 0.35}
+            Position3: {0.42, -0.34, 0.26}
+            Cylinder: {segments: 10, smooth: true, length: 0.46}
+            Scale3: {0.16, 1, 0.16}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.6, roughness: 0.38}
+        }
+
+        pod_l {
+            SurfaceWear: {dust: 0.6, grime: 0.4}
+            Position3: {-0.72, 0.15, 0}
+            Box: {0.32, 0.2, 0.34}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.5, roughness: 0.5}
+
+            lamp_l {
+                Position3: {0, 0.1, 0}
+                Light: {
+                    color: lampLive, dead: lampDead, status: true,
+                    w: 0.22, d: 0.24, h: 0.12, strength: 2.8
+                }
+            }
+        }
+
+        pod_r {
+            SurfaceWear: {dust: 0.6, grime: 0.4}
+            Position3: {0.72, 0.15, 0}
+            Box: {0.32, 0.2, 0.34}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.5, roughness: 0.5}
+
+            lamp_r {
+                Position3: {0, 0.1, 0}
+                Light: {
+                    color: lampLive, dead: lampDead, status: true,
+                    w: 0.22, d: 0.24, h: 0.12, strength: 2.8
+                }
+            }
+        }
+    }
+
+    carriage {
+        Position3: {0, 1.48, 0}
+        Piston: {rest: 1.48, travel: 0.26, speed: 2.4}
+
+        yoke {
+            SurfaceWear: {dust: 0.65, grime: 0.45}
+            Position3: {0, -0.07, 0}
+            Box: {1.6, 0.12, 0.2}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.55, roughness: 0.4}
+        }
+
+        shoe_l {
+            SurfaceWear: {dust: 0.55, grime: 0.5}
+            Position3: {-0.74, -0.07, 0}
+            Box: {0.38, 0.24, 0.4}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.65, roughness: 0.32}
+        }
+
+        shoe_r {
+            SurfaceWear: {dust: 0.55, grime: 0.5}
+            Position3: {0.74, -0.07, 0}
+            Box: {0.38, 0.24, 0.4}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.65, roughness: 0.32}
+        }
+
+        foot_l {
+            SurfaceWear: {dust: 0.6, grime: 0.45}
+            Position3: {-0.42, -0.05, 0.18}
+            Box: {0.28, 0.14, 0.32}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.55, roughness: 0.4}
+        }
+
+        foot_r {
+            SurfaceWear: {dust: 0.6, grime: 0.45}
+            Position3: {0.42, -0.05, 0.18}
+            Box: {0.28, 0.14, 0.32}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.55, roughness: 0.4}
+        }
+
+        rod_l {
+            SurfaceWear: {dust: 0.2, grime: 0.25}
+            Position3: {-0.42, 0.1, 0.24}
+            Cylinder: {segments: 8, smooth: true, length: 0.52}
+            Scale3: {0.1, 1, 0.1}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.78, roughness: 0.2}
+        }
+
+        rod_r {
+            SurfaceWear: {dust: 0.2, grime: 0.25}
+            Position3: {0.42, 0.1, 0.24}
+            Cylinder: {segments: 8, smooth: true, length: 0.52}
+            Scale3: {0.1, 1, 0.1}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.78, roughness: 0.2}
+        }
+
+        way_l {
+            SurfaceWear: {dust: 0.5, grime: 0.45}
+            Position3: {-0.17, 0.02, 0}
+            Box: {0.1, 0.1, 1.02}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+        }
+
+        way_r {
+            SurfaceWear: {dust: 0.5, grime: 0.45}
+            Position3: {0.17, 0.02, 0}
+            Box: {0.1, 0.1, 1.02}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+        }
+
+        way_stop_f {
+            SurfaceWear: {dust: 0.45, grime: 0.5}
+            Position3: {0, 0.04, 0.47}
+            Box: {0.5, 0.16, 0.08}
+            Rgba: steelDeep
+        }
+
+        way_stop_b {
+            SurfaceWear: {dust: 0.45, grime: 0.5}
+            Position3: {0, 0.04, -0.47}
+            Box: {0.5, 0.16, 0.08}
+            Rgba: steelDeep
+        }
+
+        slider {
+            Position3: {0, 0, 0.12}
+            Piston: {rest: 0.12, travel: 0.24, speed: 0.9, slide: true}
+
+            trolley {
+                SurfaceWear: {dust: 0.7, grime: 0.4}
+                Position3: {0, 0.08, 0}
+                Box: {0.56, 0.18, 0.36}
+                Rgba: steelDeep
+                PbrMaterial: {metallic: 0.6, roughness: 0.35}
+            }
+
+            motor {
+                SurfaceWear: {dust: 0.4, grime: 0.3}
+                Position3: {0, 0.22, 0}
+                Cylinder: {segments: 12, smooth: true, length: 0.34}
+                Scale3: {0.32, 1, 0.32}
+                Rgba: hazard
+            }
+
+            bit {
+                Position3: {0, 0, 0}
+                Rotation3: {0, 0, 0}
+                Spinner: {speed: 7}
+                Shake: {amplitude: 0.03, frequency: 13}
+
+                shaft {
+                    SurfaceWear: {dust: 0.35, grime: 0.45}
+                    Position3: {0, -0.72, 0}
+                    Cylinder: {segments: 10, smooth: true, length: 1.5}
+                    Scale3: {0.19, 1, 0.19}
+                    Rgba: steel
+                    PbrMaterial: {metallic: 0.72, roughness: 0.28}
+                }
+
+                flute_a {
+                    Position3: {0.2, -0.5, 0}
+                    Rotation3: {0, 0.4, 0.46}
+                    Box: {0.56, 0.12, 0.18}
+                    Rgba: hazard
+                }
+
+                flute_b {
+                    Position3: {-0.2, -0.84, 0}
+                    Rotation3: {0, 0.4, -0.46}
+                    Box: {0.56, 0.12, 0.18}
+                    Rgba: hazard
+                }
+
+                flute_c {
+                    Position3: {0.2, -1.18, 0}
+                    Rotation3: {0, 0.4, 0.46}
+                    Box: {0.56, 0.12, 0.18}
+                    Rgba: hazard
+                }
+
+                tip {
+                    SurfaceWear: {dust: 0.35, grime: 0.55}
+                    Position3: {0, -1.44, 0}
+                    Cone: {segments: 10, smooth: true, length: 0.4}
+                    Rotation3: {math.PI, 0, 0}
+                    Scale3: {0.22, 1, 0.22}
+                    Rgba: steelDeep
+                }
+            }
+        }
+    }
+
+    housing {
+        SurfaceWear: {dust: 0.75, grime: 0.6}
+        Position3: {0, 0.68, -0.8}
+        Box: {1.24, 0.9, 0.4}
+        Rgba: steel
+        PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+        vent {
+            SurfaceWear: {dust: 0.45, grime: 0.7}
+            Position3: {0, -0.14, 0.23}
+            Box: {0.72, 0.34, 0.04}
+            Rgba: steelDeep
+        }
+    }
+
+    dust {
+        Position3: {0, 0.45, 0}
+        DrillDust: {}
+        WorkEmitter
+    }
+}

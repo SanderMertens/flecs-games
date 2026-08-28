@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3070c4"/>
+      <stop offset="0.55" stop-color="#153f80"/>
+      <stop offset="1" stop-color="#0a1c40"/>
+    </linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a63b2"/>
+      <stop offset="0.55" stop-color="#0f3168"/>
+      <stop offset="1" stop-color="#071634"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="256" height="256" fill="#171c27"/>
+  <g fill="#9fa9b8">
+    <rect x="-4" y="0" width="8" height="256"/>
+    <rect x="124" y="0" width="8" height="256"/>
+    <rect x="252" y="0" width="8" height="256"/>
+    <rect x="0" y="-4" width="256" height="8"/>
+    <rect x="0" y="124" width="256" height="8"/>
+    <rect x="0" y="252" width="256" height="8"/>
+  </g>
+  <polygon points="22,4 106,4 124,22 124,106 106,124 22,124 4,106 4,22" fill="url(#a)"/>
+  <polygon points="150,4 234,4 252,22 252,106 234,124 150,124 132,106 132,22" fill="url(#b)"/>
+  <polygon points="22,132 106,132 124,150 124,234 106,252 22,252 4,234 4,150" fill="url(#b)"/>
+  <polygon points="150,132 234,132 252,150 252,234 234,252 150,252 132,234 132,150" fill="url(#a)"/>
+  <g stroke="#7d9cc9" stroke-width="1.2" opacity="0.26">
+    <line x1="9" y1="24" x2="119" y2="24"/>
+    <line x1="9" y1="44" x2="119" y2="44"/>
+    <line x1="9" y1="64" x2="119" y2="64"/>
+    <line x1="9" y1="84" x2="119" y2="84"/>
+    <line x1="9" y1="104" x2="119" y2="104"/>
+    <line x1="137" y1="24" x2="247" y2="24"/>
+    <line x1="137" y1="44" x2="247" y2="44"/>
+    <line x1="137" y1="64" x2="247" y2="64"/>
+    <line x1="137" y1="84" x2="247" y2="84"/>
+    <line x1="137" y1="104" x2="247" y2="104"/>
+    <line x1="9" y1="152" x2="119" y2="152"/>
+    <line x1="9" y1="172" x2="119" y2="172"/>
+    <line x1="9" y1="192" x2="119" y2="192"/>
+    <line x1="9" y1="212" x2="119" y2="212"/>
+    <line x1="9" y1="232" x2="119" y2="232"/>
+    <line x1="137" y1="152" x2="247" y2="152"/>
+    <line x1="137" y1="172" x2="247" y2="172"/>
+    <line x1="137" y1="192" x2="247" y2="192"/>
+    <line x1="137" y1="212" x2="247" y2="212"/>
+    <line x1="137" y1="232" x2="247" y2="232"/>
+  </g>
+  <g stroke="#c2ccda" stroke-width="2.4" opacity="0.4">
+    <line x1="44" y1="9" x2="44" y2="119"/>
+    <line x1="84" y1="9" x2="84" y2="119"/>
+    <line x1="172" y1="9" x2="172" y2="119"/>
+    <line x1="212" y1="9" x2="212" y2="119"/>
+    <line x1="44" y1="137" x2="44" y2="247"/>
+    <line x1="84" y1="137" x2="84" y2="247"/>
+    <line x1="172" y1="137" x2="172" y2="247"/>
+    <line x1="212" y1="137" x2="212" y2="247"/>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+// Hill asset
+
+module bunny_hopper.assets
+using flecs.engine.*
+
+prefab Hill {
+    BunnyScenery: {parallax: 0.35, wrap_min: -44, wrap_span: 88}
+    HemiSphere: {segments: 24, smooth: true, radius: 1}
+    Rgba: {105, 165, 90, 255}
+}

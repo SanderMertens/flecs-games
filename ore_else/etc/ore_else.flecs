@@ -1,0 +1,30 @@
+// Ore Else!
+
+// Engine config
+include engine
+include quality
+include keybinding
+include input
+
+// Game configuration
+include config
+
+// Assets
+include icons
+include resources
+include particles
+include props
+include projectiles
+include critters
+include rocket
+include materials
+include buildings
+
+// Player attributes & prefab
+include player
+
+// Scene
+include scene
+
+// UI
+include ui

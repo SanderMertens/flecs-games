@@ -1,0 +1,7 @@
+// World prop assets
+
+include props/ore
+include props/markers
+include props/light
+include materials/flora
+include props/flora

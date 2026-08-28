@@ -1,0 +1,7 @@
+// Rocket assets
+
+include rocket/pad_clamp
+include rocket/rocket_bell
+include rocket/rocket_port
+include rocket/rocket_bay
+include rocket/rocket

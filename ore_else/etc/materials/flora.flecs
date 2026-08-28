@@ -1,0 +1,68 @@
+// Alien flora blade and membrane cutouts
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab frond_tex {
+    Texture: {"etc/assets/flora_frond.svg", 256, 256}
+}
+
+prefab frond_b_tex {
+    Texture: {"etc/assets/flora_frond_b.svg", 256, 256}
+}
+
+prefab frond_norm {
+    Texture: {"etc/assets/flora_frond_normal.svg", 256, 256}
+}
+
+prefab membrane_tex {
+    Texture: {"etc/assets/flora_pad.svg", 256, 256}
+}
+
+prefab membrane_b_tex {
+    Texture: {"etc/assets/flora_pad_b.svg", 256, 256}
+}
+
+prefab membrane_norm {
+    Texture: {"etc/assets/flora_pad_normal.svg", 256, 256}
+}
+
+prefab FloraFrond {
+    Quad: {1, 1}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0, roughness: 0.78}
+    PbrTextures: {albedo: frond_tex, normal: frond_norm}
+    Emissive: {strength: 0.18, color: {112, 84, 122, 255}}
+    AlphaBlend
+}
+
+prefab FloraFrondB {
+    Quad: {1, 1}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0, roughness: 0.78}
+    PbrTextures: {albedo: frond_b_tex, normal: frond_norm}
+    Emissive: {strength: 0.18, color: {88, 94, 128, 255}}
+    AlphaBlend
+}
+
+prefab FloraMembrane {
+    Quad: {1, 1}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0, roughness: 0.7}
+    PbrTextures: {albedo: membrane_tex, normal: membrane_norm}
+    Emissive: {strength: 0.18, color: {84, 90, 124, 255}}
+    AlphaBlend
+}
+
+prefab FloraMembraneB {
+    Quad: {1, 1}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0, roughness: 0.7}
+    PbrTextures: {albedo: membrane_b_tex, normal: membrane_norm}
+    Emissive: {strength: 0.18, color: {114, 88, 108, 255}}
+    AlphaBlend
+}

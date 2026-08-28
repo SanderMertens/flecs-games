@@ -1,0 +1,14 @@
+module bunny_hopper
+using flecs.engine.*
+
+actions {
+    Jump { InputAction: {"Make the bunny jump; a second press in the air double jumps"} }
+    Restart { InputAction: {"Restart after the game is over"} }
+}
+
+$ {
+    InputMap: [
+        keys.Space: { bunny_hopper.actions.Jump },
+        keys.R: { bunny_hopper.actions.Restart }
+    ]
+}

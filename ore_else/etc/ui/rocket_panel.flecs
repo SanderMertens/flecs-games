@@ -1,0 +1,111 @@
+// Rocket assembly schematic: one section per part, + / - to fit and strip it
+
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+const BarW = 272
+const BarH = 366
+const BarPad = 12
+const BodyW = 156
+const RowH = 46
+const RowPitch = 50
+const RowY = 44
+const StepW = 40
+const StepH = 30
+const StepY = 8
+const MinusX = 176
+const PlusX = 220
+const LoadY = 254
+const LoadH = 40
+const LaunchY = 306
+const LaunchH = 48
+
+const TitleColor: Rgba = {240, 176, 58, 255}
+
+const rocketShow = RocketState[RocketState].pad != 0 && $?[(GameState, Playing)]
+
+const rocket = RocketState[RocketState]
+const units = rocket.cargo_bays + rocket.life_support
+const needEngines = units * cfg.enginesPerUnit
+const capacity = rocket.cargo_bays * cfg.cargoCapacity
+const idle = rocket.phase == Idle
+
+const loadAfford = rocket.pad != 0 && idle &&
+    LuminiteProgress[LuminiteProgress].luminite_held > 0 &&
+    capacity > rocket.luminite
+
+const loadFill: f32 = match capacity > 0 {
+    true: rocket.luminite / capacity
+    false: 0
+}
+
+rocket_bar {
+    if !rocketShow {
+        flecs.core.Disabled
+    }
+
+    Anchor: {h: Right, x: -18, y: 74}
+    Panel: {w: BarW, h: BarH, capH: 7}
+
+    title {
+        Position: {BarPad, 14}
+        Text: {text: "ROCKET ASSEMBLY", size: 15}
+        Rgba: TitleColor
+    }
+
+    RocketSection sec_life(label: "LIFE SUPPORT", icon: icons.rocket_life,
+        x: BarPad, y: RowY, w: BodyW, h: RowH,
+        count: rocket.life_support, need: cfg.maxLifeSupport)
+
+    RocketStep life_minus(item: RocketLifeSupport, rem: true, sign: "-",
+        x: MinusX, y: RowY + StepY, w: StepW, h: StepH)
+
+    RocketStep life_plus(item: RocketLifeSupport, sign: "+", key: "I",
+        hotKey: "i", x: PlusX, y: RowY + StepY, w: StepW, h: StepH)
+
+    RocketSection sec_cargo(label: "CARGO BAYS", icon: icons.rocket_cargo,
+        x: BarPad, y: RowY + RowPitch, w: BodyW, h: RowH,
+        count: rocket.cargo_bays, need: cfg.maxCargoBays)
+
+    RocketStep cargo_minus(item: RocketCargoBay, rem: true, sign: "-",
+        x: MinusX, y: RowY + RowPitch + StepY, w: StepW, h: StepH)
+
+    RocketStep cargo_plus(item: RocketCargoBay, sign: "+", key: "U",
+        hotKey: "u", x: PlusX, y: RowY + RowPitch + StepY, w: StepW, h: StepH)
+
+    RocketSection sec_fuel(label: "FUEL TANKS", icon: icons.rocket_fuel,
+        x: BarPad, y: RowY + RowPitch * 2, w: BodyW, h: RowH,
+        count: rocket.fuel, need: units, exact: true,
+        blocked: units > 0 && rocket.fuel != units)
+
+    RocketStep fuel_minus(item: RocketFuelStorage, rem: true, sign: "-",
+        x: MinusX, y: RowY + RowPitch * 2 + StepY, w: StepW, h: StepH)
+
+    RocketStep fuel_plus(item: RocketFuelStorage, sign: "+", key: "Y",
+        hotKey: "y", x: PlusX, y: RowY + RowPitch * 2 + StepY, w: StepW,
+        h: StepH)
+
+    RocketSection sec_engines(label: "ENGINES", icon: icons.rocket_engine,
+        x: BarPad, y: RowY + RowPitch * 3, w: BodyW, h: RowH,
+        count: rocket.engines, need: needEngines, exact: true,
+        blocked: units > 0 && rocket.engines != needEngines)
+
+    RocketStep engine_minus(item: RocketEngine, rem: true, sign: "-",
+        x: MinusX, y: RowY + RowPitch * 3 + StepY, w: StepW, h: StepH)
+
+    RocketStep engine_plus(item: RocketEngine, sign: "+", key: "T",
+        hotKey: "t", x: PlusX, y: RowY + RowPitch * 3 + StepY, w: StepW,
+        h: StepH)
+
+
+    RocketSection sec_load(label: "LUMINITE", icon: icons.luminite,
+        x: BarPad, y: LoadY, w: BarW - BarPad * 2, h: LoadH,
+        bar: true, load: true, hotKey: "o",
+        count: rocket.luminite, need: capacity,
+        afford: loadAfford, fill: loadFill)
+
+    RocketButton launch_rocket(launch: true, name: "LAUNCH", key: "P",
+        hotKey: "p", w: BarW - BarPad * 2, h: LaunchH, x: BarPad, y: LaunchY)
+}

@@ -1,0 +1,424 @@
+// Player attributes & astronaut asset
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+player {
+    export mut Inventory: StorageMap = [
+        Iron: 0
+        Copper: 0
+        Stone: 0
+        Luminite: 0
+        IronPlate: 16
+        CopperPlate: 12
+        StoneBrick: 0
+        Wire: 0
+        Electronics: 0
+        RocketEngine: 0
+        RocketCargoBay: 0
+        RocketLifeSupport: 0
+        RocketFuelStorage: 0
+        Wall: 0
+        Drill: 0
+        SolarPanel: 1
+        GunTurret: 0
+        LaserTurret: 0
+        MissileTurret: 0
+        Factory: 0
+        DronePad: 0
+        RocketPad: 0
+    ]
+}
+
+@tree Parent
+template Astronaut {
+    prop suit: Rgba = {228, 232, 240, 255}
+
+    const suitShade: Rgba = {182, 189, 204, 255}
+    const trim: Rgba = {236, 142, 56, 255}
+    const visorColor: Rgba = {92, 236, 222, 255}
+    const rubber: Rgba = {58, 64, 78, 255}
+    const seam: Rgba = {148, 156, 172, 255}
+    const hardware: Rgba = {96, 104, 120, 255}
+
+    leg_left {
+        Position3: {0.16, 0.66, 0}
+        Limb: {phase: 0, swing: 0.55}
+
+        shin {
+            Position3: {0, -0.31, 0}
+            Box: {0.22, 0.62, 0.24}
+            Rgba: suitShade
+            PbrMaterial: {metallic: 0, roughness: 0.8}
+
+            knee_pad {
+                Position3: {0, 0.2, 0.1}
+                Box: {0.2, 0.16, 0.1}
+                Rgba: seam
+                PbrMaterial: {metallic: 0.15, roughness: 0.7}
+            }
+        }
+
+        foot {
+            Position3: {0, -0.62, 0.07}
+            Box: {0.24, 0.14, 0.36}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0, roughness: 0.9}
+
+            toe_cap {
+                Position3: {0, 0.02, 0.15}
+                Box: {0.26, 0.16, 0.1}
+                Rgba: seam
+                PbrMaterial: {metallic: 0.2, roughness: 0.65}
+            }
+
+            heel_strap {
+                Position3: {0, 0.02, -0.13}
+                Box: {0.26, 0.12, 0.12}
+                Rgba: hardware
+                PbrMaterial: {metallic: 0.4, roughness: 0.6}
+            }
+        }
+    }
+
+    leg_right {
+        Position3: {-0.16, 0.66, 0}
+        Limb: {phase: math.PI, swing: 0.55}
+
+        shin {
+            Position3: {0, -0.31, 0}
+            Box: {0.22, 0.62, 0.24}
+            Rgba: suitShade
+            PbrMaterial: {metallic: 0, roughness: 0.8}
+
+            knee_pad {
+                Position3: {0, 0.2, 0.1}
+                Box: {0.2, 0.16, 0.1}
+                Rgba: seam
+                PbrMaterial: {metallic: 0.15, roughness: 0.7}
+            }
+        }
+
+        foot {
+            Position3: {0, -0.62, 0.07}
+            Box: {0.24, 0.14, 0.36}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0, roughness: 0.9}
+
+            toe_cap {
+                Position3: {0, 0.02, 0.15}
+                Box: {0.26, 0.16, 0.1}
+                Rgba: seam
+                PbrMaterial: {metallic: 0.2, roughness: 0.65}
+            }
+
+            heel_strap {
+                Position3: {0, 0.02, -0.13}
+                Box: {0.26, 0.12, 0.12}
+                Rgba: hardware
+                PbrMaterial: {metallic: 0.4, roughness: 0.6}
+            }
+        }
+    }
+
+    torso {
+        Position3: {0, 1.1, 0}
+        Box: {0.58, 0.74, 0.42}
+        Rgba: suit
+        PbrMaterial: {metallic: 0, roughness: 0.82}
+
+        belt {
+            Position3: {0, -0.3, 0}
+            Box: {0.62, 0.12, 0.46}
+            Rgba: trim
+            PbrMaterial: {metallic: 0.3, roughness: 0.45}
+
+            buckle {
+                Position3: {0, 0, 0.22}
+                Box: {0.16, 0.16, 0.06}
+                Rgba: hardware
+                PbrMaterial: {metallic: 0.75, roughness: 0.35}
+            }
+
+            pouch_left {
+                Position3: {0.25, -0.01, 0.17}
+                Box: {0.16, 0.15, 0.14}
+                Rgba: suitShade
+                PbrMaterial: {metallic: 0, roughness: 0.8}
+            }
+
+            pouch_right {
+                Position3: {-0.28, 0, 0.02}
+                Box: {0.14, 0.16, 0.2}
+                Rgba: suitShade
+                PbrMaterial: {metallic: 0, roughness: 0.8}
+            }
+        }
+
+        chest_panel {
+            Position3: {0, 0.1, 0.23}
+            Box: {0.26, 0.2, 0.05}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0.1, roughness: 0.85}
+
+            led_left {
+                Position3: {-0.07, 0.035, 0.02}
+                Box: {0.05, 0.05, 0.03}
+                Rgba: visorColor
+                Emissive: {strength: 2.2, color: visorColor}
+            }
+
+            led_right {
+                Position3: {0, 0.035, 0.02}
+                Box: {0.05, 0.05, 0.03}
+                Rgba: trim
+                Emissive: {strength: 1.8, color: trim}
+            }
+
+            readout {
+                Position3: {0.045, -0.045, 0.02}
+                Box: {0.13, 0.05, 0.03}
+                Rgba: visorColor
+                Emissive: {strength: 1.4, color: visorColor}
+            }
+        }
+
+        seam_left {
+            Position3: {0.21, 0.06, 0.207}
+            Box: {0.05, 0.57, 0.03}
+            Rgba: seam
+            PbrMaterial: {metallic: 0.1, roughness: 0.72}
+        }
+
+        seam_right {
+            Position3: {-0.21, 0.06, 0.207}
+            Box: {0.05, 0.57, 0.03}
+            Rgba: seam
+            PbrMaterial: {metallic: 0.1, roughness: 0.72}
+        }
+
+        collar {
+            Position3: {0, 0.4, 0}
+            Box: {0.34, 0.14, 0.3}
+            Rgba: hardware
+            PbrMaterial: {metallic: 0.7, roughness: 0.38}
+        }
+    }
+
+    backpack {
+        Position3: {0, 1.14, -0.32}
+        Box: {0.46, 0.6, 0.26}
+        Rgba: suitShade
+        PbrMaterial: {metallic: 0.15, roughness: 0.7}
+
+        tank_left {
+            Position3: {-0.13, 0, -0.16}
+            Box: {0.14, 0.5, 0.14}
+            Rgba: trim
+            PbrMaterial: {metallic: 0.6, roughness: 0.35}
+
+            cap {
+                Position3: {0, 0.27, 0}
+                Box: {0.16, 0.08, 0.16}
+                Rgba: hardware
+                PbrMaterial: {metallic: 0.8, roughness: 0.3}
+            }
+        }
+
+        tank_right {
+            Position3: {0.13, 0, -0.16}
+            Box: {0.14, 0.5, 0.14}
+            Rgba: trim
+            PbrMaterial: {metallic: 0.6, roughness: 0.35}
+
+            cap {
+                Position3: {0, 0.27, 0}
+                Box: {0.16, 0.08, 0.16}
+                Rgba: hardware
+                PbrMaterial: {metallic: 0.8, roughness: 0.3}
+            }
+        }
+
+        nozzle_left {
+            Position3: {-0.13, -0.34, -0.16}
+            Cylinder: {segments: 8, smooth: true, length: 0.14}
+            Scale3: {0.09, 1, 0.09}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0.35, roughness: 0.8}
+        }
+
+        nozzle_right {
+            Position3: {0.13, -0.34, -0.16}
+            Cylinder: {segments: 8, smooth: true, length: 0.14}
+            Scale3: {0.09, 1, 0.09}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0.35, roughness: 0.8}
+        }
+
+        hose_upper {
+            Position3: {-0.215, 0.08, -0.12}
+            Cylinder: {segments: 6, smooth: true, length: 0.3}
+            Rotation3: {0, 0, -0.35}
+            Scale3: {0.05, 1, 0.05}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0.2, roughness: 0.85}
+        }
+
+        hose_side {
+            Position3: {-0.25, -0.07, 0.03}
+            Cylinder: {segments: 6, smooth: true, length: 0.32}
+            Rotation3: {1.5708, 0, 0}
+            Scale3: {0.05, 1, 0.05}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0.2, roughness: 0.85}
+        }
+
+        hose_torso {
+            Position3: {-0.28, -0.055, 0.28}
+            Cylinder: {segments: 6, smooth: true, length: 0.22}
+            Rotation3: {1.45, 0, 0}
+            Scale3: {0.05, 1, 0.05}
+            Rgba: hardware
+            PbrMaterial: {metallic: 0.7, roughness: 0.4}
+        }
+    }
+
+    jet {
+        Position3: {0, 0.74, -0.48}
+        JetPlume: {}
+    }
+
+    arm_left {
+        Position3: {0.4, 1.36, 0}
+        Limb: {phase: math.PI, swing: 0.38}
+
+        upper {
+            Position3: {0, -0.26, 0}
+            Box: {0.18, 0.56, 0.18}
+            Rgba: suit
+            PbrMaterial: {metallic: 0, roughness: 0.8}
+
+            shoulder_pad {
+                Position3: {0, 0.19, 0}
+                Box: {0.26, 0.16, 0.22}
+                Rgba: suitShade
+                PbrMaterial: {metallic: 0.1, roughness: 0.75}
+            }
+
+            elbow_pad {
+                Position3: {0, -0.16, 0.02}
+                Box: {0.2, 0.14, 0.2}
+                Rgba: seam
+                PbrMaterial: {metallic: 0.15, roughness: 0.7}
+            }
+
+            patch {
+                Position3: {0.1, 0.06, 0}
+                Box: {0.03, 0.14, 0.12}
+                Rgba: trim
+                PbrMaterial: {metallic: 0.3, roughness: 0.45}
+            }
+        }
+
+        glove {
+            Position3: {0, -0.58, 0.02}
+            Box: {0.2, 0.2, 0.2}
+            Rgba: trim
+            PbrMaterial: {metallic: 0.3, roughness: 0.45}
+
+            cuff {
+                Position3: {0, 0.09, 0.01}
+                Box: {0.22, 0.07, 0.22}
+                Rgba: rubber
+                PbrMaterial: {metallic: 0.2, roughness: 0.85}
+            }
+        }
+    }
+
+    arm_right {
+        Position3: {-0.4, 1.36, 0}
+        Limb: {phase: 0, swing: 0.38}
+
+        upper {
+            Position3: {0, -0.26, 0}
+            Box: {0.18, 0.56, 0.18}
+            Rgba: suit
+            PbrMaterial: {metallic: 0, roughness: 0.8}
+
+            shoulder_pad {
+                Position3: {0, 0.19, 0}
+                Box: {0.26, 0.16, 0.22}
+                Rgba: suitShade
+                PbrMaterial: {metallic: 0.1, roughness: 0.75}
+            }
+
+            elbow_pad {
+                Position3: {0, -0.16, 0.02}
+                Box: {0.2, 0.14, 0.2}
+                Rgba: seam
+                PbrMaterial: {metallic: 0.15, roughness: 0.7}
+            }
+        }
+
+        glove {
+            Position3: {0, -0.58, 0.02}
+            Box: {0.2, 0.2, 0.2}
+            Rgba: trim
+            PbrMaterial: {metallic: 0.3, roughness: 0.45}
+
+            cuff {
+                Position3: {0, 0.09, 0.01}
+                Box: {0.22, 0.07, 0.22}
+                Rgba: rubber
+                PbrMaterial: {metallic: 0.2, roughness: 0.85}
+            }
+        }
+    }
+
+    helmet {
+        Position3: {0, 1.74, 0}
+        Box: {0.52, 0.5, 0.5}
+        Rgba: suit
+        PbrMaterial: {metallic: 0.05, roughness: 0.55}
+
+        visor {
+            Position3: {0, 0.02, 0.25}
+            Box: {0.4, 0.26, 0.06}
+            Rgba: visorColor
+            Emissive: {strength: 1.6, color: visorColor}
+            PbrMaterial: {metallic: 0.2, roughness: 0.1}
+        }
+
+
+        chin_guard {
+            Position3: {0, -0.17, 0.2}
+            Box: {0.34, 0.12, 0.14}
+            Rgba: suitShade
+            PbrMaterial: {metallic: 0.1, roughness: 0.7}
+        }
+
+        antenna {
+            Position3: {0.22, 0.34, -0.12}
+            Box: {0.05, 0.28, 0.05}
+            Rgba: rubber
+            PbrMaterial: {metallic: 0.3, roughness: 0.75}
+        }
+
+        antenna_base {
+            Position3: {0.22, 0.24, -0.12}
+            Box: {0.09, 0.08, 0.09}
+            Rgba: hardware
+            PbrMaterial: {metallic: 0.75, roughness: 0.35}
+        }
+
+        antenna_tip {
+            Position3: {0.22, 0.5, -0.12}
+            Box: {0.09, 0.09, 0.09}
+            Rgba: trim
+            Emissive: {strength: 1.2, color: trim}
+        }
+    }
+}

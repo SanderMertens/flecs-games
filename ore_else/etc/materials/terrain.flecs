@@ -1,0 +1,34 @@
+// Terrain dirt tiles and the ground / basin materials
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab dirt_tex {
+    Texture: {"etc/assets/terrain_dirt.svg", 256, 256}
+}
+
+prefab dirt_rough_tex {
+    Texture: {"etc/assets/terrain_dirt_rough.svg", 256, 256}
+}
+
+prefab dirt_norm {
+    Texture: {"etc/assets/terrain_dirt_normal.svg", 256, 256}
+}
+
+prefab GroundSurface {
+    Rgba: {187, 137, 96, 255}
+    PbrMaterial: {metallic: 0, roughness: 1}
+    PbrTextures: {albedo: dirt_tex, roughness: dirt_rough_tex, normal: dirt_norm}
+    TextureTransform: {scale_x: 43.3333, scale_y: 43.3333}
+}
+
+prefab BasinSurface {
+    Rgba: {212, 160, 114, 255}
+    PbrMaterial: {metallic: 0, roughness: 1}
+    PbrTextures: {albedo: dirt_tex, roughness: dirt_rough_tex, normal: dirt_norm}
+    TextureTransform: {scale_x: 17.3333, scale_y: 17.3333}
+}

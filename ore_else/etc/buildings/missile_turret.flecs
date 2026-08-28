@@ -1,0 +1,175 @@
+// Missile turret
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const steel: Rgba = {172, 180, 194, 255}
+const steelShade: Rgba = {112, 120, 136, 255}
+const steelDeep: Rgba = {56, 62, 76, 255}
+const hazard: Rgba = {240, 176, 58, 255}
+const missileRed: Rgba = {226, 84, 68, 255}
+const lampLive: Rgba = {92, 236, 222, 255}
+const lampDead: Rgba = {248, 84, 72, 255}
+
+@detail "Firepower to deal with the most sturdy targets."
+@tree Parent
+@name "Missile turret"
+prefab MissileTurret {
+    Icon: {texture: icons.missile_turret}
+    Recipe: {inputs: [IronPlate: 40, Wire: 20, Electronics: 20], craft_time: 5}
+    Health: {value: 180, max: 180}
+    PowerConsumer: {watts: 20}
+    PowerCategory: {kind: Weapons}
+    Turret: {}
+    Damage: {value: 150}
+    Range: {value: 17}
+    AttackInterval: {value: 0.5}
+    Splash: {radius: 5}
+    Muzzle: {speed: 18, height: 1.8, forward: 0.44}
+    Ammo: {projectile: Missile}
+    LaunchFx: {burst: MissileLaunch}
+
+    base {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.15, 0}
+        Box: {1.86, 0.3, 1.86}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    apron {
+        SurfaceWear: {dust: 0.4, grime: 0.8}
+        Position3: {0, 0.32, 0}
+        Box: {1.56, 0.08, 1.56}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.45, roughness: 0.5}
+    }
+
+    lip : HazardTrim {
+        SurfaceWear: {dust: 0.3, grime: 0.4}
+        Position3: {0, 0.39, 0.61}
+        Box: {1.56, 0.06, 0.34}
+    }
+
+    pillar {
+        SurfaceWear: {dust: 0.6, grime: 0.65}
+        Position3: {0, 0.72, -0.18}
+        Box: {0.78, 0.72, 0.66}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.55, roughness: 0.45}
+
+        panel {
+            SurfaceWear: {dust: 0.5, grime: 0.6}
+            Position3: {0, 0.04, 0.35}
+            Box: {0.44, 0.28, 0.05}
+            Rgba: steelDeep
+        }
+
+        light {
+            Position3: {0, 0.26, 0.31}
+            Rotation3: {1.5708, 0, 0}
+            Light: {
+                color: lampLive, dead: lampDead, status: true,
+                w: 0.34, d: 0.09, h: 0.05, strength: 2.8
+            }
+        }
+    }
+
+    crate {
+        SurfaceWear: {dust: 0.65, grime: 0.55}
+        Position3: {-0.62, 0.52, 0.5}
+        Box: {0.44, 0.32, 0.5}
+        Rgba: steelShade
+    }
+
+    head {
+        Position3: {0, 1.16, -0.18}
+        Rotation3: {0, 0, 0}
+
+        rack {
+            SurfaceWear: {dust: 0.65, grime: 0.3}
+            Position3: {0, 0, 0}
+            Box: {0.96, 0.26, 0.82}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.6, roughness: 0.4}
+        }
+
+        pod_l {
+            SurfaceWear: {dust: 0.6, grime: 0.3}
+            Position3: {-0.3, 0.28, 0.1}
+            Rotation3: {-0.5, 0, 0}
+            Box: {0.34, 0.36, 1.04}
+            Rgba: steelShade
+            PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+            rail {
+                SurfaceWear: {dust: 0.55, grime: 0.3}
+                Position3: {0, -0.22, 0}
+                Box: {0.2, 0.12, 0.9}
+                Rgba: steelDeep
+            }
+
+            tip {
+                Position3: {0, 0.09, 0.62}
+                Cone: {segments: 10, smooth: true, length: 0.3}
+                Rotation3: {1.5708, 0, 0}
+                Scale3: {0.15, 1, 0.15}
+                Rgba: missileRed
+            }
+
+            tip_low {
+                Position3: {0, -0.09, 0.62}
+                Cone: {segments: 10, smooth: true, length: 0.3}
+                Rotation3: {1.5708, 0, 0}
+                Scale3: {0.15, 1, 0.15}
+                Rgba: missileRed
+            }
+        }
+
+        pod_r {
+            SurfaceWear: {dust: 0.6, grime: 0.3}
+            Position3: {0.3, 0.28, 0.1}
+            Rotation3: {-0.5, 0, 0}
+            Box: {0.34, 0.36, 1.04}
+            Rgba: steelShade
+            PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+            rail {
+                SurfaceWear: {dust: 0.55, grime: 0.3}
+                Position3: {0, -0.22, 0}
+                Box: {0.2, 0.12, 0.9}
+                Rgba: steelDeep
+            }
+
+            tip {
+                Position3: {0, 0.09, 0.62}
+                Cone: {segments: 10, smooth: true, length: 0.3}
+                Rotation3: {1.5708, 0, 0}
+                Scale3: {0.15, 1, 0.15}
+                Rgba: missileRed
+            }
+
+            tip_low {
+                Position3: {0, -0.09, 0.62}
+                Cone: {segments: 10, smooth: true, length: 0.3}
+                Rotation3: {1.5708, 0, 0}
+                Scale3: {0.15, 1, 0.15}
+                Rgba: missileRed
+            }
+        }
+
+        fx {
+            Position3: {0, 0.64, 0.62}
+            MuzzleFlash: {
+                color: {255, 172, 104, 255},
+                peak: 6,
+                fade: 20,
+                radius: 7
+            }
+        }
+    }
+}

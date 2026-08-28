@@ -1,0 +1,104 @@
+// Spitter
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const acid: Rgba = {110, 200, 96, 255}
+const acidDark: Rgba = {56, 116, 58, 255}
+const acidLimb: Rgba = {40, 78, 44, 255}
+const acidEye: Rgba = {188, 255, 120, 255}
+
+@tree Parent
+prefab Spitter {
+    Critter: {step: 1.7, bob: 0.1}
+    Radius: {value: 0.62}
+    Health: {value: 60}
+    Speed: {value: 3.2}
+    Damage: {value: 12}
+    Range: {value: 7}
+    AttackInterval: {value: 2}
+    Muzzle: {speed: 13, height: 1.05}
+    Ammo: {projectile: Glob}
+    DeathBurst: {burst: CombustBurst}
+
+    sac {
+        Position3: {0, 0.88, -0.5}
+        Sphere: {segments: 12, smooth: true, radius: 0.42}
+        Rgba: acid
+        Emissive: {strength: 0.9, color: acid}
+    }
+
+    thorax {
+        Position3: {0, 0.72, 0.06}
+        Box: {0.6, 0.5, 0.56}
+        Rgba: acidDark
+
+        vent {
+            Position3: {0, 0.24, -0.1}
+            Box: {0.36, 0.12, 0.34}
+            Rgba: acid
+            Emissive: {strength: 1.2, color: acid}
+        }
+    }
+
+    head {
+        Position3: {0, 0.74, 0.46}
+        Box: {0.4, 0.34, 0.34}
+        Rgba: acidDark
+
+        eye_left {
+            Position3: {-0.13, 0.08, 0.17}
+            Box: {0.1, 0.1, 0.05}
+            Rgba: acidEye
+            Emissive: {strength: 2.6, color: acidEye}
+        }
+
+        eye_right {
+            Position3: {0.13, 0.08, 0.17}
+            Box: {0.1, 0.1, 0.05}
+            Rgba: acidEye
+            Emissive: {strength: 2.6, color: acidEye}
+        }
+    }
+
+    nozzle {
+        Position3: {0, 1.02, 0.42}
+        Rotation3: {-0.9, 0, 0}
+        Cone: {segments: 10, smooth: true, length: 0.5}
+        Scale3: {0.16, 1, 0.16}
+        Rgba: acid
+        Emissive: {strength: 1.6, color: acid}
+    }
+
+    for i in 0..4 {
+        const side: f32 = 1 - 2 * (i % 2)
+        const row: f32 = math.floor(i / 2)
+
+        "leg_{i}" {
+            Position3: {side * 0.29, 0.58, 0.2 - row * 0.36}
+            Limb: {phase: i * 1.57, swing: 0.46}
+
+            thigh {
+                Position3: {side * 0.25, 0.05, 0}
+                Rotation3: {0, 0, side * -0.55}
+                Box: {0.5, 0.09, 0.09}
+                Rgba: acidLimb
+            }
+
+            shin {
+                Position3: {side * 0.5, -0.25, 0}
+                Box: {0.09, 0.5, 0.09}
+                Rgba: acidLimb
+            }
+
+            foot {
+                Position3: {side * 0.5, -0.5, 0.04}
+                Box: {0.14, 0.08, 0.22}
+                Rgba: acidLimb
+            }
+        }
+    }
+}

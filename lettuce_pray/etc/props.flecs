@@ -1,0 +1,98 @@
+module lettuce_pray.assets
+using flecs.script
+using flecs.engine.*
+using lettuce_pray
+
+prefab Pea {
+    Sphere: {segments: 10, smooth: true, radius: 0.17}
+    Rgba: {140, 225, 95, 255}
+    Emissive: {strength: 1.4, color: {150, 235, 100, 255}}
+}
+
+prefab SunDrop {
+    LettuceSunDrop: {value: 25, land_y: 0.62, fall_speed: 1.8}
+    LettuceSunState: {life: 15}
+
+    core {
+        Sphere: {segments: 16, smooth: true, radius: 0.34}
+        Rgba: {255, 214, 70, 255}
+        Emissive: {strength: 3.2, color: {255, 208, 80, 255}}
+    }
+
+    for i in 0..8 {
+        const a = i * math.PI * 2 / 8
+
+        "ray_{i}" {
+            Position3: {math.cos(a) * 0.44, math.sin(a) * 0.44, 0}
+            Rotation3: {0, 0, a}
+            Box: {0.26, 0.1, 0.1}
+            Rgba: {255, 226, 110, 255}
+            Emissive: {strength: 3.2, color: {255, 220, 90, 255}}
+        }
+    }
+}
+
+prefab TileMarker {
+    Box: {1.92, 0.06, 1.92}
+    Rgba: {242, 248, 186, 255}
+    Emissive: {strength: 1.1, color: {236, 244, 150, 255}}
+}
+
+prefab Mower {
+    LettuceSpeed: {14}
+
+    deck {
+        Position3: {0, 0.32, 0}
+        Box: {1.05, 0.36, 0.85}
+        Rgba: {198, 62, 52, 255}
+    }
+
+    motor {
+        Position3: {-0.1, 0.62, 0}
+        Box: {0.5, 0.34, 0.5}
+        Rgba: {70, 74, 82, 255}
+    }
+
+    pipe {
+        Position3: {0.28, 0.72, 0}
+        Box: {0.12, 0.3, 0.12}
+        Rgba: {150, 154, 160, 255}
+    }
+
+    handle_left {
+        Position3: {-0.55, 0.62, 0.34}
+        Rotation3: {0, 0, 0.55}
+        Box: {0.08, 0.8, 0.08}
+        Rgba: {60, 64, 70, 255}
+    }
+
+    handle_right {
+        Position3: {-0.55, 0.62, -0.34}
+        Rotation3: {0, 0, 0.55}
+        Box: {0.08, 0.8, 0.08}
+        Rgba: {60, 64, 70, 255}
+    }
+
+    for i in 0..2 {
+        const z = match i == 0 {
+            true: 0.46
+            false: -0.46
+        }
+
+        "wheel_front_{i}" {
+            Position3: {0.38, 0.2, z}
+            Rotation3: {math.PI / 2, 0, 0}
+            Cylinder: {segments: 12, smooth: true, length: 0.14}
+            Scale3: {0.42, 1, 0.42}
+            Rgba: {36, 38, 42, 255}
+        }
+
+        "wheel_back_{i}" {
+            Position3: {-0.38, 0.2, z}
+            Rotation3: {math.PI / 2, 0, 0}
+            Cylinder: {segments: 12, smooth: true, length: 0.14}
+            Scale3: {0.42, 1, 0.42}
+            Rgba: {36, 38, 42, 255}
+        }
+    }
+}

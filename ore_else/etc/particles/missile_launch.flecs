@@ -1,0 +1,89 @@
+// Rocket leaving the rail: a composite of layered bursts, each into its own
+// pool. OreTurrets fires every child of this prefab at the muzzle, with the
+// velocities turned by the turret's aim, so local -z is "out the back of the
+// pod".
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab MissileLaunch {
+    flash {
+        ParticleBurst: {
+            pool: fire,
+            count: 4,
+            size: 0.58,
+            size_variance: 0.18,
+            grow: 1.2,
+            max_age: 0.17,
+            max_age_variance: 0.05,
+            color: {255, 246, 224, 255},
+            color_ramp: {
+                mid: {255, 208, 132, 255},
+                end: {255, 138, 62, 190},
+                mid_pos: 0.45
+            },
+            velocity: {0, 0.3, -1.2},
+            velocity_variance: {0.4, 0.3, 0.5},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.16,
+            rotation_variance: 3.14,
+            spin_variance: 2,
+            brightness_variance: 0.2
+        }
+    }
+
+    exhaust {
+        ParticleBurst: {
+            pool: fire,
+            count: 10,
+            size: 0.42,
+            size_variance: 0.14,
+            grow: 0.9,
+            max_age: 0.32,
+            max_age_variance: 0.12,
+            color: {255, 226, 176, 255},
+            color_ramp: {
+                mid: {255, 152, 66, 235},
+                end: {148, 70, 40, 120},
+                mid_pos: 0.38
+            },
+            velocity: {0, 0.2, -4.6},
+            velocity_variance: {0.7, 0.5, 1.3},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.18,
+            radial: 1.4,
+            rotation_variance: 3.14,
+            spin_variance: 3,
+            brightness_variance: 0.28
+        }
+    }
+
+    smoke {
+        ParticleBurst: {
+            pool: smoke,
+            count: 13,
+            size: 0.42,
+            size_variance: 0.13,
+            grow: 1.05,
+            max_age: 0.95,
+            max_age_variance: 0.3,
+            color: {150, 138, 128, 220},
+            color_ramp: {
+                mid: {110, 102, 96, 175},
+                end: {80, 76, 72, 0},
+                mid_pos: 0.35
+            },
+            velocity: {0, 0.35, -3},
+            velocity_variance: {0.6, 0.4, 1.1},
+            offset: {0, 0, -0.12},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.2,
+            radial: 1.2,
+            rotation_variance: 3.14,
+            spin_variance: 1.4,
+            brightness_variance: 0.18
+        }
+    }
+}

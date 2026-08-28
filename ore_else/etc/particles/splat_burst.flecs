@@ -1,0 +1,33 @@
+// Acid splat burst
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab SplatBurst {
+    ParticleBurst: {
+        pool: fx,
+        count: 22,
+        size: 0.12,
+        size_variance: 0.055,
+        stretch: 1.5,
+        max_age: 0.6,
+        max_age_variance: 0.22,
+        color: {138, 226, 118, 255},
+        color_ramp: {
+            mid: {104, 190, 88, 240},
+            end: {62, 122, 54, 130},
+            mid_pos: 0.45
+        },
+        velocity: {0, 2.6, 0},
+        velocity_variance: {1.1, 1.1, 1.1},
+        offset: {0, 0.1, 0},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.18,
+        radial: 3.2,
+        rotation_variance: 3.14,
+        spin_variance: 4,
+        brightness_variance: 0.25
+    }
+}

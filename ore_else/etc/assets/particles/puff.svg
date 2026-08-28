@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="soft" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="0.95"/>
+      <stop offset="55%"  stop-color="#fff" stop-opacity="0.62"/>
+      <stop offset="82%"  stop-color="#fff" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lobe" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="0.70"/>
+      <stop offset="52%"  stop-color="#fff" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wisp" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="122" cy="132" r="86" fill="url(#soft)"/>
+  <circle cx="80"  cy="94"  r="52" fill="url(#lobe)"/>
+  <circle cx="176" cy="104" r="60" fill="url(#lobe)"/>
+  <circle cx="188" cy="164" r="44" fill="url(#lobe)"/>
+  <circle cx="96"  cy="182" r="56" fill="url(#lobe)"/>
+  <circle cx="142" cy="196" r="38" fill="url(#lobe)"/>
+  <circle cx="52"  cy="140" r="40" fill="url(#wisp)"/>
+  <circle cx="212" cy="128" r="34" fill="url(#wisp)"/>
+  <circle cx="134" cy="46"  r="34" fill="url(#wisp)"/>
+</svg>

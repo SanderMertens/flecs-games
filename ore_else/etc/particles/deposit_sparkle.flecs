@@ -1,0 +1,33 @@
+// Ambient glint rising off a luminite deposit
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template DepositSparkle {
+    prop color: Rgba = {186, 240, 255, 235}
+    prop rate: f32 = 2.4
+
+    ParticleEmitter: {
+        pool: ember,
+        rate: rate,
+        size: 0.055,
+        size_variance: 0.025,
+        max_age: 1.3,
+        max_age_variance: 0.5,
+        color: color,
+        color_ramp: {
+            mid: {130, 210, 255, 200},
+            end: {70, 150, 220, 0},
+            mid_pos: 0.5
+        },
+        velocity: {0, 0.55, 0},
+        velocity_variance: {0.12, 0.2, 0.12},
+        offset: {0, 0.18, 0},
+        shape: ParticleShapeDisc,
+        shape_radius: 0.5,
+        brightness_variance: 0.5,
+        enabled: true
+    }
+}

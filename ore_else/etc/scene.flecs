@@ -1,0 +1,142 @@
+// Scene entities
+include scenery
+include deposits
+include boundary
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+world {
+    ground : GroundSurface {
+        Position3: {0, -0.5, 0}
+        Box: {260, 1, 260}
+    }
+
+    basin : BasinSurface {
+        Position3: {0, -0.45, 0}
+        Box: {104, 0.92, 104}
+    }
+}
+
+astronaut {
+    Astronaut: {}
+    Player: {dust: FootDust}
+    Crafter: {}
+    Health: {value: cfg.playerHp, max: cfg.playerHp}
+    Damage: {value: cfg.pistolDamage}
+    Range: {value: cfg.pistolRange}
+    AttackInterval: {value: cfg.pistolInterval}
+    Muzzle: {speed: cfg.pistolSpeed, height: cfg.pistolY}
+    Ammo: {projectile: Tracer}
+    Position3: {0, 0, 0}
+    Rotation3: {0, math.PI, 0}
+    Scale3: {1, 1, 1}
+}
+
+buildings { }
+connectors { }
+critters { }
+projectiles { }
+rockets { }
+
+$ {
+    Game: {
+        camera: camera,
+        player: astronaut,
+        deposits: deposits,
+        buildings: buildings,
+        connectors: connectors,
+        critters: critters,
+        projectiles: projectiles,
+        fx_pool: fx,
+        glow_pool: glow,
+        mine_burst: MineBurst,
+        poof_burst: PoofBurst,
+        marker_prefab: TileMarker,
+        marker_bad: TileMarkerBad,
+        drill: Drill
+    }
+
+    PowerState: {
+        prod: 0,
+        demand: 0,
+        ratio: 1
+    }
+
+    UiState: {
+        hover_item: 0,
+        hover_recipe: 0,
+        hover_name: "",
+        hover_note: "",
+        hover_detail: "",
+        toast_text: "",
+        toast: 0,
+        toast_warn: false,
+        open: false,
+        hovering: false,
+        tab: 0
+    }
+
+    Clock: {time_elapsed: 0}
+
+    LuminiteProgress: {luminite_held: 0, luminite_shipped: 0}
+
+    Arsenal: {
+        mite: Mite,
+        skitter: Skitter,
+        brute: Brute,
+        behemoth: Behemoth,
+        spitter: Spitter,
+        embers: CorpseEmbers,
+        splat_burst: SplatBurst,
+        boom_burst: BoomBurst,
+        spark_burst: SparkBurst,
+        impact_dust: ImpactDust,
+        hit_puff: HitPuff
+    }
+
+    WaveState: {
+        wave: 0,
+        alive: 0,
+        spawn_left: 0,
+        spawn_small: 0,
+        spawn_medium: 0,
+        spawn_big: 0,
+        spawn_huge: 0,
+        kills: 0,
+        budget: 0,
+        timer: cfg.firstWaveAt,
+        spawn_timer: 0
+    }
+
+    RocketState: {
+        kit: {
+            root: rockets,
+            engine_item: RocketEngine,
+            fuel_item: RocketFuelStorage,
+            cargo_item: RocketCargoBay,
+            life_item: RocketLifeSupport,
+            luminite: Luminite,
+            model: Rocket,
+            flame: FlameBurst,
+            smoke: SmokeBurst
+        },
+        pad: 0,
+        rocket: 0,
+        engines: 0,
+        fuel: 0,
+        cargo_bays: 0,
+        life_support: 0,
+        luminite: 0,
+        phase: Idle,
+        status_text: "",
+        note: ""
+    }
+
+    PowerAlloc: {level: [2, 2, 2]}
+
+    (GameState, Playing)
+}

@@ -1,0 +1,25 @@
+module ship_happens
+using flecs.engine.*
+using ship_happens.actions
+using ship_happens
+
+input {
+    Behaviors: [
+        script {
+            await pressed(Place)
+            await placeAtCursor()
+        },
+        script {
+            await pressed(Bulldoze)
+            await bulldozeAtCursor()
+        },
+        script {
+            await pressed(Cancel)
+            await clearSelection()
+        },
+        script {
+            await pressed(Restart)
+            await restart()
+        }
+    ]
+}

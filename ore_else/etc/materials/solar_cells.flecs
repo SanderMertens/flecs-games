@@ -1,0 +1,20 @@
+// Solar cell texture and panel material
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab solar_tex {
+    Texture: {"etc/assets/solar_cells.svg", 256, 256}
+}
+
+prefab SolarCells {
+    Box: {0.68, 0.03, 0.6}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.3, roughness: 0.18}
+    PbrTextures: {albedo: solar_tex}
+    TextureTransform: {scale_x: 1.5, scale_y: 1.5}
+}

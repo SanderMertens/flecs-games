@@ -1,0 +1,90 @@
+// Inventory stock slot
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const FontCount = 15
+const SlotSize = 72
+const SlotPitch = 80
+const SlotRadius = 3
+const FaceColor: Rgba = {46, 50, 58, 255}
+const FaceHover: Rgba = {66, 72, 82, 255}
+const FaceActive: Rgba = {78, 62, 26, 255}
+const SocketColor: Rgba = {15, 16, 20, 255}
+const EdgeColor: Rgba = {88, 94, 106, 255}
+const EdgeEmpty: Rgba = {44, 48, 56, 255}
+const EdgeActive: Rgba = {240, 176, 58, 255}
+const CountLabel: Rgba = {224, 229, 237, 255}
+const EdgeIdle: Border = {radius: SlotRadius, width: 1, color: EdgeEmpty}
+const EdgeFilled: Border = {radius: SlotRadius, width: 1, color: EdgeColor}
+const EdgeSelected: Border = {radius: SlotRadius, width: 2, color: EdgeActive}
+
+template StockSlot {
+    prop col: f32 = 0
+    prop row: f32 = 0
+    prop item: entity = 0
+    prop icon: entity = 0
+    prop count: i32 = 0
+    prop place = false
+    prop filled = false
+    prop active = false
+
+    const w = SlotSize
+    const h = SlotSize
+
+    Slot: {item: item, place: place}
+    WidgetState
+
+    const slotFace: Rgba = match $this[WidgetState].hover {
+        true: FaceHover
+        false: FaceColor
+    }
+    const slotFaceActive: Rgba = match active {
+        true: FaceActive
+        false: slotFace
+    }
+    const slotEdge: Border = match active {
+        true: EdgeSelected
+        false: EdgeFilled
+    }
+
+    Position: {col * SlotPitch, row * SlotPitch}
+    Rect: {w, h}
+    Border: match filled {
+        true: slotEdge
+        false: EdgeIdle
+    }
+    Rgba: match filled {
+        true: slotFaceActive
+        false: SocketColor
+    }
+
+    if !filled {
+        socket {
+            Position: {20, 20}
+            Rect: {32, 32}
+            Border: {radius: 2, width: 1, color: EdgeEmpty}
+            Rgba: {0, 0, 0, 0}
+        }
+    }
+
+    if icon {
+        icon_img {
+            Position: {14, 8}
+            Rect: {44, 44}
+            Image: {texture: icon, fit: Contain}
+        }
+    }
+
+    if filled {
+        count_label {
+            Position: {0, h - 23}
+            Layout: {width: w - 9}
+            Text: {text: "{count}", size: FontCount, align: Right}
+            Rgba: CountLabel
+        }
+    }
+}

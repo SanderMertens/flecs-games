@@ -1,0 +1,6 @@
+// Projectile and beam assets
+
+include projectiles/tracer
+include projectiles/missile
+include projectiles/glob
+include projectiles/laser_beam

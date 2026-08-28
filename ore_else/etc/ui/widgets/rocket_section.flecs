@@ -1,0 +1,185 @@
+// One section of the rocket schematic: a hull segment with fitted-part slots
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const FontLabel = 13
+const FontCount = 15
+const SecRadius = 3
+const StripPad = 8
+const SlotH = 10
+const SlotMax = 22
+const SlotGap = 3
+
+const HullFace: Rgba = {34, 37, 44, 255}
+const HullHover: Rgba = {46, 50, 58, 255}
+const HullDim: Rgba = {26, 28, 34, 255}
+const HullEdge: Rgba = {66, 72, 82, 255}
+const HullEdgeOk: Rgba = {96, 168, 116, 255}
+const HullEdgeShort: Rgba = {150, 66, 60, 255}
+const SlotWell: Rgba = {13, 14, 17, 255}
+const SlotFill: Rgba = {240, 176, 58, 255}
+const SlotFillEdge: Rgba = {252, 214, 140, 255}
+const SlotEmptyEdge: Rgba = {74, 80, 92, 255}
+const SlotShortEdge: Rgba = {188, 78, 70, 255}
+const LumFill: Rgba = {96, 240, 218, 255}
+const SecLabel: Rgba = {186, 194, 206, 255}
+const SecLabelDim: Rgba = {112, 118, 130, 255}
+const SecCount: Rgba = {226, 231, 238, 255}
+const SecCountOk: Rgba = {124, 226, 148, 255}
+const SecCountShort: Rgba = {228, 96, 84, 255}
+const SecBorder: Border = {radius: SecRadius, width: 1, color: HullEdge}
+const SecBorderOk: Border = {radius: SecRadius, width: 1, color: HullEdgeOk}
+const SecBorderShort: Border = {radius: SecRadius, width: 1, color: HullEdgeShort}
+
+template RocketSection {
+    prop label = ""
+    prop icon: entity = 0
+    prop x: f32 = 12
+    prop y: f32 = 0
+    prop w: f32 = 156
+    prop h: f32 = 46
+    prop bar = false
+    prop load = false
+    prop hotKey = ""
+
+    prop count: i32 = 0
+    prop need: i32 = 0
+    prop exact = false
+    prop blocked = false
+    prop afford = false
+    prop fill: f32 = 0
+
+    const ok = match exact {
+        true: need > 0 && count == need
+        false: count > 0
+    }
+
+    const stripW = w - StripPad * 2
+    const stripY = h - 16
+
+    const secBorderOk: Border = match ok {
+        true: SecBorderOk
+        false: SecBorder
+    }
+    const secNameOk: Rgba = match blocked {
+        true: SecLabel
+        false: SecLabelDim
+    }
+    const secCountOk: Rgba = match ok {
+        true: SecCountOk
+        false: SecCount
+    }
+
+    Position: {x, y}
+    Rect: {w, h}
+    Border: match blocked {
+        true: SecBorderShort
+        false: secBorderOk
+    }
+
+    if load {
+        RocketPacket: {load: true}
+        Hotkey: {key: hotKey}
+        WidgetState
+        Layout: {width: w, height: h}
+
+        Rgba: match afford {
+            true: match $this[WidgetState].hover {
+                true: HullHover
+                false: HullFace
+            }
+            false: HullDim
+        }
+    } else {
+        Rgba: HullFace
+    }
+
+
+    if icon {
+        icon_img {
+            Position: {StripPad, 5}
+            Rect: {22, 22}
+            Image: {texture: icon, fit: Contain}
+        }
+    }
+
+    name_label {
+        Position: {36, 7}
+        Text: {text: label, size: FontLabel}
+        Rgba: match ok {
+            true: SecLabel
+            false: secNameOk
+        }
+    }
+
+    count_label {
+        Position: {0, 5}
+        Layout: {width: w - StripPad}
+        Text: {text: "{count} / {need}", size: FontCount, align: Right}
+        Rgba: match blocked {
+            true: SecCountShort
+            false: secCountOk
+        }
+    }
+
+    if bar {
+        well {
+            Position: {StripPad, stripY}
+            Rect: {stripW, SlotH}
+            Border: {radius: 2, width: 1, color: SlotEmptyEdge}
+            Rgba: SlotWell
+        }
+
+        if fill > 0 {
+            bar_fill {
+                Position: {StripPad, stripY}
+                Rect: {stripW * fill, SlotH}
+                Border: {radius: 2}
+                Rgba: LumFill
+            }
+        }
+    }
+
+    if !bar {
+        const slots: i32 = match need > count {
+            true: need
+            false: count
+        }
+
+        if slots > 0 {
+            const avail = (stripW - (slots - 1) * SlotGap) / slots
+            const slotW = match avail > SlotMax {
+                true: SlotMax
+                false: avail
+            }
+            const pitch = slotW + SlotGap
+
+            for i in 0..slots {
+                const filled = i < count
+                const slotFace: Rgba = match filled {
+                    true: SlotFill
+                    false: SlotWell
+                }
+                const emptyEdge: Rgba = match blocked {
+                    true: SlotShortEdge
+                    false: SlotEmptyEdge
+                }
+                const slotEdge: Rgba = match filled {
+                    true: SlotFillEdge
+                    false: emptyEdge
+                }
+
+                "slot_{i}" {
+                    Position: {StripPad + i * pitch, stripY}
+                    Rect: {slotW, SlotH}
+                    Border: {radius: 2, width: 1, color: slotEdge}
+                    Rgba: slotFace
+                }
+            }
+        }
+    }
+}

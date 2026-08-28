@@ -1,0 +1,219 @@
+// Drone pad: a 2x2 hangar for four repair drones
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const padSteel: Rgba = {172, 180, 194, 255}
+const padShade: Rgba = {112, 120, 136, 255}
+const padDeep: Rgba = {56, 62, 76, 255}
+const padHazard: Rgba = {240, 176, 58, 255}
+const padAccent: Rgba = {92, 236, 222, 255}
+const padLampDead: Rgba = {248, 84, 72, 255}
+
+@detail "Drones repair buildings, repairs cost iron."
+@tree Parent
+@name "Drone pad"
+prefab DronePad {
+    Icon: {texture: icons.drone_pad}
+    Recipe: {inputs: [IronPlate: 24, Wire: 18, Electronics: 12], craft_time: 5}
+    Health: {value: 140, max: 140}
+    PowerConsumer: {watts: 20}
+    Footprint: {w: 2, h: 2}
+    DroneBay: {count: 4, drone: RepairDrone, radius: 1.4, dock: 0.62, scan: 0.5}
+
+    deck {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.12, 0}
+        Box: {3.9, 0.24, 3.9}
+        Rgba: padDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    apron {
+        SurfaceWear: {dust: 0.4, grime: 0.8}
+        Position3: {0, 0.28, 0}
+        Box: {3.5, 0.08, 3.5}
+        Rgba: padShade
+        PbrMaterial: {metallic: 0.45, roughness: 0.5}
+    }
+
+    lip_front : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {0, 0.34, 1.75}
+        Box: {3.9, 0.08, 0.34}
+    }
+
+    lip_back : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {0, 0.34, -1.75}
+        Box: {3.9, 0.08, 0.34}
+    }
+
+    lip_left : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {-1.75, 0.34, 0}
+        Rotation3: {0, 1.5708, 0}
+        Box: {3.22, 0.08, 0.34}
+    }
+
+    lip_right : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {1.75, 0.34, 0}
+        Rotation3: {0, 1.5708, 0}
+        Box: {3.22, 0.08, 0.34}
+    }
+
+    bay_a {
+        Position3: {0.99, 0.35, 0.99}
+
+        pad : BayPad {
+            SurfaceWear: {dust: 0.3, grime: 0.35}
+            Position3: {0, -0.01, 0}
+            Rotation3: {-1.5708, 0, 0}
+        }
+
+        lamp {
+            Position3: {0.62, -0.01, 0.62}
+            Light: {
+                color: padAccent, dead: padLampDead, status: true,
+                w: 0.14, d: 0.14, h: 0.09, strength: 2.8
+            }
+        }
+    }
+
+    bay_b {
+        Position3: {0.99, 0.35, -0.99}
+
+        pad : BayPad {
+            SurfaceWear: {dust: 0.3, grime: 0.35}
+            Position3: {0, -0.01, 0}
+            Rotation3: {-1.5708, 0, 0}
+        }
+
+        lamp {
+            Position3: {0.62, -0.01, -0.62}
+            Light: {
+                color: padAccent, dead: padLampDead, status: true,
+                w: 0.14, d: 0.14, h: 0.09, strength: 2.8
+            }
+        }
+    }
+
+    bay_c {
+        Position3: {-0.99, 0.35, -0.99}
+
+        pad : BayPad {
+            SurfaceWear: {dust: 0.3, grime: 0.35}
+            Position3: {0, -0.01, 0}
+            Rotation3: {-1.5708, 0, 0}
+        }
+
+        lamp {
+            Position3: {-0.62, -0.01, -0.62}
+            Light: {
+                color: padAccent, dead: padLampDead, status: true,
+                w: 0.14, d: 0.14, h: 0.09, strength: 2.8
+            }
+        }
+    }
+
+    bay_d {
+        Position3: {-0.99, 0.35, 0.99}
+
+        pad : BayPad {
+            SurfaceWear: {dust: 0.3, grime: 0.35}
+            Position3: {0, -0.01, 0}
+            Rotation3: {-1.5708, 0, 0}
+        }
+
+        lamp {
+            Position3: {-0.62, -0.01, 0.62}
+            Light: {
+                color: padAccent, dead: padLampDead, status: true,
+                w: 0.14, d: 0.14, h: 0.09, strength: 2.8
+            }
+        }
+    }
+
+    column {
+        SurfaceWear: {dust: 0.6, grime: 0.6}
+        Position3: {0, 0.76, 0}
+        Box: {0.52, 0.88, 0.52}
+        Rgba: padShade
+        PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+        cabinet {
+            SurfaceWear: {dust: 0.55, grime: 0.5}
+            Position3: {0, -0.16, 0.3}
+            Box: {0.36, 0.42, 0.12}
+            Rgba: padDeep
+
+            readout {
+                Position3: {0, 0.06, 0.06}
+                Rotation3: {1.5708, 0, 0}
+                Light: {
+                    color: padAccent, w: 0.22, d: 0.12, h: 0.03,
+                    strength: 1.8
+                }
+            }
+        }
+
+        head {
+            SurfaceWear: {dust: 0.75, grime: 0.3}
+            Position3: {0, 0.56, 0}
+            Box: {0.92, 0.22, 0.92}
+            Rgba: padSteel
+            PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+            stripe : HazardTag {
+                SurfaceWear: {dust: 0.3, grime: 0.35}
+                Position3: {0, 0.14, 0}
+                Box: {0.92, 0.06, 0.3}
+            }
+
+            beacon_l {
+                Position3: {-0.36, 0.11, 0.36}
+                Light: {
+                    color: padAccent, dead: padLampDead, status: true,
+                    w: 0.14, d: 0.14, h: 0.09, strength: 2.8
+                }
+            }
+
+            beacon_r {
+                Position3: {0.36, 0.11, 0.36}
+                Light: {
+                    color: padAccent, dead: padLampDead, status: true,
+                    w: 0.14, d: 0.14, h: 0.09, strength: 2.8
+                }
+            }
+        }
+
+        mast {
+            SurfaceWear: {dust: 0.7, grime: 0.3}
+            Position3: {0, 0.92, -0.18}
+            Box: {0.08, 0.5, 0.08}
+            Rgba: padShade
+
+            tip {
+                Position3: {0, 0.25, 0}
+                Light: {
+                    color: padHazard, w: 0.12, d: 0.12, h: 0.1,
+                    strength: 1.6
+                }
+            }
+        }
+
+        dish {
+            SurfaceWear: {dust: 0.65, grime: 0.3}
+            Position3: {0, 0.78, 0.24}
+            Rotation3: {-0.5, 0, 0}
+            Cylinder: {segments: 14, smooth: true, length: 0.05}
+            Scale3: {0.3, 1, 0.3}
+            Rgba: padSteel
+        }
+    }
+}

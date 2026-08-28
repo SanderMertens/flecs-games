@@ -1,0 +1,30 @@
+// Spark burst
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab SparkBurst {
+    ParticleBurst: {
+        pool: glow,
+        count: 10,
+        size: 0.055,
+        size_variance: 0.025,
+        stretch: 2.2,
+        max_age: 0.28,
+        max_age_variance: 0.14,
+        color: {255, 250, 232, 255},
+        color_ramp: {
+            mid: {255, 236, 176, 255},
+            end: {255, 116, 26, 210},
+            mid_pos: 0.3
+        },
+        velocity: {0, 1.4, 0},
+        velocity_variance: {1.4, 1.0, 1.4},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.1,
+        radial: 3.2,
+        brightness_variance: 0.35
+    }
+}

@@ -1,0 +1,22 @@
+// Furniture toolbar
+
+using flecs.engine.*
+using ship_happens
+using ship_happens.assets
+
+toolbar {
+    Anchor: {h: Center, v: Bottom, y: -14}
+    Layout: {direction: Row, padding: 6, spacing: 8}
+    Rect: {}
+    Border: {radius: 10}
+    Rgba: {22, 26, 34, 200}
+
+    Packet desk(item: Desk, icon: icons.desk, name: "Desk", key: "1", hotKey: "1")
+    Packet coffee(item: CoffeeMachine, icon: icons.coffee, name: "Coffee", key: "2", hotKey: "2")
+    Packet snacks(item: SnackMachine, icon: icons.snacks, name: "Snacks", key: "3", hotKey: "3")
+    Packet arcade(item: Arcade, icon: icons.arcade, name: "Arcade", key: "4", hotKey: "4")
+    Packet plant(item: Plant, icon: icons.plant, name: "Plant", key: "5", hotKey: "5")
+    Packet bulldoze(icon: icons.bulldoze, name: "Bulldoze", key: "X", hotKey: "x")
+    CrunchButton crunch()
+    AddFeatureButton add_feature()
+}

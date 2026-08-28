@@ -1,0 +1,60 @@
+// Hazard stripe texture and trim pieces
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab hazard_tex {
+    Texture: {"etc/assets/hazard_stripes.svg", 256, 256}
+}
+
+prefab HazardTag {
+    Box: {1.1, 0.06, 0.3}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.2, roughness: 0.68}
+    PbrTextures: {albedo: hazard_tex}
+    TextureTransform: {scale_x: 3, scale_y: 1}
+}
+
+prefab HazardTrim {
+    Box: {2.04, 0.06, 0.34}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.2, roughness: 0.68}
+    PbrTextures: {albedo: hazard_tex}
+    TextureTransform: {scale_x: 5, scale_y: 1}
+}
+
+prefab HazardTrimShort {
+    Box: {1.08, 0.06, 0.3}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.2, roughness: 0.68}
+    PbrTextures: {albedo: hazard_tex}
+    TextureTransform: {scale_x: 2.7, scale_y: 1}
+}
+
+prefab HazardBorderShort {
+    Box: {4.4, 0.06, 0.34}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.2, roughness: 0.68}
+    PbrTextures: {albedo: hazard_tex}
+    TextureTransform: {scale_x: 11, scale_y: 1}
+}
+
+prefab HazardBorderLong {
+    Box: {5.5, 0.06, 0.34}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.2, roughness: 0.68}
+    PbrTextures: {albedo: hazard_tex}
+    TextureTransform: {scale_x: 14, scale_y: 1}
+}
+
+prefab HazardBoundary {
+    Box: {8, 0.06, 0.9}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.2, roughness: 0.68}
+    PbrTextures: {albedo: hazard_tex}
+    TextureTransform: {scale_x: 22, scale_y: 2.5}
+}

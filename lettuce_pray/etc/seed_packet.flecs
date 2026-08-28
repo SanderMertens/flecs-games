@@ -1,0 +1,108 @@
+module lettuce_pray.assets
+using flecs.engine.*
+using lettuce_pray
+
+icons {
+    sprout {
+        Svg: {file: "etc/assets/icons/sprout.svg", width: 128, height: 128}
+    }
+
+    peapod {
+        Svg: {file: "etc/assets/icons/peapod.svg", width: 128, height: 128}
+    }
+
+    lettuce {
+        Svg: {file: "etc/assets/icons/lettuce.svg", width: 128, height: 128}
+    }
+
+    chili {
+        Svg: {file: "etc/assets/icons/chili.svg", width: 128, height: 128}
+    }
+
+    shovel {
+        Svg: {file: "etc/assets/icons/shovel.svg", width: 128, height: 128}
+    }
+}
+
+template SeedPacket {
+    prop plant: entity = 0
+    prop icon: entity = 0
+    prop name = ""
+    prop key = ""
+    prop hotKey = ""
+    prop affordable = true
+    prop selected = false
+
+    const w = 112
+    const h = 118
+
+    const bg: Rgba = match selected {
+        true: {250, 240, 170, 255}
+        false: {216, 202, 162, 255}
+    }
+
+    const edge: Rgba = match selected {
+        true: {120, 220, 110, 255}
+        false: {150, 132, 96, 255}
+    }
+
+    const ia = match affordable {
+        true: 255
+        false: 80
+    }
+    const ta = match affordable {
+        true: 255
+        false: 110
+    }
+
+    const label: Rgba = {48, 40, 28, ta}
+    const price: Rgba = {138, 100, 16, ta}
+
+    LettuceSeedPacket: {plant: plant}
+    Hotkey: {key: hotKey}
+    Layout: {width: w, height: h}
+
+    frame {
+        Rect: {w, h}
+        Border: {radius: 10, width: 3, color: {edge.rgb, 255}}
+        Rgba: {bg.rgb, 255}
+    }
+
+    paper {
+        Position: {7, 7}
+        Rect: {w - 14, 70}
+        Border: {radius: 6}
+        Rgba: {246, 240, 220, 255}
+    }
+
+    if icon {
+        icon_img {
+            Position: {26, 10}
+            Rect: {60, 60}
+            Image: {texture: icon, fit: Contain}
+            Rgba: {255, 255, 255, ia}
+        }
+    }
+
+    name_label {
+        Position: {0, 80}
+        Layout: {width: w}
+        Text: {text: name, size: 15, align: Center}
+        Rgba: label
+    }
+
+    if plant {
+        cost_label {
+            Position: {0, 96}
+            Layout: {width: w}
+            Text: {text: "{plant[LettuceCost].sun}", size: 19, align: Center}
+            Rgba: price
+        }
+    }
+
+    hotkey {
+        Position: {8, 4}
+        Text: {text: key, size: 13}
+        Rgba: {120, 108, 88, ta}
+    }
+}

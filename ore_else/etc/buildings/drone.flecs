@@ -1,0 +1,195 @@
+// Repair drone
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const droneSteel: Rgba = {172, 180, 194, 255}
+const droneShade: Rgba = {112, 120, 136, 255}
+const droneDeep: Rgba = {56, 62, 76, 255}
+const droneHazard: Rgba = {240, 176, 58, 255}
+const droneAccent: Rgba = {92, 236, 222, 255}
+const droneWeld: Rgba = {120, 216, 255, 255}
+
+prefab RotorBlade {
+    Box: {0.42, 0.015, 0.05}
+    Rgba: droneDeep
+    PbrMaterial: {metallic: 0.6, roughness: 0.4}
+}
+
+@tree Parent
+prefab RepairDrone {
+    Speed: {value: 7}
+    RepairRate: {value: 14, per_iron: 10}
+    Flight: {cruise: 2.8, arrive: 0.45, ease: 1.8, bob: 0.07, bob_rate: 3.2, turn: 7, rotor: 34, spin_up: 2.5}
+
+    hull {
+        SurfaceWear: {dust: 0.35, grime: 0.2}
+        Position3: {0, 0, 0}
+        Box: {0.3, 0.14, 0.42}
+        Rgba: droneSteel
+        PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+        stripe {
+            Position3: {0, 0.08, -0.06}
+            Box: {0.24, 0.03, 0.14}
+            Rgba: droneHazard
+        }
+
+        eye {
+            Position3: {0, 0.0, 0.2}
+            Rotation3: {1.5708, 0, 0}
+            Light: {
+                color: droneAccent, w: 0.14, d: 0.07, h: 0.04,
+                strength: 2.6
+            }
+        }
+
+        beacon {
+            Position3: {0, 0.09, 0.08}
+            Box: {0.06, 0.04, 0.06}
+            Rgba: droneWeld
+            Emissive: {strength: 2.2, color: droneWeld}
+        }
+    }
+
+    boom_a {
+        Position3: {0.17, 0.02, 0.17}
+        Rotation3: {0, 0.7854, 0}
+        Box: {0.06, 0.05, 0.3}
+        Rgba: droneShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+    }
+
+    boom_b {
+        Position3: {-0.17, 0.02, 0.17}
+        Rotation3: {0, -0.7854, 0}
+        Box: {0.06, 0.05, 0.3}
+        Rgba: droneShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+    }
+
+    boom_c {
+        Position3: {-0.17, 0.02, -0.17}
+        Rotation3: {0, 0.7854, 0}
+        Box: {0.06, 0.05, 0.3}
+        Rgba: droneShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+    }
+
+    boom_d {
+        Position3: {0.17, 0.02, -0.17}
+        Rotation3: {0, -0.7854, 0}
+        Box: {0.06, 0.05, 0.3}
+        Rgba: droneShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+    }
+
+    rotor_a {
+        Position3: {0.29, 0.1, 0.29}
+        Spinner: {speed: 0}
+
+        hub {
+            Box: {0.07, 0.05, 0.07}
+            Rgba: droneShade
+        }
+
+        blade_x : RotorBlade {
+            Position3: {0, 0.03, 0}
+        }
+
+        blade_z : RotorBlade {
+            Position3: {0, 0.03, 0}
+            Rotation3: {0, 1.5708, 0}
+        }
+    }
+
+    rotor_b {
+        Position3: {-0.29, 0.1, 0.29}
+        Spinner: {speed: 0}
+
+        hub {
+            Box: {0.07, 0.05, 0.07}
+            Rgba: droneShade
+        }
+
+        blade_x : RotorBlade {
+            Position3: {0, 0.03, 0}
+        }
+
+        blade_z : RotorBlade {
+            Position3: {0, 0.03, 0}
+            Rotation3: {0, 1.5708, 0}
+        }
+    }
+
+    rotor_c {
+        Position3: {-0.29, 0.1, -0.29}
+        Spinner: {speed: 0}
+
+        hub {
+            Box: {0.07, 0.05, 0.07}
+            Rgba: droneShade
+        }
+
+        blade_x : RotorBlade {
+            Position3: {0, 0.03, 0}
+        }
+
+        blade_z : RotorBlade {
+            Position3: {0, 0.03, 0}
+            Rotation3: {0, 1.5708, 0}
+        }
+    }
+
+    rotor_d {
+        Position3: {0.29, 0.1, -0.29}
+        Spinner: {speed: 0}
+
+        hub {
+            Box: {0.07, 0.05, 0.07}
+            Rgba: droneShade
+        }
+
+        blade_x : RotorBlade {
+            Position3: {0, 0.03, 0}
+        }
+
+        blade_z : RotorBlade {
+            Position3: {0, 0.03, 0}
+            Rotation3: {0, 1.5708, 0}
+        }
+    }
+
+    skid_l {
+        Position3: {-0.13, -0.11, 0}
+        Box: {0.05, 0.08, 0.32}
+        Rgba: droneDeep
+    }
+
+    skid_r {
+        Position3: {0.13, -0.11, 0}
+        Box: {0.05, 0.08, 0.32}
+        Rgba: droneDeep
+    }
+
+    arm {
+        Position3: {0, -0.12, 0.16}
+        Box: {0.05, 0.12, 0.05}
+        Rgba: droneShade
+
+        nozzle {
+            Position3: {0, -0.09, 0.02}
+            Box: {0.07, 0.06, 0.09}
+            Rgba: droneDeep
+        }
+    }
+
+    weld {
+        Position3: {0, -0.24, 0.18}
+        WeldSparks: {}
+    }
+}

@@ -1,0 +1,21 @@
+// Bunny hopper!
+
+// Engine config
+include config
+include keybinding
+include input
+
+// Assets
+include bunny
+include carrot
+include hill
+include tree
+include tuft
+include particles
+
+// Scene entities
+include scene
+
+// UI
+include life_icon
+include hud

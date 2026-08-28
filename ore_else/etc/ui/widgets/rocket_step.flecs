@@ -1,0 +1,77 @@
+// Add / remove button for one rocket section
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const FontSign = 19
+const FontKey = 11
+const StepRadius = 3
+const StepFace: Rgba = {46, 50, 58, 255}
+const StepHover: Rgba = {66, 72, 82, 255}
+const StepDim: Rgba = {30, 33, 39, 255}
+const StepEdge: Rgba = {88, 94, 106, 255}
+const StepEdgeDim: Rgba = {52, 56, 64, 255}
+const StepSign: Rgba = {226, 231, 238, 255}
+const StepSignDim: Rgba = {90, 96, 108, 255}
+const StepKey: Rgba = {132, 139, 152, 255}
+const StepKeyDim: Rgba = {74, 79, 90, 255}
+const StepBorder: Border = {radius: StepRadius, width: 1, color: StepEdge}
+const StepBorderDim: Border = {radius: StepRadius, width: 1, color: StepEdgeDim}
+
+template RocketStep {
+    prop item: entity = 0
+    prop rem = false
+    prop sign = "+"
+    prop key = ""
+    prop hotKey = ""
+    prop x: f32 = 0
+    prop y: f32 = 0
+    prop w: f32 = 40
+    prop h: f32 = 30
+
+    RocketPacket: {item: item, remove: rem}
+    Hotkey: {key: hotKey}
+    WidgetState
+    Afford: {value: false}
+
+    const afford = $this[Afford].value
+
+    const stepFace: Rgba = match $this[WidgetState].hover {
+        true: StepHover
+        false: StepFace
+    }
+
+    Position: {x, y}
+    Layout: {width: w, height: h}
+    Rect: {w, h}
+    Border: match afford {
+        true: StepBorder
+        false: StepBorderDim
+    }
+    Rgba: match afford {
+        true: stepFace
+        false: StepDim
+    }
+
+    sign_label {
+        Position: {0, (h - FontSign) / 2 - 1}
+        Layout: {width: w}
+        Text: {text: sign, size: FontSign, align: Center}
+        Rgba: match afford {
+            true: StepSign
+            false: StepSignDim
+        }
+    }
+
+    key_label {
+        Position: {4, 1}
+        Text: {text: key, size: FontKey}
+        Rgba: match afford {
+            true: StepKey
+            false: StepKeyDim
+        }
+    }
+}

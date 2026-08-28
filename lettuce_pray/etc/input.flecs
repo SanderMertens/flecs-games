@@ -1,0 +1,25 @@
+module lettuce_pray
+using flecs.engine.*
+using lettuce_pray.actions
+using lettuce_pray
+
+input {
+    Behaviors: [
+        script {
+            await pressed(Use)
+            await useAtCursor()
+        },
+        script {
+            await pressed(Dig)
+            await digAtCursor()
+        },
+        script {
+            await pressed(Cancel)
+            await clearSelection()
+        },
+        script {
+            await pressed(Restart)
+            await restart()
+        }
+    ]
+}

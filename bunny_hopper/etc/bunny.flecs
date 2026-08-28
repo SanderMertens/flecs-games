@@ -1,0 +1,136 @@
+// Bunny asset
+
+module bunny_hopper
+using flecs.script
+using flecs.engine.*
+
+template Bunny {
+    prop speed: f32 = 0
+    prop dead: bool = false
+
+    const ear_angle = math.clamp((speed - 12) * 0.05, -0.45, 0.75)
+
+    body {
+        Position3: {-0.05, 0.55, 0}
+        Box: {1, 0.75, 0.6}
+        Rgba: {240, 240, 240, 255}
+    }
+
+    head {
+        Position3: {0.5, 1.05, 0}
+        Box: {0.55, 0.55, 0.5}
+        Rgba: {240, 240, 240, 255}
+    }
+
+    ear_left {
+        Position3: {0.38, 1.54, 0.14}
+        Rotation3: {0, 0, ear_angle}
+        Box: {0.14, 0.7, 0.14}
+        Rgba: {240, 240, 240, 255}
+    }
+
+    ear_right {
+        Position3: {0.38, 1.54, -0.14}
+        Rotation3: {0, 0, ear_angle}
+        Box: {0.14, 0.7, 0.14}
+        Rgba: {240, 240, 240, 255}
+    }
+
+    tail {
+        Position3: {-0.62, 0.6, 0}
+        Sphere: {segments: 12, smooth: true, radius: 0.18}
+        Rgba: {240, 240, 240, 255}
+    }
+
+    nose {
+        Position3: {0.79, 1.0, 0}
+        Box: {0.1, 0.12, 0.14}
+        Rgba: {245, 150, 170, 255}
+    }
+
+    eye_left {
+        Position3: {0.68, 1.18, 0.26}
+        if dead {
+            bar_a {
+                Position3: {0, 0, 0}
+                Rotation3: {0, 0, math.PI / 4}
+                Box: {0.16, 0.05, 0.06}
+                Rgba: {40, 40, 40, 255}
+            }
+            bar_b {
+                Position3: {0, 0, 0}
+                Rotation3: {0, 0, -math.PI / 4}
+                Box: {0.16, 0.05, 0.06}
+                Rgba: {40, 40, 40, 255}
+            }
+        } else {
+            Box: {0.08, 0.1, 0.06}
+            Rgba: {40, 40, 40, 255}
+        }
+    }
+
+    eye_right {
+        Position3: {0.68, 1.18, -0.26}
+        if dead {
+            bar_a {
+                Position3: {0, 0, 0}
+                Rotation3: {0, 0, math.PI / 4}
+                Box: {0.16, 0.05, 0.06}
+                Rgba: {40, 40, 40, 255}
+            }
+            bar_b {
+                Position3: {0, 0, 0}
+                Rotation3: {0, 0, -math.PI / 4}
+                Box: {0.16, 0.05, 0.06}
+                Rgba: {40, 40, 40, 255}
+            }
+        } else {
+            Box: {0.08, 0.1, 0.06}
+            Rgba: {40, 40, 40, 255}
+        }
+    }
+
+    leg_front_left {
+        Position3: {0.32, 0.5, 0.24}
+        Rotation3: {0, 0, 0}
+        BunnyLeg: {phase: 0, air_target: 0.9}
+        box {
+            Position3: {0, -0.25, 0}
+            Box: {0.16, 0.5, 0.16}
+            Rgba: {240, 240, 240, 255}
+        }
+    }
+
+    leg_front_right {
+        Position3: {0.32, 0.5, -0.24}
+        Rotation3: {0, 0, 0}
+        BunnyLeg: {phase: math.PI, air_target: 0.9}
+        box {
+            Position3: {0, -0.25, 0}
+            Box: {0.16, 0.5, 0.16}
+            Rgba: {240, 240, 240, 255}
+        }
+    }
+
+    leg_back_left {
+        Position3: {-0.38, 0.5, 0.24}
+        Rotation3: {0, 0, 0}
+        BunnyLeg: {phase: math.PI, air_target: -0.95}
+        box {
+            Position3: {0, -0.275, 0}
+            Box: {0.22, 0.55, 0.22}
+            Rgba: {240, 240, 240, 255}
+        }
+    }
+
+    leg_back_right {
+        Position3: {-0.38, 0.5, -0.24}
+        Rotation3: {0, 0, 0}
+        BunnyLeg: {phase: math.PI * 2, air_target: -0.95}
+        box {
+            Position3: {0, -0.275, 0}
+            Box: {0.22, 0.55, 0.22}
+            Rgba: {240, 240, 240, 255}
+        }
+    }
+}

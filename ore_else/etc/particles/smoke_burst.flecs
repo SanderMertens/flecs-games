@@ -1,0 +1,33 @@
+// Smoke burst
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab SmokeBurst {
+    ParticleBurst: {
+        pool: smoke,
+        count: 20,
+        size: 0.45,
+        size_variance: 0.2,
+        grow: 0.55,
+        max_age: 1.6,
+        max_age_variance: 0.6,
+        color: {206, 198, 190, 235},
+        color_ramp: {
+            mid: {150, 143, 138, 190},
+            end: {104, 98, 94, 110},
+            mid_pos: 0.4
+        },
+        velocity: {0, 0.9, 0},
+        velocity_variance: {0.6, 0.4, 0.6},
+        offset: {0, 0.05, 0},
+        shape: ParticleShapeHemisphere,
+        shape_radius: 0.4,
+        radial: 3.4,
+        rotation_variance: 3.14,
+        spin_variance: 1.2,
+        brightness_variance: 0.22
+    }
+}

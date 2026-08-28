@@ -1,0 +1,33 @@
+// Mining burst
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab MineBurst {
+    ParticleBurst: {
+        pool: glow,
+        count: 14,
+        size: 0.08,
+        size_variance: 0.035,
+        stretch: 1.6,
+        max_age: 0.45,
+        max_age_variance: 0.15,
+        color: {255, 224, 158, 255},
+        color_ramp: {
+            mid: {228, 186, 130, 235},
+            end: {176, 152, 124, 190},
+            mid_pos: 0.4
+        },
+        velocity: {0, 3.4, 0},
+        velocity_variance: {0.5, 0.8, 0.5},
+        offset: {0, 0.2, 0},
+        shape: ParticleShapeCone,
+        shape_radius: 0.16,
+        shape_angle: 38,
+        rotation_variance: 3.14,
+        spin_variance: 5,
+        brightness_variance: 0.3
+    }
+}

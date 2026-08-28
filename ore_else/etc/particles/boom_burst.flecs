@@ -1,0 +1,186 @@
+// Explosion: a composite of layered bursts, each into its own pool.
+// oreExplosion fires every child of this prefab at the blast position.
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab BoomBurst {
+    flash {
+        ParticleBurst: {
+            pool: fire,
+            count: 8,
+            size: 1.3,
+            size_variance: 0.3,
+            grow: 1.4,
+            max_age: 0.18,
+            max_age_variance: 0.05,
+            color: {255, 252, 240, 255},
+            color_ramp: {
+                mid: {255, 226, 158, 255},
+                end: {255, 150, 70, 200},
+                mid_pos: 0.5
+            },
+            offset: {0, 0.25, 0},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.18,
+            rotation_variance: 3.14,
+            spin_variance: 2.5,
+            brightness_variance: 0.2
+        }
+    }
+
+    ball {
+        ParticleBurst: {
+            pool: fire,
+            count: 30,
+            size: 0.75,
+            size_variance: 0.28,
+            grow: 1.1,
+            max_age: 0.48,
+            max_age_variance: 0.16,
+            color: {255, 238, 196, 255},
+            color_ramp: {
+                mid: {255, 146, 54, 255},
+                end: {132, 58, 34, 190},
+                mid_pos: 0.34
+            },
+            velocity: {0, 1.6, 0},
+            velocity_variance: {1.4, 1.2, 1.4},
+            offset: {0, 0.3, 0},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.5,
+            radial: 6.5,
+            rotation_variance: 3.14,
+            spin_variance: 4,
+            brightness_variance: 0.3
+        }
+    }
+
+    ring {
+        ParticleBurst: {
+            pool: glow,
+            count: 46,
+            size: 0.62,
+            size_variance: 0.1,
+            grow: 0.9,
+            stretch: 0.45,
+            max_age: 0.34,
+            max_age_variance: 0.06,
+            color: {255, 236, 198, 235},
+            color_ramp: {
+                end: {255, 138, 62, 0}
+            },
+            offset: {0, 0.14, 0},
+            shape: ParticleShapeRing,
+            shape_radius: 0.5,
+            shape_thickness: 0.2,
+            radial: 11,
+            brightness_variance: 0.15
+        }
+    }
+
+    sparks {
+        ParticleBurst: {
+            pool: glow,
+            count: 38,
+            size: 0.1,
+            size_variance: 0.045,
+            stretch: 2.6,
+            max_age: 0.6,
+            max_age_variance: 0.28,
+            color: {255, 250, 226, 255},
+            color_ramp: {
+                mid: {255, 224, 140, 255},
+                end: {255, 104, 24, 200},
+                mid_pos: 0.32
+            },
+            velocity: {0, 4.2, 0},
+            velocity_variance: {3.2, 3.0, 3.2},
+            offset: {0, 0.25, 0},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.28,
+            radial: 11,
+            brightness_variance: 0.35
+        }
+    }
+
+    rubble {
+        ParticleBurst: {
+            pool: debris,
+            count: 18,
+            size: 0.115,
+            size_variance: 0.05,
+            max_age: 1.5,
+            max_age_variance: 0.5,
+            color: {74, 66, 60, 255},
+            color_ramp: {
+                mid: {58, 52, 48, 255},
+                end: {44, 40, 38, 255},
+                mid_pos: 0.5
+            },
+            velocity: {0, 6.2, 0},
+            velocity_variance: {2.6, 2.6, 2.6},
+            offset: {0, 0.2, 0},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.32,
+            radial: 7,
+            rotation_variance: 3.14,
+            spin_variance: 13,
+            brightness_variance: 0.3,
+            mass: 3
+        }
+    }
+
+    cinders {
+        ParticleBurst: {
+            pool: ember,
+            count: 24,
+            size: 0.09,
+            size_variance: 0.04,
+            max_age: 1.7,
+            max_age_variance: 0.7,
+            color: {255, 172, 76, 255},
+            color_ramp: {
+                mid: {248, 108, 38, 240},
+                end: {110, 38, 20, 140},
+                mid_pos: 0.45
+            },
+            velocity: {0, 1.1, 0},
+            velocity_variance: {0.9, 0.7, 0.9},
+            offset: {0, 0.3, 0},
+            shape: ParticleShapeSphere,
+            shape_radius: 0.7,
+            radial: 1.6,
+            brightness_variance: 0.4
+        }
+    }
+
+    plume {
+        ParticleBurst: {
+            pool: smoke,
+            count: 24,
+            size: 0.85,
+            size_variance: 0.32,
+            grow: 0.4,
+            max_age: 1.9,
+            max_age_variance: 0.6,
+            color: {188, 176, 162, 215},
+            color_ramp: {
+                mid: {130, 120, 112, 190},
+                end: {86, 80, 76, 80},
+                mid_pos: 0.35
+            },
+            velocity: {0, 1.3, 0},
+            velocity_variance: {0.7, 0.5, 0.7},
+            offset: {0, 0.35, 0},
+            shape: ParticleShapeHemisphere,
+            shape_radius: 0.7,
+            radial: 3.2,
+            rotation_variance: 3.14,
+            spin_variance: 1.1,
+            brightness_variance: 0.2
+        }
+    }
+}

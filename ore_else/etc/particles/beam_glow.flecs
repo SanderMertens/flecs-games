@@ -1,0 +1,35 @@
+// Beam glow
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template BeamGlow {
+    prop color: Rgba = {240, 96, 172, 255}
+    prop peak: f32 = 4.5
+    prop radius: f32 = 7
+    prop rate: f32 = 55
+
+    Rgba: color
+    PointLight: {intensity: 0, range: radius}
+    FlashLight: {peak: peak, fade: 0}
+
+    ParticleEmitter: {
+        pool: glow,
+        rate: rate,
+        size: 0.075,
+        size_variance: 0.035,
+        grow: -0.1,
+        max_age: 0.22,
+        max_age_variance: 0.08,
+        color: color,
+        velocity: {0, 0.4, 0},
+        velocity_variance: {0.9, 0.9, 0.9},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.05,
+        radial: 1.2,
+        brightness_variance: 0.4,
+        enabled: false
+    }
+}

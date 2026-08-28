@@ -1,0 +1,392 @@
+// Office furniture assets
+
+module ship_happens.assets
+using flecs.script
+using flecs.engine.*
+using ship_happens
+
+const wood: Rgba = {168, 128, 88, 255}
+const darkMetal: Rgba = {50, 54, 62, 255}
+
+prefab TileMarker {
+    Box: {1.92, 0.06, 1.92}
+    Rgba: {242, 248, 186, 255}
+    Emissive: {strength: 1.1, color: {236, 244, 150, 255}}
+}
+
+prefab Desk {
+    ShipCost: {money: 150}
+    ShipDesk: {}
+
+    top {
+        Position3: {0, 0.74, 0.15}
+        Box: {1.7, 0.08, 0.9}
+        Rgba: wood
+    }
+
+    leg_fl {
+        Position3: {0.76, 0.35, 0.51}
+        Box: {0.08, 0.7, 0.08}
+        Rgba: darkMetal
+    }
+
+    leg_fr {
+        Position3: {-0.76, 0.35, 0.51}
+        Box: {0.08, 0.7, 0.08}
+        Rgba: darkMetal
+    }
+
+    leg_bl {
+        Position3: {0.76, 0.35, -0.21}
+        Box: {0.08, 0.7, 0.08}
+        Rgba: darkMetal
+    }
+
+    leg_br {
+        Position3: {-0.76, 0.35, -0.21}
+        Box: {0.08, 0.7, 0.08}
+        Rgba: darkMetal
+    }
+
+    monitor_stand {
+        Position3: {0, 0.85, 0.42}
+        Box: {0.1, 0.14, 0.1}
+        Rgba: darkMetal
+    }
+
+    monitor {
+        Position3: {0, 1.1, 0.45}
+        Box: {0.78, 0.5, 0.06}
+        Rgba: {30, 32, 38, 255}
+    }
+
+    screen {
+        Position3: {0, 1.1, 0.41}
+        Box: {0.68, 0.4, 0.02}
+        Rgba: {120, 200, 255, 255}
+        Emissive: {strength: 1.6, color: {130, 200, 255, 255}}
+    }
+
+    keyboard {
+        Position3: {0, 0.8, -0.1}
+        Box: {0.6, 0.04, 0.22}
+        Rgba: darkMetal
+    }
+
+    mug {
+        Position3: {0.6, 0.85, 0}
+        Cylinder: {segments: 10, smooth: true, length: 0.14}
+        Scale3: {0.12, 1, 0.12}
+        Rgba: {220, 80, 70, 255}
+    }
+}
+
+prefab CoffeeMachine {
+    ShipCost: {money: 100}
+    ShipAmenity: {need: 0, use_time: 2.5}
+
+    body {
+        Position3: {0, 0.8, 0}
+        Box: {0.85, 1.6, 0.7}
+        Rgba: {48, 52, 60, 255}
+    }
+
+    top_band {
+        Position3: {0, 1.7, 0}
+        Box: {0.89, 0.2, 0.74}
+        Rgba: {224, 82, 60, 255}
+    }
+
+    side_left {
+        Position3: {0.4, 0.78, 0}
+        Box: {0.1, 1.5, 0.6}
+        Rgba: {224, 82, 60, 255}
+    }
+
+    side_right {
+        Position3: {-0.4, 0.78, 0}
+        Box: {0.1, 1.5, 0.6}
+        Rgba: {224, 82, 60, 255}
+    }
+
+    screen {
+        Position3: {0, 1.28, 0.36}
+        Box: {0.4, 0.26, 0.03}
+        Rgba: {150, 230, 255, 255}
+        Emissive: {strength: 1.6, color: {150, 230, 255, 255}}
+    }
+
+    button_a {
+        Position3: {-0.12, 1.04, 0.36}
+        Box: {0.08, 0.08, 0.03}
+        Rgba: {235, 90, 60, 255}
+    }
+
+    button_b {
+        Position3: {0, 1.04, 0.36}
+        Box: {0.08, 0.08, 0.03}
+        Rgba: {250, 205, 60, 255}
+    }
+
+    button_c {
+        Position3: {0.12, 1.04, 0.36}
+        Box: {0.08, 0.08, 0.03}
+        Rgba: {110, 190, 90, 255}
+    }
+
+    slot {
+        Position3: {0, 0.62, 0.34}
+        Box: {0.44, 0.4, 0.12}
+        Rgba: {26, 28, 32, 255}
+    }
+
+    cup {
+        Position3: {0, 0.47, 0.36}
+        Cylinder: {segments: 10, smooth: true, length: 0.14}
+        Scale3: {0.08, 1, 0.08}
+        Rgba: {245, 245, 245, 255}
+    }
+
+    tray {
+        Position3: {0, 0.39, 0.38}
+        Box: {0.5, 0.05, 0.18}
+        Rgba: {180, 186, 196, 255}
+        PbrMaterial: {metallic: 0.7, roughness: 0.4}
+    }
+}
+
+prefab SnackMachine {
+    ShipCost: {money: 120}
+    ShipAmenity: {need: 1, use_time: 3}
+
+    body_shell {
+        Position3: {0, 0.95, -0.125}
+        Box: {1.1, 1.9, 0.55}
+        Rgba: {186, 52, 58, 255}
+    }
+
+    cavity_back {
+        Position3: {0, 1.1, 0.16}
+        Box: {0.86, 1.15, 0.03}
+        Rgba: {30, 32, 36, 255}
+    }
+
+    fascia_left {
+        Position3: {-0.49, 0.95, 0.275}
+        Box: {0.12, 1.9, 0.25}
+        Rgba: {186, 52, 58, 255}
+    }
+
+    fascia_right {
+        Position3: {0.49, 0.95, 0.275}
+        Box: {0.12, 1.9, 0.25}
+        Rgba: {186, 52, 58, 255}
+    }
+
+    fascia_top {
+        Position3: {0, 1.75, 0.275}
+        Box: {1.1, 0.3, 0.25}
+        Rgba: {186, 52, 58, 255}
+    }
+
+    fascia_bottom {
+        Position3: {0, 0.275, 0.275}
+        Box: {1.1, 0.55, 0.25}
+        Rgba: {186, 52, 58, 255}
+    }
+
+    shelf_low {
+        Position3: {0, 0.8, 0.24}
+        Box: {0.82, 0.04, 0.2}
+        Rgba: {205, 208, 214, 255}
+    }
+
+    shelf_mid {
+        Position3: {0, 1.1, 0.24}
+        Box: {0.82, 0.04, 0.2}
+        Rgba: {205, 208, 214, 255}
+    }
+
+    shelf_high {
+        Position3: {0, 1.4, 0.24}
+        Box: {0.82, 0.04, 0.2}
+        Rgba: {205, 208, 214, 255}
+    }
+
+    snack_a {
+        Position3: {-0.22, 0.9, 0.24}
+        Box: {0.18, 0.16, 0.1}
+        Rgba: {250, 200, 60, 255}
+    }
+
+    snack_b {
+        Position3: {0.08, 0.9, 0.24}
+        Box: {0.18, 0.16, 0.1}
+        Rgba: {110, 190, 90, 255}
+    }
+
+    snack_c {
+        Position3: {0.3, 1.2, 0.24}
+        Box: {0.18, 0.16, 0.1}
+        Rgba: {90, 130, 230, 255}
+    }
+
+    snack_d {
+        Position3: {-0.14, 1.2, 0.24}
+        Box: {0.18, 0.16, 0.1}
+        Rgba: {235, 120, 180, 255}
+    }
+
+    snack_e {
+        Position3: {-0.28, 1.5, 0.24}
+        Box: {0.18, 0.16, 0.1}
+        Rgba: {240, 130, 60, 255}
+    }
+
+    snack_f {
+        Position3: {0.16, 1.5, 0.24}
+        Box: {0.18, 0.16, 0.1}
+        Rgba: {150, 100, 220, 255}
+    }
+
+    glass {
+        Position3: {0, 1.075, 0.36}
+        Box: {0.86, 1.05, 0.05}
+        Rgba: {180, 215, 240, 255}
+        PbrMaterial: {metallic: 0, roughness: 0.05}
+        Transmission: {
+            transmission_factor: 0.92
+            ior: 1.5
+            thickness_factor: 0.05
+            attenuation_distance: 2
+            attenuation_color: {150, 200, 240}
+        }
+    }
+
+    slot {
+        Position3: {0, 0.28, 0.41}
+        Box: {0.7, 0.18, 0.05}
+        Rgba: {30, 32, 36, 255}
+    }
+}
+
+prefab Arcade {
+    ShipCost: {money: 200}
+    ShipAmenity: {need: 2, use_time: 4}
+
+    cabinet {
+        Position3: {0, 0.85, -0.05}
+        Box: {0.9, 1.7, 0.7}
+        Rgba: {88, 52, 140, 255}
+    }
+
+    marquee {
+        Position3: {0, 1.78, -0.05}
+        Box: {0.94, 0.18, 0.74}
+        Rgba: {240, 120, 190, 255}
+        Emissive: {strength: 1.4, color: {240, 120, 190, 255}}
+    }
+
+    screen {
+        Position3: {0, 1.25, 0.32}
+        Box: {0.66, 0.5, 0.04}
+        Rgba: {80, 240, 200, 255}
+        Emissive: {strength: 2, color: {80, 240, 200, 255}}
+    }
+
+    deck {
+        Position3: {0, 0.85, 0.42}
+        Box: {0.9, 0.1, 0.34}
+        Rgba: {60, 40, 100, 255}
+    }
+
+    button_left {
+        Position3: {-0.18, 0.92, 0.42}
+        Box: {0.1, 0.06, 0.1}
+        Rgba: {235, 70, 60, 255}
+    }
+
+    button_right {
+        Position3: {0.18, 0.92, 0.42}
+        Box: {0.1, 0.06, 0.1}
+        Rgba: {250, 205, 60, 255}
+    }
+}
+
+prefab Plant {
+    ShipCost: {money: 50}
+    ShipAura: {radius: 3, mood: 1.2}
+
+    pot {
+        Position3: {0, 0.2, 0}
+        Cylinder: {segments: 14, smooth: true, length: 0.4}
+        Scale3: {0.32, 1, 0.32}
+        Rgba: {188, 98, 62, 255}
+    }
+
+    pot_rim {
+        Position3: {0, 0.44, 0}
+        Cylinder: {segments: 14, smooth: true, length: 0.12}
+        Scale3: {0.38, 1, 0.38}
+        Rgba: {206, 114, 74, 255}
+    }
+
+    soil {
+        Position3: {0, 0.51, 0}
+        Cylinder: {segments: 12, smooth: true, length: 0.04}
+        Scale3: {0.3, 1, 0.3}
+        Rgba: {72, 52, 38, 255}
+    }
+
+    stem {
+        Position3: {0, 0.85, 0}
+        Box: {0.08, 0.7, 0.08}
+        Rgba: {110, 92, 52, 255}
+    }
+
+    branch_left {
+        Position3: {0.14, 1.0, 0.04}
+        Rotation3: {0, 0, -0.7}
+        Box: {0.06, 0.3, 0.06}
+        Rgba: {110, 92, 52, 255}
+    }
+
+    branch_right {
+        Position3: {-0.12, 0.9, -0.06}
+        Rotation3: {0.3, 0, 0.8}
+        Box: {0.06, 0.26, 0.06}
+        Rgba: {110, 92, 52, 255}
+    }
+
+    leaf_a {
+        Position3: {0.3, 1.14, 0.08}
+        Rotation3: {0, 0, -0.5}
+        Scale3: {1, 0.55, 1}
+        Sphere: {segments: 12, smooth: true, radius: 0.28}
+        Rgba: {58, 138, 64, 255}
+    }
+
+    leaf_b {
+        Position3: {-0.26, 1.05, -0.12}
+        Rotation3: {0.2, 0, 0.55}
+        Scale3: {1, 0.55, 1}
+        Sphere: {segments: 12, smooth: true, radius: 0.26}
+        Rgba: {74, 156, 76, 255}
+    }
+
+    leaf_c {
+        Position3: {0.02, 1.28, 0.2}
+        Rotation3: {0.5, 0, 0}
+        Scale3: {1, 0.6, 1}
+        Sphere: {segments: 12, smooth: true, radius: 0.24}
+        Rgba: {86, 170, 86, 255}
+    }
+
+    leaf_top {
+        Position3: {-0.04, 1.42, -0.06}
+        Rotation3: {-0.25, 0, 0.2}
+        Scale3: {1, 0.65, 1}
+        Sphere: {segments: 12, smooth: true, radius: 0.2}
+        Rgba: {100, 184, 96, 255}
+    }
+}

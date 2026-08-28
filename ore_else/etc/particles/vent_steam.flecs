@@ -1,0 +1,35 @@
+// Thin steam seeping from a factory vent grille
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template VentSteam {
+    prop rate: f32 = 8
+    prop size: f32 = 0.15
+
+    ParticleEmitter: {
+        pool: smoke,
+        rate: rate,
+        size: size,
+        size_variance: 0.05,
+        grow: 0.35,
+        max_age: 1.2,
+        max_age_variance: 0.35,
+        color: {226, 236, 242, 140},
+        color_ramp: {
+            mid: {232, 240, 246, 85},
+            end: {238, 244, 248, 0},
+            mid_pos: 0.4
+        },
+        velocity: {0, 1.4, 0},
+        velocity_variance: {0.18, 0.3, 0.18},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.11,
+        rotation_variance: 3.14,
+        spin_variance: 0.8,
+        brightness_variance: 0.12,
+        enabled: false
+    }
+}

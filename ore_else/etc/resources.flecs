@@ -1,0 +1,133 @@
+// Resource & recipe tree
+
+module ore_else.resources
+
+using flecs.script
+using ore_else
+using ore_else.assets
+
+@detail "Raw iron. Refines into iron plates."
+@name "Iron"
+Resource Iron(
+    mine_time_ds: 45
+    mine_amount: 1
+) {
+    Icon: {texture: icons.iron}
+}
+
+@detail "Raw copper. Refines into copper plates."
+@name "Copper"
+Resource Copper(
+    mine_time_ds: 60
+    mine_amount: 1
+) {
+    Icon: {texture: icons.copper}
+}
+
+@detail "Stone. Refines into stone bricks."
+@name "Stone"
+Resource Stone(
+    mine_time_ds: 15
+    mine_amount: 1
+) {
+    Icon: {texture: icons.stone}
+}
+
+@detail "Precious mineral that can only be mined on this planet."
+@name "Luminite"
+Resource Luminite(
+    mine_time_ds: 240
+    mine_amount: 1
+) {
+    Icon: {texture: icons.luminite}
+}
+
+@detail "Refined iron."
+@name "Iron plate"
+Recipe IronPlate(
+    inputs: [Iron: 2]
+    output_amount: 1
+    craft_time: 0.5
+) {
+    Icon: {texture: icons.iron_plate}
+}
+
+@detail "Refined copper."
+@name "Copper plate"
+Recipe CopperPlate(
+    inputs: [Copper: 2]
+    output_amount: 1
+    craft_time: 0.5
+) {
+    Icon: {texture: icons.copper_plate}
+}
+
+@detail "Sturdy building material."
+@name "Stone brick"
+Recipe StoneBrick(
+    inputs: [Stone: 2]
+    output_amount: 1
+    craft_time: 0.75
+) {
+    Icon: {texture: icons.stone_brick}
+}
+
+@detail "A wire."
+@name "Wire"
+Recipe Wire(
+    inputs: [CopperPlate: 1]
+    output_amount: 2
+    craft_time: 0.5
+) {
+    Icon: {texture: icons.wire}
+}
+
+@detail "An electronics circuit."
+@name "Electronics"
+Recipe Electronics(
+    inputs: [Wire: 2, CopperPlate: 1]
+    output_amount: 1
+    craft_time: 0.5
+) {
+    Icon: {texture: icons.electronics}
+}
+
+@detail "Puts rockets in orbit."
+@name "Rocket engine"
+Recipe RocketEngine(
+    inputs: [IronPlate: 8, CopperPlate: 4]
+    output_amount: 1
+    craft_time: 30
+) {
+    Icon: {texture: icons.rocket_engine}
+}
+
+@detail "Can store 200 luminite. Up to 3 cargo bays per rocket."
+@name "Rocket cargo bay"
+Recipe RocketCargoBay(
+    inputs: [IronPlate: 12, CopperPlate: 6]
+    output_amount: 1
+    craft_time: 30
+) {
+    Icon: {texture: icons.rocket_cargo}
+}
+
+@detail "Life support module that lets you evacuate the planet in a rocket."
+@name "Rocket life support"
+Recipe RocketLifeSupport(
+    inputs: [IronPlate: 8, CopperPlate: 8, Electronics: 4]
+    output_amount: 1
+    craft_time: 120
+) {
+    Icon: {texture: icons.rocket_life}
+}
+
+@detail "Rocket fuel fuel. One per cargo bay or life support."
+@name "Rocket fuel storage"
+Recipe RocketFuelStorage(
+    inputs: [IronPlate: 10, CopperPlate: 4]
+    output_amount: 1
+    craft_time: 30
+) {
+    Icon: {texture: icons.rocket_fuel}
+}

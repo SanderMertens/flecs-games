@@ -1,0 +1,113 @@
+// Rocket panel button
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const FontName = 19
+const FontNote = 12
+const FontKey = 11
+const SlotRadius = 3
+const FaceColor: Rgba = {46, 50, 58, 255}
+const FaceHover: Rgba = {66, 72, 82, 255}
+const FaceActive: Rgba = {78, 62, 26, 255}
+const FaceDim: Rgba = {30, 33, 39, 255}
+const EdgeColor: Rgba = {88, 94, 106, 255}
+const EdgeDim: Rgba = {52, 56, 64, 255}
+const EdgeActive: Rgba = {240, 176, 58, 255}
+const NameLabel: Rgba = {214, 220, 230, 255}
+const NameActive: Rgba = {246, 220, 168, 255}
+const NameDim: Rgba = {110, 116, 128, 255}
+const NoteLabel: Rgba = {146, 154, 166, 255}
+const MutedLabel: Rgba = {132, 139, 152, 255}
+const RbEdge: Border = {radius: SlotRadius, width: 1, color: EdgeColor}
+const RbEdgeDim: Border = {radius: SlotRadius, width: 1, color: EdgeDim}
+const RbEdgeActive: Border = {radius: SlotRadius, width: 2, color: EdgeActive}
+
+template RocketButton {
+    prop item: entity = 0
+    prop icon: entity = 0
+    prop load = false
+    prop launch = false
+    prop name = ""
+    prop key = ""
+    prop hotKey = ""
+    prop w: f32 = 50
+    prop h: f32 = 54
+    prop x: f32 = 0
+    prop y: f32 = 0
+
+    RocketPacket: {item: item, load: load, launch: launch}
+    Hotkey: {key: hotKey}
+    WidgetState
+    Afford: {value: true}
+
+    const afford = $this[Afford].value
+    const active = launch && RocketState[RocketState].valid
+    const note = match launch {
+        true: RocketState[RocketState].note
+        false: ""
+    }
+
+    const rbFaceHover: Rgba = match $this[WidgetState].hover {
+        true: FaceHover
+        false: FaceColor
+    }
+    const rbFaceActive: Rgba = match active {
+        true: FaceActive
+        false: rbFaceHover
+    }
+    const rbEdgeAfford: Border = match afford {
+        true: RbEdge
+        false: RbEdgeDim
+    }
+    const rbNameActive: Rgba = match active {
+        true: NameActive
+        false: NameLabel
+    }
+
+    Position: {x, y}
+    Layout: {width: w, height: h}
+    Rect: {w, h}
+    Border: match active {
+        true: RbEdgeActive
+        false: rbEdgeAfford
+    }
+    Rgba: match afford {
+        true: rbFaceActive
+        false: FaceDim
+    }
+
+    if icon {
+        icon_img {
+            Position: {(w - 26) / 2, 6}
+            Rect: {26, 26}
+            Image: {texture: icon, fit: Contain}
+        }
+    }
+
+    name_label {
+        Position: {0, 8}
+        Layout: {width: w}
+        Text: {text: name, size: FontName, align: Center}
+        Rgba: match afford {
+            true: rbNameActive
+            false: NameDim
+        }
+    }
+
+    note_label {
+        Position: {0, h - 18}
+        Layout: {width: w}
+        Text: {text: note, size: FontNote, align: Center}
+        Rgba: NoteLabel
+    }
+
+    hotkey_label {
+        Position: {6, 3}
+        Text: {text: key, size: FontKey}
+        Rgba: MutedLabel
+    }
+}

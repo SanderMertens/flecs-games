@@ -1,0 +1,242 @@
+// Game developer asset
+
+module ship_happens
+using flecs.script
+using flecs.engine.*
+
+const jeans: Rgba = {52, 62, 82, 255}
+
+template DevHeadphones {
+    prop style: i32 = 0
+
+    const color: Rgba = match ((style % 3) + 3) % 3 {
+        0: {230, 36, 41, 255}
+        1: {36, 108, 228, 255}
+        2: {242, 96, 168, 255}
+    }
+
+    headphone_left {
+        Position3: {0.33, -0.02, 0}
+        Box: {0.12, 0.26, 0.26}
+        Rgba: color
+    }
+
+    headphone_right {
+        Position3: {-0.33, -0.02, 0}
+        Box: {0.12, 0.26, 0.26}
+        Rgba: color
+    }
+
+    headphone_arm_left {
+        Position3: {0.345, 0.22, 0}
+        Box: {0.09, 0.24, 0.14}
+        Rgba: color
+    }
+
+    headphone_arm_right {
+        Position3: {-0.345, 0.22, 0}
+        Box: {0.09, 0.24, 0.14}
+        Rgba: color
+    }
+
+    headphone_band {
+        Position3: {0, 0.38, 0}
+        Box: {0.78, 0.08, 0.14}
+        Rgba: color
+    }
+}
+
+template Dev {
+    prop outfit: i32 = 0
+    prop skin: i32 = 0
+    prop hair: i32 = 0
+    prop phones: i32 = 0
+    prop mood: f32 = 1
+    prop energy: f32 = 1
+
+    const outfitIdx = ((outfit % 6) + 6) % 6
+
+    const hoodieColor: Rgba = match outfitIdx {
+        0: {70, 92, 162, 255}
+        1: {168, 64, 72, 255}
+        2: {62, 132, 94, 255}
+        3: {150, 100, 170, 255}
+        4: {196, 140, 60, 255}
+        5: {70, 130, 150, 255}
+    }
+
+    const sleeveColor: Rgba = match outfitIdx {
+        0: {58, 78, 140, 255}
+        1: {140, 52, 60, 255}
+        2: {50, 110, 78, 255}
+        3: {126, 82, 144, 255}
+        4: {166, 116, 48, 255}
+        5: {56, 108, 126, 255}
+    }
+
+    const skinColor: Rgba = match ((skin % 4) + 4) % 4 {
+        0: {232, 190, 158, 255}
+        1: {206, 160, 128, 255}
+        2: {164, 118, 88, 255}
+        3: {116, 84, 62, 255}
+    }
+
+    const hairColor: Rgba = match ((hair % 4) + 4) % 4 {
+        0: {74, 52, 38, 255}
+        1: {40, 38, 36, 255}
+        2: {158, 118, 62, 255}
+        3: {182, 88, 48, 255}
+    }
+
+    const moodVal = math.clamp(mood, 0, 1)
+    const energyVal = math.clamp(energy, 0, 1)
+
+    ShipAnimSpeed: {3.5 + 10.5 * energyVal}
+
+    leg_left {
+        Position3: {0.17, 0.78, 0}
+        ShipLimb: {swing: 0.5}
+        ShipAnim: {0}
+
+        shin {
+            Position3: {0, -0.38, 0}
+            Box: {0.25, 0.76, 0.23}
+            Rgba: jeans
+        }
+
+        shoe {
+            Position3: {0, -0.76, 0.08}
+            Box: {0.27, 0.15, 0.4}
+            Rgba: {242, 242, 242, 255}
+        }
+    }
+
+    leg_right {
+        Position3: {-0.17, 0.78, 0}
+        ShipLimb: {swing: 0.5}
+        ShipAnim: {math.PI}
+
+        shin {
+            Position3: {0, -0.38, 0}
+            Box: {0.25, 0.76, 0.23}
+            Rgba: jeans
+        }
+
+        shoe {
+            Position3: {0, -0.76, 0.08}
+            Box: {0.27, 0.15, 0.4}
+            Rgba: {242, 242, 242, 255}
+        }
+    }
+
+    torso {
+        Position3: {0, 1.16, -0.02}
+        Box: {0.62, 0.82, 0.48}
+        Rgba: hoodieColor
+    }
+
+    hood {
+        Position3: {0, 1.5, -0.28}
+        Box: {0.5, 0.32, 0.14}
+        Rgba: sleeveColor
+    }
+
+    head {
+        Position3: {0, 1.92, 0}
+        Box: {0.5, 0.5, 0.52}
+        Rgba: skinColor
+
+        if moodVal >= 0.5 {
+            Rotation3: {0, 0, 0}
+        } else if moodVal >= 0.25 {
+            Rotation3: {0.15, 0, 0}
+        } else {
+            Rotation3: {0.3, 0, 0}
+        }
+
+        hair_top {
+            Position3: {0, 0.3, -0.01}
+            Box: {0.56, 0.14, 0.56}
+            Rgba: hairColor
+        }
+
+        headphones {
+            Position3: {0, 0, 0}
+            DevHeadphones: {phones}
+        }
+
+        eye_left {
+            Position3: {0.12, 0.02, 0.27}
+            Rgba: {40, 40, 40, 255}
+
+            if moodVal >= 0.75 {
+                Box: {0.09, 0.1, 0.05}
+                Rotation3: {0, 0, 0}
+            } else if moodVal >= 0.5 {
+                Box: {0.13, 0.03, 0.05}
+                Rotation3: {0, 0, 0}
+            } else if moodVal >= 0.25 {
+                Box: {0.13, 0.045, 0.05}
+                Rotation3: {0, 0, -0.25}
+            } else {
+                Box: {0.14, 0.05, 0.05}
+                Rotation3: {0, 0, -0.6}
+            }
+        }
+
+        eye_right {
+            Position3: {-0.12, 0.02, 0.27}
+            Rgba: {40, 40, 40, 255}
+
+            if moodVal >= 0.75 {
+                Box: {0.09, 0.1, 0.05}
+                Rotation3: {0, 0, 0}
+            } else if moodVal >= 0.5 {
+                Box: {0.13, 0.03, 0.05}
+                Rotation3: {0, 0, 0}
+            } else if moodVal >= 0.25 {
+                Box: {0.13, 0.045, 0.05}
+                Rotation3: {0, 0, 0.25}
+            } else {
+                Box: {0.14, 0.05, 0.05}
+                Rotation3: {0, 0, 0.6}
+            }
+        }
+    }
+
+    arm_left {
+        Position3: {0.37, 1.44, 0}
+        ShipLimb: {swing: 0.32, arm: 1}
+        ShipAnim: {math.PI}
+
+        upper {
+            Position3: {0, -0.3, 0}
+            Box: {0.19, 0.62, 0.19}
+            Rgba: sleeveColor
+        }
+
+        hand {
+            Position3: {0, -0.66, 0.02}
+            Box: {0.2, 0.22, 0.2}
+            Rgba: skinColor
+        }
+    }
+
+    arm_right {
+        Position3: {-0.37, 1.44, 0}
+        ShipLimb: {swing: 0.32, arm: 1}
+        ShipAnim: {0}
+
+        upper {
+            Position3: {0, -0.3, 0}
+            Box: {0.19, 0.62, 0.19}
+            Rgba: sleeveColor
+        }
+
+        hand {
+            Position3: {0, -0.66, 0.02}
+            Box: {0.2, 0.22, 0.2}
+            Rgba: skinColor
+        }
+    }
+}

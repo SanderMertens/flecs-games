@@ -1,0 +1,93 @@
+// Scene entities & configuration
+
+using bunny_hopper
+using bunny_hopper.assets
+using flecs.script
+using flecs.engine.*
+
+cfg {
+    export const groundY: f32 = 0
+    export const spawnX: f32 = 24
+    export const despawnX: f32 = -8
+    export const gravity: f32 = -32
+    export const jumpVelocity: f32 = 13
+    export const hardLandingVelocity: f32 = 16
+    export const maxJumps: i32 = 2
+    export const invulnTime: f32 = 0.5
+    export const deadAngle: f32 = math.PI
+    export const deadHeight: f32 = 1.5
+    export const largeCarrotChance: f32 = 0.18
+    export const maxLives = 3
+    export const initialSpeed: f32 = 12
+}
+
+export mut speed: f32 = cfg.initialSpeed
+
+const rng: math.Rng = {}
+
+player : Bunny {
+    Bunny: {speed: cfg.initialSpeed}
+    BunnyPlayer: {}
+    BunnyJump: {}
+    BunnyLives: {cfg.maxLives}
+    Position3: {-7}
+    Scale3: {1, 1, 1}
+    Rotation3: {}
+    DynamicTransform
+}
+
+carrots { }
+
+scenery {
+    for i in 0..12 {
+        const z = match i % 2 == 1 {
+            true: 2.0
+            false: -2.5
+        }
+
+        "tuft_{i}" : GrassTuft {
+            Position3: {-30 + i * 5.2 + rng.f(3), 0, z}
+            Scale3: {0.5 + rng.f(0.4), 0.25 + rng.f(0.25), 1}
+            DynamicTransform
+        }
+    }
+
+    for i in 0..5 {
+        const s = 0.875 + rng.f(0.25)
+
+        "tree_{i}" : Tree {
+            Position3: {-32 + i * 14 + rng.f(6), 0, -10}
+            Scale3: {s, s, s}
+            DynamicTransform
+        }
+    }
+
+    for i in 0..4 {
+        const s = 8 + rng.f(5)
+
+        "hill_{i}" : Hill {
+            Position3: {-40 + i * 22 + rng.f(8), 0, -32}
+            Scale3: {s, s, s}
+            DynamicTransform
+        }
+    }
+}
+
+$ {
+    BunnyGame: {
+        carrot_small_prefab: CarrotSmall
+        carrot_large_prefab: CarrotLarge
+        dust_pool: dust
+        dust_burst_low: DustBurstLow
+        dust_burst_high: DustBurstHigh
+        hit_pool: hit
+        hit_burst: HitBurst
+        sparkle_pool: sparkle
+        sparkle_burst: SparkleBurst
+        player: player
+        max_lives: cfg.maxLives
+        next_spawn_distance: 6
+    }
+
+    (BunnyGameState, Playing)
+}

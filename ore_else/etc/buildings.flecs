@@ -1,0 +1,15 @@
+// Placeable building assets
+
+include buildings/pad_beacon
+include buildings/wall
+include buildings/wall_segment
+include buildings/drill
+include buildings/solar_panel
+include buildings/gun_turret
+include buildings/laser_turret
+include buildings/missile_turret
+include buildings/rocket_pad
+include buildings/drone
+include buildings/drone_pad
+include buildings/factory
+include buildings/rules

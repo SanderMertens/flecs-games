@@ -1,0 +1,28 @@
+// Unassigned power bar readout
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+template PowerFree {
+    prop x: f32 = 0
+    prop y: f32 = 0
+    prop w: f32 = 100
+    prop size: f32 = 13
+    prop color: Rgba = {240, 176, 58, 255}
+
+    const alloc = PowerAlloc[PowerAlloc]
+    const free = cfg.powerBars - alloc.level[0] - alloc.level[1] - alloc.level[2]
+
+    Position: {x, y}
+    Layout: {width: w}
+
+    value {
+        Position: {0, 0}
+        Layout: {width: w}
+        Text: {text: "FREE {free}", size: size, align: Right}
+        Rgba: color
+    }
+}

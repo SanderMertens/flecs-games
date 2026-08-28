@@ -1,0 +1,20 @@
+// Placement tile markers
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab TileMarker {
+    Box: {1.92, 0.06, 1.92}
+    Rgba: {236, 244, 150, 255}
+    Emissive: {strength: 1.1, color: {236, 244, 150, 255}}
+}
+
+prefab TileMarkerBad {
+    Box: {1.92, 0.06, 1.92}
+    Rgba: {248, 96, 84, 255}
+    Emissive: {strength: 1.2, color: {248, 96, 84, 255}}
+}

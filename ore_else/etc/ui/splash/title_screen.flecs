@@ -1,0 +1,127 @@
+// Title screen: what the game is about, the controls, and how to start
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const TitleW = 900
+const TitleH = 640
+const TitleCapH = 7
+const TitleCapPad = 8
+const TitleFont = 17
+const TitleFill: Rgba = {15, 16, 19, 252}
+const TitleTextColor: Rgba = {226, 231, 238, 255}
+const TitleSoftColor: Rgba = {146, 154, 166, 255}
+const SignW = 260
+const SignH = 240
+const SignGap = 24
+const SignFont = 36
+const SignIconW = 170
+const SignIconH = 150
+const SignIconY = 14
+const SignLabelY = 176
+const SignFill: Rgba = {24, 26, 31, 255}
+const SignRowX = (TitleW - (3 * SignW + 2 * SignGap)) / 2
+const ControlsKeyW = 150
+const ControlsGap = 16
+const ControlsTextW = 428
+const ControlsX = (TitleW - (ControlsKeyW + ControlsGap + ControlsTextW)) / 2
+const MineColor: Rgba = {236, 176, 104, 255}
+const DefendColor: Rgba = {228, 96, 84, 255}
+const EscapeColor: Rgba = {96, 240, 218, 255}
+
+title_tex {
+    mine {
+        Svg: {file: "etc/assets/signs/mine.svg", width: 512, height: 512}
+    }
+
+    defend {
+        Svg: {file: "etc/assets/signs/defend.svg", width: 512, height: 512}
+    }
+
+    escape {
+        Svg: {file: "etc/assets/signs/escape.svg", width: 512, height: 512}
+    }
+}
+
+template TitleSign {
+    prop label = ""
+    prop color: Rgba = {226, 231, 238, 255}
+    prop icon: entity = 0
+
+    Panel: {w: SignW, h: SignH, capH: TitleCapH, fill: SignFill, edge: color}
+
+    icon_img {
+        Position: {(SignW - SignIconW) / 2, SignIconY + TitleCapPad}
+        Rect: {SignIconW, SignIconH}
+        Image: {texture: icon, fit: Contain}
+    }
+
+    label_text {
+        Position: {0, SignLabelY + TitleCapPad}
+        Layout: {width: SignW}
+        Text: {text: label, size: SignFont, align: Center}
+        Rgba: color
+    }
+}
+
+template TitleScreen {
+    Anchor: {h: Center, v: Middle, y: 0}
+    Panel: {w: TitleW, h: TitleH, capH: TitleCapH, fill: TitleFill}
+
+    signs {
+        Position: {SignRowX, 36 + TitleCapPad}
+        Layout: {direction: Row, spacing: SignGap}
+
+        TitleSign mine(label: "MINE", color: MineColor, icon: title_tex.mine)
+        TitleSign defend(label: "DEFEND", color: DefendColor, icon: title_tex.defend)
+        TitleSign escape(label: "ESCAPE", color: EscapeColor, icon: title_tex.escape)
+    }
+
+    goal_a {
+        Position: {0, 304 + TitleCapPad}
+        Layout: {width: TitleW}
+        Text: {
+            text: "Collect luminite, ship it off planet with rockets, defend the base against attacks,",
+            size: TitleFont,
+            align: Center
+        }
+        Rgba: TitleTextColor
+    }
+
+    goal_b {
+        Position: {0, 328 + TitleCapPad}
+        Layout: {width: TitleW}
+        Text: {
+            text: "escape before the waves get too strong.",
+            size: TitleFont,
+            align: Center
+        }
+        Rgba: TitleTextColor
+    }
+
+    controls {
+        Position: {ControlsX, 382 + TitleCapPad}
+        Layout: {direction: Column, spacing: 7}
+
+        PauseControl walk(key: "W A S D", action: "Walk")
+        PauseControl run(key: "Shift", action: "Walk faster")
+        PauseControl zoom(key: "Mouse wheel", action: "Zoom in/out")
+        PauseControl place(key: "Left click", action: "Place selected building")
+        PauseControl demolish(key: "Right click",
+            action: "Demolish/mine object under mouse cursor")
+        PauseControl inventory(key: "E", action: "Open / close the inventory")
+        PauseControl pick(key: "Q",
+            action: "Select the building under the cursor / deselect")
+        PauseControl cancel(key: "ESC", action: "Cancel / Pause")
+    }
+
+    start {
+        Position: {0, 592 + TitleCapPad}
+        Layout: {width: TitleW}
+        Text: {text: "PRESS ANY KEY TO START", size: TitleFont, align: Center}
+        Rgba: TitleSoftColor
+    }
+}

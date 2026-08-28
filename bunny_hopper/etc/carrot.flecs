@@ -1,0 +1,85 @@
+// Carrot asset
+
+module bunny_hopper.assets
+using flecs.script
+using flecs.engine.*
+
+const sink = 0.45
+const small_height = 1.1
+const small_width = 0.65
+const large_height = 3.2
+const large_width = 1.0
+
+prefab CarrotSmall {
+    BunnyCarrot: {
+        half_width: small_width * 0.5
+        height: small_height
+    }
+
+    body {
+        Position3: {0, small_height - (small_height + sink) * 0.5, 0}
+        Rotation3: {math.PI, 0, 0}
+        Scale3: {small_width, 1, small_width}
+        Cone: {segments: 16, smooth: true, length: small_height + sink}
+        Rgba: {255, 100, 20, 255}
+        Emissive: {strength: 0.9, color: {255, 100, 50, 255}}
+    }
+
+    leaf_mid {
+        Position3: {0, small_height + 0.15, 0}
+        Rotation3: {0, 0, 0}
+        Box: {0.12, 0.55, 0.12}
+        Rgba: {70, 160, 60, 255}
+    }
+
+    leaf_left {
+        Position3: {0.14, small_height + 0.15, 0}
+        Rotation3: {0, 0, 0.5}
+        Box: {0.12, 0.55, 0.12}
+        Rgba: {70, 160, 60, 255}
+    }
+
+    leaf_right {
+        Position3: {-0.14, small_height + 0.15, 0}
+        Rotation3: {0, 0, -0.5}
+        Box: {0.12, 0.55, 0.12}
+        Rgba: {70, 160, 60, 255}
+    }
+}
+
+prefab CarrotLarge {
+    BunnyCarrot: {
+        half_width: large_width * 0.5
+        height: large_height
+    }
+
+    body {
+        Position3: {0, large_height - (large_height + sink) * 0.5, 0}
+        Rotation3: {math.PI, 0, 0}
+        Scale3: {large_width, 1, large_width}
+        Cone: {segments: 16, smooth: true, length: large_height + sink}
+        Rgba: {255, 100, 20, 255}
+        Emissive: {strength: 0.9, color: {255, 100, 50, 255}}
+    }
+
+    leaf_mid {
+        Position3: {0, large_height + 0.15, 0}
+        Rotation3: {0, 0, 0}
+        Box: {0.12, 0.55, 0.12}
+        Rgba: {70, 160, 60, 255}
+    }
+
+    leaf_left {
+        Position3: {0.14, large_height + 0.15, 0}
+        Rotation3: {0, 0, 0.5}
+        Box: {0.12, 0.55, 0.12}
+        Rgba: {70, 160, 60, 255}
+    }
+
+    leaf_right {
+        Position3: {-0.14, large_height + 0.15, 0}
+        Rotation3: {0, 0, -0.5}
+        Box: {0.12, 0.55, 0.12}
+        Rgba: {70, 160, 60, 255}
+    }
+}

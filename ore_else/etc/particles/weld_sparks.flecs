@@ -1,0 +1,40 @@
+// Welding sparks raining from a repair drone
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template WeldSparks {
+    prop color: Rgba = {120, 216, 255, 255}
+    prop rate: f32 = 120
+    prop peak: f32 = 3.4
+    prop radius: f32 = 4.5
+
+    Rgba: color
+    PointLight: {intensity: 0, range: radius}
+    FlashLight: {peak: peak, fade: 0}
+
+    ParticleEmitter: {
+        pool: glow,
+        rate: rate,
+        size: 0.09,
+        size_variance: 0.04,
+        grow: -0.16,
+        max_age: 0.42,
+        max_age_variance: 0.12,
+        color: {245, 252, 255, 255},
+        color_ramp: {
+            mid: color,
+            mid_pos: 0.28,
+            end: {40, 110, 190, 0}
+        },
+        velocity: {0, -5.5, 0},
+        velocity_variance: {0.8, 1.4, 0.8},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.05,
+        radial: 0.6,
+        brightness_variance: 0.5,
+        enabled: false
+    }
+}

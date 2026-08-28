@@ -1,0 +1,20 @@
+{
+    "id": "ship_happens",
+    "type": "application",
+    "value": {
+        "use": [
+            "flecs_engine"
+        ]
+    },
+    "lang.c": {
+        "${target em}": {
+            "embed": [
+                "etc"
+            ],
+            "shell": "../../shell.html",
+            "ldflags": [
+                "-Wl,-u,ntohs"
+            ]
+        }
+    }
+}

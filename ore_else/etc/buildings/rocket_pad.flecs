@@ -1,0 +1,268 @@
+// Rocket pad
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const steel: Rgba = {172, 180, 194, 255}
+const steelShade: Rgba = {112, 120, 136, 255}
+const steelDeep: Rgba = {56, 62, 76, 255}
+const hazard: Rgba = {240, 176, 58, 255}
+const accent: Rgba = {92, 236, 222, 255}
+const concrete: Rgba = {126, 122, 114, 255}
+const soot: Rgba = {28, 29, 34, 255}
+
+@detail "Rocket launching facility for luminite shipments and evacuation."
+@tree Parent
+@name "Rocket pad"
+prefab RocketPad {
+    Icon: {texture: icons.rocket_pad}
+    Recipe: {inputs: [IronPlate: 25, CopperPlate: 50, StoneBrick: 25, Wire: 50, Electronics: 25], craft_time: 8}
+    Health: {value: 400, max: 400}
+    BuildLimit: {max: 1}
+    Footprint: {w: 3, h: 3}
+    LaunchPad: {base_y: 0.74}
+
+    apron {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.09, 0}
+        Box: {5.9, 0.18, 5.9}
+        Rgba: concrete
+        PbrMaterial: {metallic: 0, roughness: 0.94}
+    }
+
+    deck {
+        SurfaceWear: {dust: 0.4, grime: 0.8}
+        Position3: {0, 0.27, 0}
+        Box: {5.5, 0.18, 5.5}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.4, roughness: 0.55}
+    }
+
+    platform {
+        SurfaceWear: {dust: 0.75, grime: 0.5}
+        Position3: {0, 0.44, 0}
+        Box: {3.4, 0.16, 3.4}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.45}
+    }
+
+    ramp {
+        SurfaceWear: {dust: 0.7, grime: 0.5}
+        Position3: {0, 0.42, 1.98}
+        Rotation3: {-0.22, 0, 0}
+        Box: {1.5, 0.09, 0.86}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.48}
+    }
+
+    duct_l {
+        SurfaceWear: {dust: 0.6, grime: 0.6}
+        Position3: {-2.24, 0.42, 0.9}
+        Box: {0.34, 0.14, 1.5}
+        Rgba: steelDeep
+    }
+
+    duct_r {
+        SurfaceWear: {dust: 0.6, grime: 0.6}
+        Position3: {2.24, 0.42, -0.9}
+        Box: {0.34, 0.14, 1.5}
+        Rgba: steelDeep
+    }
+
+    trim_n : HazardBorderLong {
+        SurfaceWear: {dust: 0.35, grime: 0.5}
+        Position3: {0, 0.39, -2.42}
+    }
+
+    trim_s : HazardBorderLong {
+        SurfaceWear: {dust: 0.35, grime: 0.5}
+        Position3: {0, 0.39, 2.42}
+    }
+
+    trim_w : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.5}
+        Position3: {-2.42, 0.39, 0}
+        Rotation3: {0, 1.5708, 0}
+    }
+
+    trim_e : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.5}
+        Position3: {2.42, 0.39, 0}
+        Rotation3: {0, 1.5708, 0}
+    }
+
+    ring {
+        SurfaceWear: {dust: 0.65, grime: 0.45}
+        Position3: {0, 0.58, 0}
+        Cylinder: {segments: 24, smooth: true, length: 0.12}
+        Scale3: {2.7, 1, 2.7}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.6, roughness: 0.42}
+    }
+
+    ring_band {
+        Position3: {0, 0.67, 0}
+        Cylinder: {segments: 24, smooth: true, length: 0.06}
+        Scale3: {2.25, 1, 2.25}
+        Rgba: hazard
+        Emissive: {strength: 1.1, color: hazard}
+    }
+
+    trench {
+        SurfaceWear: {dust: 0.3, grime: 0.6}
+        Position3: {0, 0.68, 0}
+        Cylinder: {segments: 24, smooth: true, length: 0.08}
+        Scale3: {1.7, 1, 1.7}
+        Rgba: soot
+        PbrMaterial: {metallic: 0.3, roughness: 0.8}
+    }
+
+    core {
+        Position3: {0, 0.71, 0}
+        Cylinder: {segments: 20, smooth: true, length: 0.06}
+        Scale3: {0.95, 1, 0.95}
+        Rgba: accent
+        Emissive: {strength: 2, color: accent}
+    }
+
+    clamp_a {
+        Position3: {-0.76, 0.92, -0.76}
+        PadClamp: {yaw: 0.7854, tx: -1, tz: 1}
+    }
+
+    clamp_b {
+        Position3: {0.76, 0.92, -0.76}
+        PadClamp: {yaw: -0.7854, tx: -1, tz: -1}
+    }
+
+    clamp_c {
+        Position3: {-0.76, 0.92, 0.76}
+        PadClamp: {yaw: 2.356, tx: 1, tz: 1}
+    }
+
+    clamp_d {
+        Position3: {0.76, 0.92, 0.76}
+        PadClamp: {yaw: -2.356, tx: 1, tz: -1}
+    }
+
+    tower {
+        Position3: {-2.14, 0.36, -2.14}
+
+        leg_a {
+            SurfaceWear: {dust: 0.55, grime: 0.55}
+            Position3: {-0.34, 0.76, -0.34}
+            Box: {0.14, 1.52, 0.14}
+            Rgba: steelShade
+            PbrMaterial: {metallic: 0.62, roughness: 0.38}
+        }
+
+        leg_b {
+            SurfaceWear: {dust: 0.55, grime: 0.55}
+            Position3: {0.34, 0.76, -0.34}
+            Box: {0.14, 1.52, 0.14}
+            Rgba: steelShade
+            PbrMaterial: {metallic: 0.62, roughness: 0.38}
+        }
+
+        leg_c {
+            SurfaceWear: {dust: 0.55, grime: 0.55}
+            Position3: {-0.34, 0.76, 0.34}
+            Box: {0.14, 1.52, 0.14}
+            Rgba: steelShade
+            PbrMaterial: {metallic: 0.62, roughness: 0.38}
+        }
+
+        leg_d {
+            SurfaceWear: {dust: 0.55, grime: 0.55}
+            Position3: {0.34, 0.76, 0.34}
+            Box: {0.14, 1.52, 0.14}
+            Rgba: steelShade
+            PbrMaterial: {metallic: 0.62, roughness: 0.38}
+        }
+
+        brace_low {
+            SurfaceWear: {dust: 0.65, grime: 0.5}
+            Position3: {0, 0.44, 0}
+            Box: {0.86, 0.1, 0.86}
+            Rgba: steelDeep
+        }
+
+        brace_mid {
+            SurfaceWear: {dust: 0.65, grime: 0.4}
+            Position3: {0, 1.0, 0}
+            Box: {0.86, 0.1, 0.86}
+            Rgba: steelDeep
+        }
+
+        gantry {
+            SurfaceWear: {dust: 0.75, grime: 0.3}
+            Position3: {0, 1.58, 0}
+            Box: {1.1, 0.14, 1.1}
+            Rgba: steel
+            PbrMaterial: {metallic: 0.6, roughness: 0.4}
+        }
+
+        stripe : HazardTag {
+            SurfaceWear: {dust: 0.35, grime: 0.4}
+            Position3: {0, 1.68, 0}
+        }
+
+        rail_n {
+            SurfaceWear: {dust: 0.65, grime: 0.3}
+            Position3: {0, 1.84, -0.52}
+            Box: {1.1, 0.34, 0.06}
+            Rgba: steelShade
+        }
+
+        rail_w {
+            SurfaceWear: {dust: 0.65, grime: 0.3}
+            Position3: {-0.52, 1.84, 0}
+            Box: {0.06, 0.34, 1.1}
+            Rgba: steelShade
+        }
+
+        arm {
+            SurfaceWear: {dust: 0.65, grime: 0.3}
+            Position3: {0.62, 1.72, 0.62}
+            Rotation3: {0, 0.7854, 0}
+            Box: {0.16, 0.14, 1.5}
+            Rgba: steelDeep
+            PbrMaterial: {metallic: 0.6, roughness: 0.4}
+        }
+
+        mast {
+            SurfaceWear: {dust: 0.6, grime: 0.3}
+            Position3: {0, 2.34, 0}
+            Box: {0.16, 1.2, 0.16}
+            Rgba: steelShade
+            PbrMaterial: {metallic: 0.64, roughness: 0.34}
+        }
+
+        beacon {
+            Position3: {0, 2.94, 0}
+            Light: {
+                color: hazard, w: 0.24, d: 0.24, h: 0.16,
+                strength: 3
+            }
+        }
+    }
+
+    beacon_b {
+        Position3: {2.14, 0.36, -2.14}
+        PadBeacon: {}
+    }
+
+    beacon_c {
+        Position3: {-2.14, 0.36, 2.14}
+        PadBeacon: {}
+    }
+
+    beacon_d {
+        Position3: {2.14, 0.36, 2.14}
+        PadBeacon: {}
+    }
+}

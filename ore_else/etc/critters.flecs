@@ -1,0 +1,7 @@
+// Critter assets
+
+include critters/mite
+include critters/skitter
+include critters/brute
+include critters/behemoth
+include critters/spitter

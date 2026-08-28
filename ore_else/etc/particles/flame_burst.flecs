@@ -1,0 +1,33 @@
+// Flame burst
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab FlameBurst {
+    ParticleBurst: {
+        pool: fire,
+        count: 16,
+        size: 0.28,
+        size_variance: 0.12,
+        grow: 0.45,
+        max_age: 0.34,
+        max_age_variance: 0.12,
+        color: {255, 232, 180, 255},
+        color_ramp: {
+            mid: {244, 106, 44, 240},
+            end: {132, 74, 52, 120},
+            mid_pos: 0.45
+        },
+        velocity: {0, -4.5, 0},
+        velocity_variance: {0.5, 0.9, 0.5},
+        offset: {0, 0.1, 0},
+        shape: ParticleShapeCone,
+        shape_radius: 0.2,
+        shape_angle: 20,
+        rotation_variance: 3.14,
+        spin_variance: 3,
+        brightness_variance: 0.3
+    }
+}

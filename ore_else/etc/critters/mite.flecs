@@ -1,0 +1,115 @@
+// Mite
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const miteShell: Rgba = {74, 96, 138, 255}
+const miteDark: Rgba = {42, 54, 82, 255}
+const miteLimb: Rgba = {28, 36, 58, 255}
+const miteEye: Rgba = {128, 248, 255, 255}
+
+@tree Parent
+prefab Mite {
+    Critter: {step: 2.8, bob: 0.13}
+    Radius: {value: 0.34}
+    Health: {value: 12}
+    Speed: {value: 6.8}
+    Damage: {value: 4}
+    Range: {value: 1.1}
+    DeathBurst: {burst: CombustBurst}
+
+    abdomen {
+        Position3: {0, 0.31, -0.2}
+        Rotation3: {0.34, 0, 0}
+        Box: {0.22, 0.2, 0.26}
+        Rgba: miteDark
+
+        spark {
+            Position3: {0, 0.11, -0.06}
+            Box: {0.1, 0.06, 0.14}
+            Rgba: miteEye
+            Emissive: {strength: 2.8, color: miteEye}
+        }
+    }
+
+    thorax {
+        Position3: {0, 0.28, 0.02}
+        Box: {0.26, 0.18, 0.22}
+        Rgba: miteShell
+    }
+
+    head {
+        Position3: {0, 0.27, 0.19}
+        Box: {0.18, 0.15, 0.16}
+        Rgba: miteDark
+
+        visor {
+            Position3: {0, 0.03, 0.09}
+            Box: {0.14, 0.07, 0.04}
+            Rgba: miteEye
+            Emissive: {strength: 3.2, color: miteEye}
+        }
+
+        fang_left {
+            Position3: {-0.06, -0.07, 0.11}
+            Rotation3: {0, 0.5, 0}
+            Box: {0.03, 0.04, 0.14}
+            Rgba: miteLimb
+        }
+
+        fang_right {
+            Position3: {0.06, -0.07, 0.11}
+            Rotation3: {0, -0.5, 0}
+            Box: {0.03, 0.04, 0.14}
+            Rgba: miteLimb
+        }
+    }
+
+    antenna_left {
+        Position3: {-0.07, 0.4, 0.2}
+        Rotation3: {0.9, 0, -0.3}
+        Cone: {segments: 6, smooth: true, length: 0.26}
+        Scale3: {0.045, 1, 0.045}
+        Rgba: miteLimb
+    }
+
+    antenna_right {
+        Position3: {0.07, 0.4, 0.2}
+        Rotation3: {0.9, 0, 0.3}
+        Cone: {segments: 6, smooth: true, length: 0.26}
+        Scale3: {0.045, 1, 0.045}
+        Rgba: miteLimb
+    }
+
+    for i in 0..4 {
+        const side: f32 = 1 - 2 * (i % 2)
+        const row: f32 = math.floor(i / 2)
+
+        "leg_{i}" {
+            Position3: {side * 0.13, 0.22, 0.08 - row * 0.18}
+            Limb: {phase: i * 1.57, swing: 0.68}
+
+            thigh {
+                Position3: {side * 0.1, 0.025, 0}
+                Rotation3: {0, 0, side * -0.55}
+                Box: {0.2, 0.045, 0.045}
+                Rgba: miteLimb
+            }
+
+            shin {
+                Position3: {side * 0.2, -0.1, 0}
+                Box: {0.045, 0.2, 0.045}
+                Rgba: miteLimb
+            }
+
+            foot {
+                Position3: {side * 0.2, -0.2, 0.02}
+                Box: {0.07, 0.04, 0.1}
+                Rgba: miteLimb
+            }
+        }
+    }
+}

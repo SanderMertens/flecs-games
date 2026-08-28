@@ -1,0 +1,23 @@
+// Machine vent grille
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab vent_tex {
+    Texture: {"etc/assets/factory_vent.svg", 256, 256}
+}
+
+prefab vent_norm {
+    Texture: {"etc/assets/factory_vent_normal.svg", 256, 256}
+}
+
+prefab VentGrille {
+    Box: {2.76, 0.86, 0.06}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.5, roughness: 0.52}
+    PbrTextures: {albedo: vent_tex, normal: vent_norm}
+}

@@ -1,0 +1,18 @@
+module ship_happens
+using flecs.engine.*
+
+actions {
+    Place { InputAction: {"Place the selected furniture on the hovered tile, or bulldoze it when bulldozing"} }
+    Bulldoze { InputAction: {"Bulldoze the furniture under the cursor, or cancel the current selection"} }
+    Cancel { InputAction: {"Drop the selected furniture or leave bulldoze mode"} }
+    Restart { InputAction: {"Restart after the game has ended"} }
+}
+
+$ {
+    InputMap: [
+        keys.MouseLeft: { ship_happens.actions.Place },
+        keys.MouseRight: { ship_happens.actions.Bulldoze },
+        keys.Escape: { ship_happens.actions.Cancel },
+        keys.R: { ship_happens.actions.Restart }
+    ]
+}

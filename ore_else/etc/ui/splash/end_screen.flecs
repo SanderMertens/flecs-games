@@ -1,0 +1,73 @@
+// End screen: the run is over, won or lost, with the final tally
+
+module ore_else.assets
+
+using flecs.engine.*
+using flecs.script
+using flecs.script.core
+using ore_else
+using ore_else.resources
+
+const EndW = 640
+const EndH = 218
+const EndCapH = 7
+const EndCapPad = 8
+const EndFont = 17
+const EndFontSmall = 15
+const EndFill: Rgba = {15, 16, 19, 252}
+const EndTextColor: Rgba = {226, 231, 238, 255}
+const EndSoftColor: Rgba = {146, 154, 166, 255}
+const EndLuminiteColor: Rgba = {96, 240, 218, 255}
+
+template EndScreen {
+    const clock = Clock[Clock]
+    const luminite = LuminiteProgress[LuminiteProgress]
+    const waves = WaveState[WaveState]
+    const won = $?[(GameState, Won)]
+
+    Anchor: {h: Center, v: Middle, y: -60}
+    Panel: {w: EndW, h: EndH, capH: EndCapH, fill: EndFill}
+
+    title {
+        Position: {0, 36 + EndCapPad}
+        Layout: {width: EndW}
+        Text: {
+            text: match won {
+                true: "YOU ESCAPED"
+                false: "THE SWARM GOT YOU"
+            },
+            size: 28,
+            align: Center
+        }
+        Rgba: EndTextColor
+    }
+
+    score {
+        Position: {0, 92 + EndCapPad}
+        Layout: {width: EndW}
+        Text: {
+            text: "{luminite.luminite_shipped} Luminite shipped",
+            size: EndFont,
+            align: Center
+        }
+        Rgba: EndLuminiteColor
+    }
+
+    stats {
+        Position: {0, 120 + EndCapPad}
+        Layout: {width: EndW}
+        Text: {
+            text: "{waves.kills} critters killed - survived {math.floor(clock.time_elapsed / 60):.0}:{math.floor(clock.time_elapsed) % 60:02} to wave {waves.wave}",
+            size: EndFont,
+            align: Center
+        }
+        Rgba: EndTextColor
+    }
+
+    sub {
+        Position: {0, 158 + EndCapPad}
+        Layout: {width: EndW}
+        Text: {text: "Press R to land again", size: EndFontSmall, align: Center}
+        Rgba: EndSoftColor
+    }
+}

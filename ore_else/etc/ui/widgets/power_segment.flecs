@@ -1,0 +1,63 @@
+// Power allocator segment: one bar of one category's level
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const SegRadius = 2
+const SegEdge: Rgba = {52, 56, 64, 255}
+const SegOff: Rgba = {13, 14, 17, 255}
+const SegOffHover: Rgba = {34, 37, 44, 255}
+const SegWarn: Rgba = {240, 152, 72, 255}
+const SegWarnHover: Rgba = {252, 190, 130, 255}
+const SegOk: Rgba = {124, 226, 148, 255}
+const SegOkHover: Rgba = {174, 242, 192, 255}
+const SegLive: Rgba = {92, 236, 222, 255}
+const SegLiveHover: Rgba = {156, 246, 238, 255}
+
+template PowerSegment {
+    prop kind: PowerKind = Mining
+    prop level: i32 = 1
+    prop x: f32 = 0
+    prop y: f32 = 0
+    prop w: f32 = 52
+    prop h: f32 = 11
+
+    const alloc = PowerAlloc[PowerAlloc]
+    const tone: i32 = match kind {
+        Mining: alloc.level[0]
+        Weapons: alloc.level[1]
+        Construction: alloc.level[2]
+        _: 0
+    }
+    const on = level <= tone
+
+    PowerSeg: {kind: kind, level: level}
+    WidgetState
+    Position: {x, y}
+    Layout: {width: w, height: h}
+    Rect: {w, h}
+    Border: {radius: SegRadius, width: 1, color: SegEdge}
+    Rgba: match on {
+        true: match tone {
+            1: match $this[WidgetState].hover {
+                true: SegWarnHover
+                false: SegWarn
+            }
+            2: match $this[WidgetState].hover {
+                true: SegOkHover
+                false: SegOk
+            }
+            _: match $this[WidgetState].hover {
+                true: SegLiveHover
+                false: SegLive
+            }
+        }
+        false: match $this[WidgetState].hover {
+            true: SegOffHover
+            false: SegOff
+        }
+    }
+}

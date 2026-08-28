@@ -1,0 +1,77 @@
+// Wall segment (connector)
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const steelShade: Rgba = {112, 120, 136, 255}
+const steelDeep: Rgba = {56, 62, 76, 255}
+const concrete: Rgba = {126, 122, 114, 255}
+const concreteShade: Rgba = {88, 86, 82, 255}
+
+@tree Parent
+prefab WallSegment {
+    plinth {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.14, 0}
+        Box: {1.06, 0.28, 0.92}
+        Rgba: concrete
+        PbrMaterial: {metallic: 0, roughness: 0.94}
+    }
+
+    kerb {
+        SurfaceWear: {dust: 0.4, grime: 0.8}
+        Position3: {0, 0.31, 0}
+        Box: {1.06, 0.06, 0.84}
+        Rgba: concreteShade
+        PbrMaterial: {metallic: 0.1, roughness: 0.8}
+    }
+
+    panel {
+        SurfaceWear: {dust: 0.6, grime: 0.65}
+        Position3: {0, 0.61, 0}
+        Box: {1.06, 0.54, 0.78}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.55, roughness: 0.45}
+    }
+
+    rib_a {
+        SurfaceWear: {dust: 0.6, grime: 0.55}
+        Position3: {-0.34, 0.61, 0}
+        Box: {0.1, 0.5, 0.9}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.6, roughness: 0.4}
+    }
+
+    rib_b {
+        SurfaceWear: {dust: 0.6, grime: 0.55}
+        Position3: {0, 0.61, 0}
+        Box: {0.1, 0.5, 0.9}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.6, roughness: 0.4}
+    }
+
+    rib_c {
+        SurfaceWear: {dust: 0.6, grime: 0.55}
+        Position3: {0.34, 0.61, 0}
+        Box: {0.1, 0.5, 0.9}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.6, roughness: 0.4}
+    }
+
+    rail {
+        SurfaceWear: {dust: 0.75, grime: 0.4}
+        Position3: {0, 0.94, 0}
+        Box: {1.06, 0.12, 0.86}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.6, roughness: 0.4}
+    }
+
+    trim : HazardTrimShort {
+        SurfaceWear: {dust: 0.35, grime: 0.5}
+        Position3: {0, 1.03, 0}
+    }
+}

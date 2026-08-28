@@ -1,0 +1,17 @@
+module bunny_hopper
+using flecs.engine.*
+using bunny_hopper.actions
+using bunny_hopper
+
+input {
+    Behaviors: [
+        script {
+            await pressed(Jump)
+            await jump()
+        },
+        script {
+            await pressed(Restart)
+            await restart()
+        }
+    ]
+}

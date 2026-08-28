@@ -1,0 +1,20 @@
+// Ship time!
+
+// Engine config
+include config
+include keybinding
+include input
+
+// Assets
+include dev
+include furniture
+include particles
+
+// Scene entities
+include scene
+include decor
+
+// UI
+include packet
+include toolbar
+include hud

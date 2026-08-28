@@ -1,0 +1,71 @@
+// Rendering quality tiers.
+
+using flecs.engine
+using flecs.engine.*
+using flecs.script
+using ore_else
+
+enum RenderQuality(Low, Medium, High)
+
+// Mobile browsers start on the Low tier at 30 FPS; desktops, native and in a
+// browser, run the High tier at 60 FPS.
+const defaultQuality: RenderQuality = match platform.mobile {
+    true: Low
+    _: High
+}
+
+const targetFps: f32 = match platform.mobile {
+    true: 30
+    _: 60
+}
+
+export mut renderQuality: RenderQuality = defaultQuality
+
+const qualityScale: i32 = match renderQuality {
+    Low: 2
+    _: 1
+}
+
+const qualityShadowMap: i32 = match renderQuality {
+    Low: 1024
+    Medium: 2048
+    _: 4096
+}
+
+const qualityShadowRange: f32 = match renderQuality {
+    Low: 91
+    _: 140
+}
+
+const qualitySsao: bool = match renderQuality {
+    High: true
+    _: false
+}
+
+const qualityBloom: bool = match renderQuality {
+    Low: false
+    _: true
+}
+
+const qualityDetail: bool = match renderQuality {
+    Low: false
+    _: true
+}
+
+surface {
+    Surface: {resolution_scale: qualityScale, target_fps: targetFps}
+}
+
+view {
+    RenderView: {
+        shadow: {map_size: qualityShadowMap, max_range: qualityShadowRange}
+        surface_effects: {enabled: qualityDetail}
+        cloud_shadow: {enabled: qualityDetail}
+        effects: [
+            { enabled: qualitySsao, effect: view.ssao },
+            { enabled: qualityBloom, effect: view.bloom },
+            { enabled: true, effect: view.autoExposure },
+            { enabled: true, effect: view.tonyMcMapFace }
+        ]
+    }
+}

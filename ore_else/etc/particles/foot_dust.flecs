@@ -1,0 +1,31 @@
+// Footstep dust
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab FootDust {
+    ParticleBurst: {
+        pool: fx,
+        count: 8,
+        size: 0.16,
+        size_variance: 0.07,
+        grow: 0.55,
+        max_age: 0.5,
+        max_age_variance: 0.18,
+        color: {212, 184, 150, 210},
+        color_ramp: {
+            end: {186, 164, 138, 90}
+        },
+        velocity: {0, 0.75, 0},
+        velocity_variance: {0.3, 0.3, 0.3},
+        offset: {0, 0.03, 0},
+        shape: ParticleShapeDisc,
+        shape_radius: 0.16,
+        radial: 1.5,
+        rotation_variance: 3.14,
+        spin_variance: 2.6,
+        brightness_variance: 0.2
+    }
+}

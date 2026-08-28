@@ -1,0 +1,27 @@
+// Particle pools and bursts
+
+include particles/curves
+include particles/pools
+include particles/poof_burst
+include particles/mine_burst
+include particles/splat_burst
+include particles/combust_burst
+include particles/boom_burst
+include particles/flame_burst
+include particles/smoke_burst
+include particles/spark_burst
+include particles/foot_dust
+include particles/corpse_embers
+include particles/jet_plume
+include particles/muzzle_flash
+include particles/beam_glow
+include particles/beam_sparks
+include particles/impact_dust
+include particles/hit_puff
+include particles/deposit_sparkle
+include particles/weld_sparks
+include particles/smoke_puff
+include particles/missile_trail
+include particles/missile_launch
+include particles/vent_steam
+include particles/drill_dust

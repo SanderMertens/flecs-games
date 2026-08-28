@@ -1,0 +1,37 @@
+// Missile exhaust smoke trail
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template MissileTrail {
+    prop rate: f32 = 80
+    prop size: f32 = 0.22
+    prop age: f32 = 1.2
+
+    ParticleEmitter: {
+        pool: trail,
+        rate: rate,
+        size: size,
+        size_variance: 0.06,
+        grow: 1,
+        max_age: age,
+        max_age_variance: 0.3,
+        color: {228, 220, 210, 210},
+        color_ramp: {
+            mid: {158, 152, 148, 150},
+            end: {104, 100, 98, 0},
+            mid_pos: 0.28
+        },
+        velocity: {0, 0.35, 0},
+        velocity_variance: {0.3, 0.25, 0.3},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.05,
+        rotation_variance: 3.14,
+        spin_variance: 2,
+        brightness_variance: 0.18,
+        inherit_velocity: 0.1,
+        enabled: true
+    }
+}

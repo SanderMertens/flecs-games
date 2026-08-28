@@ -1,0 +1,9 @@
+// Shared textures and material prefabs
+
+include materials/hazard
+include materials/solar_cells
+include materials/drone_bay
+include materials/fan
+include materials/wall_plate
+include materials/vent
+include materials/terrain

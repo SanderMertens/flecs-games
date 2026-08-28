@@ -1,0 +1,125 @@
+// Particle & floater effects
+
+module ship_happens.assets
+using flecs.engine.*
+using ship_happens
+
+const dollarRed: Rgba = {235, 60, 50, 255}
+
+prefab DollarSign {
+    Billboard
+
+    bar_top {
+        ShipDollarPart
+        Position3: {0, 0.24, 0}
+        Box: {0.26, 0.06, 0.04}
+        Rgba: dollarRed
+        Emissive: {strength: 2, color: dollarRed}
+        AlphaBlend
+    }
+
+    bar_mid {
+        ShipDollarPart
+        Position3: {0, 0, 0}
+        Box: {0.26, 0.06, 0.04}
+        Rgba: dollarRed
+        Emissive: {strength: 2, color: dollarRed}
+        AlphaBlend
+    }
+
+    bar_bottom {
+        ShipDollarPart
+        Position3: {0, -0.24, 0}
+        Box: {0.26, 0.06, 0.04}
+        Rgba: dollarRed
+        Emissive: {strength: 2, color: dollarRed}
+        AlphaBlend
+    }
+
+    side_top {
+        ShipDollarPart
+        Position3: {-0.1, 0.12, 0}
+        Box: {0.06, 0.18, 0.04}
+        Rgba: dollarRed
+        Emissive: {strength: 2, color: dollarRed}
+        AlphaBlend
+    }
+
+    side_bottom {
+        ShipDollarPart
+        Position3: {0.1, -0.12, 0}
+        Box: {0.06, 0.18, 0.04}
+        Rgba: dollarRed
+        Emissive: {strength: 2, color: dollarRed}
+        AlphaBlend
+    }
+
+    stroke {
+        ShipDollarPart
+        Position3: {0, 0, 0.03}
+        Box: {0.05, 0.62, 0.03}
+        Rgba: dollarRed
+        Emissive: {strength: 2, color: dollarRed}
+        AlphaBlend
+    }
+}
+
+fx {
+    Particles: {
+        capacity: 256,
+        gravity: 4,
+        drag: 2.5,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.5
+        }
+    }
+}
+
+prefab PoofBurst {
+    ParticleBurst: {
+        count: 14,
+        size: 0.13,
+        size_variance: 0.06,
+        grow: 0.4,
+        max_age: 0.5,
+        max_age_variance: 0.2,
+        color: {210, 214, 222, 255},
+        velocity: {0, 1.6, 0},
+        velocity_variance: {1.2, 0.8, 1.2},
+        offset: {0, 0.1, 0},
+        spread: {0.5, 0.2, 0.5},
+        radial: 1.2
+    }
+}
+
+glow {
+    Particles: {
+        capacity: 256,
+        gravity: 3,
+        drag: 1.5,
+        emissive: 2,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.5
+        }
+    }
+}
+
+prefab ShipBurst {
+    ParticleBurst: {
+        count: 60,
+        size: 0.16,
+        size_variance: 0.07,
+        max_age: 1.2,
+        max_age_variance: 0.3,
+        color: {255, 210, 80, 255},
+        velocity: {0, 6, 0},
+        velocity_variance: {4, 3, 4},
+        offset: {0, 0, 0},
+        spread: {1, 0.5, 1},
+        radial: 3
+    }
+}

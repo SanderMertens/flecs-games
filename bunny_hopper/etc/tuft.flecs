@@ -1,0 +1,10 @@
+// Grass asset
+
+module bunny_hopper.assets
+using flecs.engine.*
+
+prefab GrassTuft {
+    BunnyScenery: {parallax: 1, wrap_min: -32, wrap_span: 64}
+    Box: {1, 1, 0.4}
+    Rgba: {70, 140, 60, 255}
+}

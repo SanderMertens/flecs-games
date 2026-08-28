@@ -1,0 +1,36 @@
+module ore_else
+using flecs.engine.*
+
+actions {
+    Forward { InputAction: {"Move the astronaut forward"} }
+    Back { InputAction: {"Move the astronaut back"} }
+    Left { InputAction: {"Move the astronaut left"} }
+    Right { InputAction: {"Move the astronaut right"} }
+    Run { InputAction: {"Sprint while moving; while held a placement drag fills a rectangle and crafting queues a batch"} }
+    Place { InputAction: {"Place the selected building on the hovered tile; hold and drag to place a line or rectangle"} }
+    Mine { InputAction: {"Hold to mine the deposit or building under the cursor; a press cancels a placement drag"} }
+    Cancel { InputAction: {"Close the inventory, or deselect the selected building"} }
+    Inventory { InputAction: {"Open or close the inventory"} }
+    Pipette { InputAction: {"Select the building (or the drill for a deposit) under the cursor"} }
+    Restart { InputAction: {"Restart after the game has ended"} }
+    Pick { InputAction: {"Raised by the inventory when a building slot is clicked; closes the inventory"} }
+    SwitchTab { InputAction: {"Switch the open inventory between the Buildings and Rocket tab"} }
+}
+
+$ {
+    InputMap: [
+        keys.W: { ore_else.actions.Forward },
+        keys.S: { ore_else.actions.Back },
+        keys.A: { ore_else.actions.Left },
+        keys.D: { ore_else.actions.Right },
+        keys.ShiftLeft: { ore_else.actions.Run },
+        keys.ShiftRight: { ore_else.actions.Run },
+        keys.MouseLeft: { ore_else.actions.Place },
+        keys.MouseRight: { ore_else.actions.Mine },
+        keys.Escape: { ore_else.actions.Cancel },
+        keys.E: { ore_else.actions.Inventory },
+        keys.Q: { ore_else.actions.Pipette },
+        keys.R: { ore_else.actions.Restart },
+        keys.Tab: { ore_else.actions.SwitchTab }
+    ]
+}

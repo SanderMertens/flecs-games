@@ -1,0 +1,78 @@
+// Indicator light: a housing, an emissive bulb and a glass cover
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const lightHousing: Rgba = {42, 46, 56, 255}
+const lightOff: Rgba = {40, 44, 52, 255}
+const lightGlass: Rgba = {206, 226, 236, 78}
+
+@tree Parent
+template Light {
+    prop color: Rgba = {92, 236, 222, 255}
+    prop dead: Rgba = {248, 84, 72, 255}
+    prop warn: Rgba = {240, 152, 72, 255}
+    prop ok: Rgba = {124, 226, 148, 255}
+    prop on = true
+    prop status = false
+    prop work = false
+    prop w: f32 = 0.22
+    prop d: f32 = 0.22
+    prop h: f32 = 0.1
+    prop strength: f32 = 2.6
+    prop blink: f32 = 1.4
+    prop light: f32 = 0
+    prop range: f32 = 2.6
+
+    const bulbY = 0.04 + h * 0.5
+    const glassY = 0.04 + h + 0.005
+
+    housing {
+        SurfaceWear: {dust: 0.45, grime: 0.65}
+        Position3: {0, 0.02, 0}
+        Box: {w + 0.07, 0.04, d + 0.07}
+        Rgba: lightHousing
+        PbrMaterial: {metallic: 0.55, roughness: 0.45}
+    }
+
+    bulb {
+        Position3: {0, bulbY, 0}
+        Box: {w, h, d}
+        Rgba: match on {
+            true: color
+            false: lightOff
+        }
+        PbrMaterial: {metallic: 0, roughness: 0.35}
+
+        if on {
+            Emissive: {strength: strength, color: color}
+        }
+
+        if on && light > 0 {
+            PointLight: {intensity: light, range: range}
+        }
+
+        if status {
+            StatusLamp: {
+                live: color, dead: dead, warn: warn, ok: ok,
+                strength: strength, blink: blink, light: light
+            }
+        }
+
+        if work {
+            WorkLight: {on: strength, off: 0, blink: blink, light: light}
+        }
+    }
+
+    glass {
+        Position3: {0, glassY, 0}
+        Box: {w + 0.04, 0.04, d + 0.04}
+        Rgba: lightGlass
+        AlphaBlend
+        PbrMaterial: {metallic: 0, roughness: 0.06}
+    }
+}

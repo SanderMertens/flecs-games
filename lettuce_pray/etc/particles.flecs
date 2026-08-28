@@ -1,0 +1,112 @@
+module lettuce_pray.assets
+using flecs.engine.*
+
+fx {
+    Particles: {
+        capacity: 512,
+        gravity: 8,
+        drag: 2.4,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.5
+        }
+    }
+}
+
+glow {
+    Particles: {
+        capacity: 512,
+        gravity: 2,
+        drag: 1.5,
+        emissive: 2.5,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.45
+        }
+    }
+}
+
+prefab SplatBurst {
+    ParticleBurst: {
+        count: 12,
+        size: 0.12,
+        size_variance: 0.05,
+        grow: 0.2,
+        max_age: 0.4,
+        max_age_variance: 0.15,
+        color: {150, 220, 110, 255},
+        velocity: {0, 1.4, 0},
+        velocity_variance: {1.4, 1.0, 1.0},
+        offset: {0, 0, 0},
+        spread: {0.1, 0.1, 0.1},
+        radial: 1.2
+    }
+}
+
+prefab ChompBurst {
+    ParticleBurst: {
+        count: 8,
+        size: 0.11,
+        size_variance: 0.05,
+        grow: 0.15,
+        max_age: 0.45,
+        max_age_variance: 0.15,
+        color: {110, 190, 90, 255},
+        velocity: {0, 1.8, 0},
+        velocity_variance: {1.2, 0.9, 0.9},
+        offset: {0, 0, 0},
+        spread: {0.2, 0.2, 0.2},
+        radial: 1.1
+    }
+}
+
+prefab ArmorBurst {
+    ParticleBurst: {
+        count: 16,
+        size: 0.13,
+        size_variance: 0.06,
+        max_age: 0.6,
+        max_age_variance: 0.2,
+        color: {215, 210, 200, 255},
+        velocity: {0, 2.6, 0},
+        velocity_variance: {2.2, 1.4, 1.4},
+        offset: {0, 0, 0},
+        spread: {0.2, 0.2, 0.2},
+        radial: 1.6
+    }
+}
+
+prefab BoomBurst {
+    ParticleBurst: {
+        count: 90,
+        size: 0.32,
+        size_variance: 0.16,
+        grow: 1.4,
+        max_age: 0.7,
+        max_age_variance: 0.25,
+        color: {255, 140, 40, 255},
+        velocity: {0, 3.2, 0},
+        velocity_variance: {7.5, 2.4, 2.0},
+        offset: {0, 0.4, 0},
+        spread: {2.4, 0.3, 0.6},
+        radial: 3.2
+    }
+}
+
+prefab PopBurst {
+    ParticleBurst: {
+        count: 18,
+        size: 0.1,
+        size_variance: 0.04,
+        max_age: 0.5,
+        max_age_variance: 0.1,
+        color: {255, 220, 90, 255},
+        velocity: {0, 2.6, 0},
+        velocity_variance: {1.6, 1.2, 1.6},
+        offset: {0, 0, 0},
+        spread: {0.15, 0.15, 0.15},
+        radial: 1.4
+    }
+}

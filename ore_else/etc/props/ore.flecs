@@ -1,0 +1,97 @@
+// Ore deposit assets
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+
+const oreRng: math.Rng = {seed: mapSeedOre}
+
+@tree Parent
+template Ore {
+    prop tint: Rgba = {140, 138, 132, 255}
+    prop padTint: Rgba = {96, 82, 66, 255}
+    prop glow: f32 = 0
+    prop metallic: f32 = 0
+    prop roughness: f32 = 0.7
+    prop chunks: i32 = 11
+    prop chunkSize: f32 = 0.28
+    prop chunkTall: f32 = 1
+    prop spread: f32 = 0.62
+    prop chunkShape: i32 = 0
+    prop slabs: i32 = 4
+    prop wearDust: f32 = 0.65
+
+    pad {
+        Position3: {0, 0.055, 0}
+        Rotation3: {0, oreRng.f(0.5) - 0.25, 0}
+        Box: {1.44, 0.11, 1.36}
+        Rgba: padTint
+        PbrMaterial: {metallic: 0, roughness: 0.95}
+        SurfaceWear: {dust: 0.35, edge: 0, scratch: 0}
+    }
+
+    for k in 0..slabs {
+        const sa = 1.5708 * k + oreRng.f(1) - 0.5
+        const sr = 0.3 + oreRng.f(0.16)
+        const sw = 0.66 + oreRng.f(0.44)
+        const sd = 0.58 + oreRng.f(0.4)
+        const sh = 0.06 + oreRng.f(0.1)
+
+        "shelf_{k}" {
+            Position3: {
+                math.cos(sa) * sr,
+                sh * 0.5,
+                math.sin(sa) * sr
+            }
+            Rotation3: {
+                oreRng.f(0.16) - 0.08,
+                oreRng.f(6.283),
+                oreRng.f(0.16) - 0.08
+            }
+            Box: {sw, sh, sd}
+            Rgba: padTint
+            PbrMaterial: {metallic: 0, roughness: 0.88 + oreRng.f(0.1)}
+            SurfaceWear: {dust: 0.5, seed: k * 0.17, edge: 0, scratch: 0}
+        }
+    }
+
+    for i in 0..chunks {
+        const a = oreRng.f(6.283)
+        const rad = spread * math.sqrt(oreRng.f(1))
+        const w = chunkSize * (0.55 + oreRng.f(0.75))
+        const h = w * chunkTall * (0.7 + oreRng.f(0.8))
+        const d = w * (0.7 + oreRng.f(0.55))
+
+        "chunk_{i}" {
+            Position3: {
+                math.cos(a) * rad,
+                0.09 + h * 0.42,
+                math.sin(a) * rad
+            }
+            Rotation3: {
+                oreRng.f(0.9) - 0.45,
+                oreRng.f(6.283),
+                oreRng.f(0.9) - 0.45
+            }
+            Rgba: tint
+            PbrMaterial: {metallic: metallic, roughness: roughness}
+            SurfaceWear: {dust: wearDust, seed: i * 0.11, edge: 0, scratch: 0}
+
+            if chunkShape > 0 {
+                IcoSphere: {segments: 1, smooth: false, radius: 0.5}
+                Scale3: {w, h, d}
+            }
+
+            if chunkShape < 1 {
+                Box: {w, h, d}
+            }
+
+            if glow > 0 {
+                Emissive: {strength: glow, color: tint}
+            }
+        }
+    }
+}

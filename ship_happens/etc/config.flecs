@@ -1,0 +1,323 @@
+// Engine configuration
+
+using flecs.engine
+using flecs.engine.*
+using flecs.script
+
+surface {
+    Surface: {
+        title: "Ship Happens"
+        width: 1440
+        height: 900
+        vsync: true
+    }
+}
+
+camera {
+    Camera: {
+        fov: math.PI / 3.4,
+        near_: 0.5,
+        far_: 400
+    }
+    Position3: {0, 13.5, 15.5}
+    LookAt: {0, 0, -0.5}
+}
+
+sky {
+    sun {
+        Position3: {-1.2, 2.4, 1.6}
+        DirectionalLight: {intensity: 2.2}
+        CelestialLight: {
+            toa_intensity: 6,
+            toa_color: {255, 250, 235, 255}
+        }
+        LookAt: {0, 0, 0}
+        Rgba: {255, 252, 240, 255}
+    }
+
+    moon {
+        Position3: {1, 2, -1}
+        DirectionalLight: {intensity: 0}
+        CelestialLight: {
+            toa_intensity: 0.0005,
+            toa_color: {255, 255, 255, 255}
+        }
+        LookAt: {0, 0, 0}
+        Rgba: {255, 255, 255, 255}
+    }
+
+    stars {
+        Stars: {
+            density: 0.5,
+            cells: 180,
+            size: 120,
+            color_variation: 1
+        }
+        CelestialLight: {
+            toa_intensity: 0.01,
+            toa_color: {255, 255, 255, 255}
+        }
+        Rotation3: {0, 0, 0}
+    }
+
+    atmosphere {
+        Atmosphere: {
+            sun: sun,
+            moon: moon,
+            stars: stars
+        }
+    }
+}
+
+view {
+    geometry { GeometryBatch }
+    skybox { SkyBoxBatch }
+
+    ssao {
+        SSAO: { radius: 0.4 }
+    }
+
+    bloom {
+        Bloom: {}
+    }
+
+    autoExposure {
+        AutoExposure: {
+            min_log_luma: -16,
+            low_percentile: 0,
+            min_brightness: 0.05,
+            max_brightness: 0.5
+        }
+    }
+
+    tonyMcMapFace {
+        Tony: { auto_exposure: autoExposure }
+    }
+
+    RenderView: {
+        camera: camera,
+        atmosphere: sky.atmosphere,
+        ambient_intensity: 0.6,
+        screen_px_threshold: 3,
+        shadow: {
+            enabled: true,
+            map_size: 4096,
+            max_range: 120,
+            bias: 0.0001
+        },
+        effects: [
+            { enabled: true, effect: ssao },
+            { enabled: true, effect: bloom },
+            { enabled: true, effect: autoExposure },
+            { enabled: true, effect: tonyMcMapFace }
+        ]
+    }
+
+    RenderBatchSet: {
+        batches: [ geometry, skybox ]
+    }
+}
+
+world {
+    ground {
+        Position3: {0, -0.75, 0}
+        Rgba: {96, 152, 78, 255}
+        Box: {300, 1, 240}
+    }
+
+    slab {
+        Position3: {0, -0.37, 0}
+        Rgba: {148, 150, 156, 255}
+        Box: {23.4, 0.5, 15.2}
+    }
+
+    wall_back_bottom {
+        Position3: {0, 0.45, -7.35}
+        Box: {23.4, 1.5, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_back_top {
+        Position3: {0, 2.9, -7.35}
+        Box: {23.4, 0.6, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_back_pier_left {
+        Position3: {-10.4, 1.9, -7.35}
+        Box: {2.6, 1.4, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_back_pier_a {
+        Position3: {-5, 1.9, -7.35}
+        Box: {1.8, 1.4, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_back_pier_b {
+        Position3: {0, 1.9, -7.35}
+        Box: {1.8, 1.4, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_back_pier_c {
+        Position3: {5, 1.9, -7.35}
+        Box: {1.8, 1.4, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_back_pier_right {
+        Position3: {10.4, 1.9, -7.35}
+        Box: {2.6, 1.4, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    windows {
+        for i in 0..4 {
+            const cx = -7.5 + i * 5
+
+            "glass_{i}" {
+                Position3: {cx, 1.9, -7.35}
+                Box: {3.2, 1.4, 0.08}
+                Rgba: {180, 215, 240, 255}
+                PbrMaterial: {metallic: 0, roughness: 0.05}
+                Transmission: {
+                    transmission_factor: 0.92
+                    ior: 1.5
+                    thickness_factor: 0.1
+                    attenuation_distance: 2
+                    attenuation_color: {150, 200, 240}
+                }
+            }
+
+            "frame_top_{i}" {
+                Position3: {cx, 2.66, -7.35}
+                Box: {3.44, 0.12, 0.56}
+                Rgba: {240, 240, 238, 255}
+            }
+
+            "frame_bottom_{i}" {
+                Position3: {cx, 1.14, -7.35}
+                Box: {3.44, 0.12, 0.56}
+                Rgba: {240, 240, 238, 255}
+            }
+
+            "frame_left_{i}" {
+                Position3: {cx - 1.66, 1.9, -7.35}
+                Box: {0.12, 1.4, 0.56}
+                Rgba: {240, 240, 238, 255}
+            }
+
+            "frame_right_{i}" {
+                Position3: {cx + 1.66, 1.9, -7.35}
+                Box: {0.12, 1.4, 0.56}
+                Rgba: {240, 240, 238, 255}
+            }
+
+            "mullion_{i}" {
+                Position3: {cx, 1.9, -7.35}
+                Box: {0.08, 1.4, 0.52}
+                Rgba: {240, 240, 238, 255}
+            }
+        }
+    }
+
+    wall_left {
+        Position3: {-11.45, 1.45, 0}
+        Box: {0.5, 3.5, 15.2}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_right_back {
+        Position3: {11.45, 1.45, -4.55}
+        Box: {0.5, 3.5, 6.1}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_right_front {
+        Position3: {11.45, 1.45, 4.55}
+        Box: {0.5, 3.5, 6.1}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_door_top {
+        Position3: {11.45, 2.95, 0}
+        Box: {0.5, 0.5, 3.0}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    wall_front {
+        Position3: {0, 0.3, 7.35}
+        Box: {23.4, 1.2, 0.5}
+        Rgba: {222, 214, 198, 255}
+    }
+
+    door_post_back {
+        Position3: {11.45, 1.05, -1.5}
+        Box: {0.62, 2.7, 0.4}
+        Rgba: {150, 118, 84, 255}
+    }
+
+    door_post_front {
+        Position3: {11.45, 1.05, 1.5}
+        Box: {0.62, 2.7, 0.4}
+        Rgba: {150, 118, 84, 255}
+    }
+
+    door_beam {
+        Position3: {11.45, 2.55, 0}
+        Box: {0.62, 0.3, 3.4}
+        Rgba: {150, 118, 84, 255}
+    }
+
+    welcome_mat {
+        Position3: {12.35, -0.02, 0}
+        Box: {1.3, 0.1, 2.4}
+        Rgba: {170, 62, 54, 255}
+    }
+
+    sidewalk {
+        Position3: {14.9, -0.35, 0}
+        Box: {6.6, 0.6, 3.2}
+        Rgba: {182, 178, 168, 255}
+    }
+
+    const rng: math.Rng = {}
+
+    hedge {
+        for i in 0..8 {
+            const s = 1.2 + rng.f(0.6)
+
+            "bush_{i}" {
+                Position3: {-14 + i * 4.2 + rng.f(1.5), -0.25, -10 - rng.f(1.5)}
+                Scale3: {s, s * 0.8, s}
+                HemiSphere: {segments: 14, smooth: true, radius: 1}
+                Rgba: {62, 118, 58, 255}
+            }
+        }
+    }
+
+    trees {
+        for i in 0..4 {
+            const s = 0.9 + rng.f(0.5)
+
+            "tree_{i}" {
+                Position3: {-18 + i * 12 + rng.f(4), -0.25, -14 - rng.f(4)}
+                Scale3: {s, s, s}
+
+                trunk {
+                    Position3: {0, 1.4, 0}
+                    Box: {0.6, 2.8, 0.6}
+                    Rgba: {104, 76, 48, 255}
+                }
+
+                canopy {
+                    Position3: {0, 3.9, 0}
+                    Sphere: {segments: 16, smooth: true, radius: 2.1}
+                    Rgba: {56, 124, 58, 255}
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,115 @@
+// Scenery props: boulders, dunes and flora
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+
+const rng: math.Rng = {seed: mapSeedScenery}
+const floraSeed: math.Rng = {seed: mapSeedFlora}
+
+scenery {
+    for i in 0..50 {
+        const s = 0.4 + rng.f(0.9)
+
+        "boulder_{i}" {
+            Position3: {-56 + rng.f(112), 0.06, -56 + rng.f(112)}
+            Rotation3: {0, rng.f(3.14), 0}
+            Scale3: {s, s * 0.7, s}
+            Box: {1, 1, 1}
+            Rgba: {130, 98, 70, 255}
+            SurfaceWear: {dust: 0.6, seed: i * 0.13, edge: 0, scratch: 0}
+        }
+    }
+
+    for i in 0..26 {
+        const a = rng.f(6.283)
+        const rad = 62 + rng.f(52)
+        const s = 4 + rng.f(8)
+
+        "dune_{i}" {
+            Position3: {math.cos(a) * rad, -0.1, math.sin(a) * rad}
+            Scale3: {s, s * 0.35, s}
+            HemiSphere: {segments: 12, smooth: true, radius: 1}
+            Rgba: {162, 120, 82, 255}
+            SurfaceWear: {dust: 0.4, scale: 3, seed: i * 0.21, edge: 0, scratch: 0}
+        }
+    }
+}
+
+flora {
+    for i in 0..96 {
+        const a = floraSeed.f(6.283)
+        const rad = 8 + 50 * math.sqrt(floraSeed.f(1))
+        const cx = cfg.map.x0 + math.round(
+            (math.cos(a) * rad - cfg.map.x0) / cfg.map.tile) * cfg.map.tile
+        const cz = cfg.map.z0 + math.round(
+            (math.sin(a) * rad - cfg.map.z0) / cfg.map.tile) * cfg.map.tile
+        const sr = math.floor(86 + floraSeed.f(30))
+        const sg = math.floor(68 + floraSeed.f(22))
+        const sb = math.floor(74 + floraSeed.f(26))
+
+        "frondstalk_{i}" {
+            Position3: {
+                cx + floraSeed.f(0.9) - 0.45, 0,
+                cz + floraSeed.f(0.9) - 0.45
+            }
+            Rotation3: {0, floraSeed.f(6.283), 0}
+            Scale3: {1, 1, 1}
+            Frondstalk: {
+                height: 1.75 + floraSeed.f(0.85),
+                stalkTint: {sr, sg, sb, 255}
+            }
+        }
+    }
+
+    for i in 0..200 {
+        const a = floraSeed.f(6.283)
+        const rad = 8 + 50 * math.sqrt(floraSeed.f(1))
+        const cx = cfg.map.x0 + math.round(
+            (math.cos(a) * rad - cfg.map.x0) / cfg.map.tile) * cfg.map.tile
+        const cz = cfg.map.z0 + math.round(
+            (math.sin(a) * rad - cfg.map.z0) / cfg.map.tile) * cfg.map.tile
+        const nr = math.floor(132 + floraSeed.f(38))
+        const ng = math.floor(114 + floraSeed.f(30))
+        const nb = math.floor(106 + floraSeed.f(28))
+
+        "ashcup_{i}" {
+            Position3: {
+                cx + floraSeed.f(0.9) - 0.45, 0,
+                cz + floraSeed.f(0.9) - 0.45
+            }
+            Rotation3: {0, floraSeed.f(6.283), 0}
+            Scale3: {1, 1, 1}
+            Ashcup: {
+                size: 0.52 + floraSeed.f(0.34),
+                nubTint: {nr, ng, nb, 255}
+            }
+        }
+    }
+
+    for i in 0..84 {
+        const a = floraSeed.f(6.283)
+        const rad = 8 + 50 * math.sqrt(floraSeed.f(1))
+        const cx = cfg.map.x0 + math.round(
+            (math.cos(a) * rad - cfg.map.x0) / cfg.map.tile) * cfg.map.tile
+        const cz = cfg.map.z0 + math.round(
+            (math.sin(a) * rad - cfg.map.z0) / cfg.map.tile) * cfg.map.tile
+        const br = math.floor(146 + floraSeed.f(40))
+        const bg = math.floor(134 + floraSeed.f(34))
+        const bb = math.floor(126 + floraSeed.f(30))
+
+        "quillbulb_{i}" {
+            Position3: {
+                cx + floraSeed.f(0.9) - 0.45, 0,
+                cz + floraSeed.f(0.9) - 0.45
+            }
+            Rotation3: {0, floraSeed.f(6.283), 0}
+            Scale3: {1, 1, 1}
+            Quillbulb: {
+                size: 0.5 + floraSeed.f(0.3),
+                bulbTint: {br, bg, bb, 255}
+            }
+        }
+    }
+}

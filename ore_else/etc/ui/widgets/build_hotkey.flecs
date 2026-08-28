@@ -1,0 +1,15 @@
+// Build hotkey label
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+template BuildHotkey {
+    prop item: entity = 0
+    prop hotKey = ""
+
+    Slot: {item: item, place: true}
+    Hotkey: {key: hotKey}
+}

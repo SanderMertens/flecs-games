@@ -1,0 +1,172 @@
+include scene
+
+using flecs.engine.*
+using flecs.script.core
+using lettuce_pray
+using lettuce_pray.assets
+
+const PanelColor: Rgba = {24, 34, 24, 190}
+const TextColor: Rgba = {248, 250, 240, 255}
+const SoftColor: Rgba = {186, 200, 180, 255}
+const SunColor: Rgba = {255, 214, 70, 255}
+
+hud {
+    const game = LettuceGame[LettuceGame]
+    const playing = $?[(LettuceGameState, Playing)]
+    const won = $?[(LettuceGameState, Won)]
+
+    sun_panel {
+        Anchor: {x: 22, y: 20}
+        Rect: {176, 58}
+        Border: {radius: 12}
+        Rgba: PanelColor
+
+        icon {
+            Position: {14, 13}
+            Rect: {32, 32}
+            Border: {radius: 16}
+            Rgba: SunColor
+        }
+
+        amount {
+            Position: {58, 12}
+            Text: {text: "{game.sun}", size: 32}
+            Rgba: TextColor
+        }
+    }
+
+    wave_panel {
+        Anchor: {h: Center, y: 20}
+        Rect: {260, 58}
+        Border: {radius: 12}
+        Rgba: PanelColor
+
+        title {
+            Position: {0, 8}
+            Layout: {width: 260}
+            Text: {
+                text: match game.wave == 0 {
+                    true: "Calm before the swarm"
+                    false: "Wave {game.wave} of {game.waves}"
+                },
+                size: 22,
+                align: Center
+            }
+            Rgba: TextColor
+        }
+
+        sub {
+            Position: {0, 33}
+            Layout: {width: 260}
+            Text: {text: "{game.alive} at the salad bar", size: 16, align: Center}
+            Rgba: SoftColor
+        }
+    }
+
+    stats_panel {
+        Anchor: {h: Right, x: -22, y: 20}
+        Rect: {176, 58}
+        Border: {radius: 12}
+        Rgba: PanelColor
+
+        killed {
+            Position: {0, 8}
+            Layout: {width: 176}
+            Text: {text: "{game.killed} mulched", size: 20, align: Center}
+            Rgba: TextColor
+        }
+
+        planted {
+            Position: {0, 33}
+            Layout: {width: 176}
+            Text: {text: "{game.planted} sown", size: 16, align: Center}
+            Rgba: SoftColor
+        }
+    }
+
+    seed_bar {
+        Anchor: {h: Center, v: Bottom, y: -18}
+        Layout: {direction: Row, padding: 12, spacing: 10}
+        Rect: {}
+        Border: {radius: 14}
+        Rgba: PanelColor
+
+        SeedPacket(
+            plant: Sprout, icon: icons.sprout, name: "Beam Sprout", key: "1", hotKey: "1",
+            affordable: game.sun >= Sprout[LettuceCost].sun,
+            selected: game.selected == Sprout)
+
+        SeedPacket(
+            plant: PeaPod, icon: icons.peapod, name: "Peacemaker", key: "2", hotKey: "2",
+            affordable: game.sun >= PeaPod[LettuceCost].sun,
+            selected: game.selected == PeaPod)
+
+        SeedPacket(
+            plant: Lettuce, icon: icons.lettuce, name: "Romaine Calm", key: "3", hotKey: "3",
+            affordable: game.sun >= Lettuce[LettuceCost].sun,
+            selected: game.selected == Lettuce)
+
+        SeedPacket(
+            plant: Chili, icon: icons.chili, name: "Chili Reaper", key: "4", hotKey: "4",
+            affordable: game.sun >= Chili[LettuceCost].sun,
+            selected: game.selected == Chili)
+
+        SeedPacket(
+            icon: icons.shovel, name: "Spade Runner", key: "S", hotKey: "s",
+            affordable: true, selected: game.shovel)
+    }
+
+    if playing && game.planted < 3 {
+        hint {
+            Anchor: {h: Center, v: Bottom, y: -168}
+            Layout: {width: 720}
+            Text: {
+                text: "Pick a packet, pick a plot. Catch the sun before it sets.",
+                size: 20,
+                align: Center
+            }
+            Rgba: SoftColor
+        }
+    }
+
+    if !playing {
+        end_panel {
+            Anchor: {h: Center, v: Middle, y: -60}
+            Rect: {640, 210}
+            Border: {radius: 14}
+            Rgba: {16, 24, 16, 220}
+
+            title {
+                Position: {0, 30}
+                Layout: {width: 640}
+                Text: {
+                    text: match won {
+                        true: "LETTUCE REJOICE"
+                        false: "REST IN PEAS"
+                    },
+                    size: 54,
+                    align: Center
+                }
+                Rgba: TextColor
+            }
+
+            score {
+                Position: {0, 108}
+                Layout: {width: 640}
+                Text: {
+                    text: "{game.killed} mulched, {game.planted} sown, {game.wave} waves weathered",
+                    size: 24,
+                    align: Center
+                }
+                Rgba: SoftColor
+            }
+
+            sub {
+                Position: {0, 150}
+                Layout: {width: 640}
+                Text: {text: "Press R to turn over a new leaf", size: 22, align: Center}
+                Rgba: SoftColor
+            }
+        }
+    }
+}

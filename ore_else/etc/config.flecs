@@ -1,0 +1,112 @@
+// Game configuration
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+cfg {
+    export const map: Map = {x0: -47, z0: -47, tile: 2}
+    export const walkSpeed: f32 = 7
+    export const stepRate: f32 = 1.6
+    export const bobHeight: f32 = 0.07
+    export const playerHp: f32 = 100
+    export const reach: f32 = 15
+    export const dozeTime: f32 = 0.8
+    export const depositScaleMin: f32 = 0.55
+    export const drillSpeed: f32 = 1
+    export const workLightRate: f32 = 7
+    export const blackoutAt: f32 = 1
+    export const powerBars: i32 = 6
+    export const powerStep: f32 = 0.5
+    export const warnToast: f32 = 2.5
+    export const runMultiplier: f32 = 2
+    export const hoverHeight: f32 = 3
+    export const hoverRise: f32 = 7
+    export const hoverFall: f32 = 5
+    export const limbBlend: f32 = 14
+    export const airTrail: f32 = 0.85
+    export const airTrailMax: f32 = 1.25
+    export const airDangle: f32 = 0.14
+    export const airDangleRate: f32 = 1.6
+    export const zoom: Zoom = {
+        height: [15, 26.3, 38.9],
+        back:   [14, 18.7, 20.7],
+        look:   [1.2, 2.5, 3.8],
+        glide: 5
+    }
+
+    export const firstWaveAt: f32 = 90
+    export const waveGap: f32 = 50
+    export const waveBudgetBase: f32 = 2
+    export const waveBudgetGrowth: f32 = 1.3
+    export const waveUnitCap: i32 = 10000
+    export const waveBehemothCap: i32 = 25
+    export const tierCost: WaveMix = {tier: [1, 3, 15, 120]}
+    export const tierGate: WaveGate = {tier: [1, 4, 7, 13]}
+    export const mixedMix: WaveMix = {tier: [0.25, 0.25, 0.25, 0.25]}
+    export const swarmMix: WaveMix = {tier: [0.7, 0.2, 0.1, 0]}
+    export const eliteMix: WaveMix = {tier: [0.05, 0.15, 0.55, 0.25]}
+    export const swarmChance: f32 = 0.25
+    export const eliteChance: f32 = 0.25
+    export const spawnStagger: f32 = 0.45
+    export const spawnWindow: f32 = 20
+    export const edgeSpawnJitter: f32 = 5
+    export const edgeInset: f32 = 1
+
+    export const crowdCell: f32 = 1.6
+    export const crowdPush: f32 = 30
+    export const crowdMaxSpeed: f32 = 14
+    export const crowdNeighbors: i32 = 6
+    export const crowdBucket: i32 = 12
+
+    export const corpseTime: f32 = 4
+    export const corpseSink: f32 = 0.7
+    export const corpseCap: i32 = 100
+    export const corpseColor: Rgba = {40, 36, 34, 255}
+
+    export const hpBarHeight: f32 = 4
+    export const hpBarMargin: f32 = 6
+    export const hpBarMinWidth: f32 = 6
+    export const hpBarBack: Rgba = {14, 12, 16, 200}
+    export const hpBarEdge: Rgba = {6, 5, 7, 230}
+    export const hpBarFull: Rgba = {92, 236, 140, 255}
+    export const hpBarMid: Rgba = {240, 176, 58, 255}
+    export const hpBarLow: Rgba = {248, 84, 72, 255}
+
+    export const aggroRange: f32 = 14
+    export const retargetInterval: f32 = 0.5
+    export const wallProbe: f32 = 1.2
+    export const critterJitter: f32 = 0.22
+
+    export const turretAimY: f32 = 0.6
+    export const turretAimPerRadius: f32 = 0.9
+    export const turretHitInset: f32 = 0.9
+
+    export const pistolRange: f32 = 9
+    export const pistolInterval: f32 = 0.45
+    export const pistolDamage: f32 = 6
+    export const pistolSpeed: f32 = 30
+    export const pistolY: f32 = 1.3
+    export const playerRegen: f32 = 2
+    export const playerRegenDelay: f32 = 5
+
+    export const cargoCapacity: i32 = 25
+    export const maxCargoBays: i32 = 4
+    export const maxLifeSupport: i32 = 1
+    export const enginesPerUnit: i32 = 4
+    export const ignitionTime: f32 = 1.6
+    export const launchAccel: f32 = 9
+    export const launchAltitude: f32 = 60
+    export const launchShake: f32 = 0.045
+    export const launchFxInterval: f32 = 0.08
+    export const shipToastTime: f32 = 4
+    export const clampTilt: f32 = 0.6
+
+    export const ageStart: f32 = 0.05
+    export const ageTime: f32 = 480
+    export const wearStep: f32 = 0.02
+    export const burnFrom: f32 = 0.05
+    export const burnTo: f32 = 0.85
+
+    export const floraSink: f32 = 8
+}

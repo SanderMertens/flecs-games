@@ -1,0 +1,39 @@
+// Rock dust thrown off the drill bit where it bites the ground
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template DrillDust {
+    prop rate: f32 = 26
+    prop size: f32 = 0.24
+    prop color: Rgba = {192, 150, 108, 230}
+    prop mid: Rgba = {170, 132, 98, 130}
+    prop end: Rgba = {152, 120, 92, 0}
+
+    ParticleEmitter: {
+        pool: fx,
+        rate: rate,
+        size: size,
+        size_variance: 0.05,
+        grow: 0.42,
+        max_age: 0.7,
+        max_age_variance: 0.2,
+        color: color,
+        color_ramp: {
+            mid: mid,
+            end: end,
+            mid_pos: 0.35
+        },
+        velocity: {0, 0.9, 0},
+        velocity_variance: {0.18, 0.16, 0.18},
+        shape: ParticleShapeDisc,
+        shape_radius: 0.2,
+        radial: 2.6,
+        rotation_variance: 3.14,
+        spin_variance: 2.2,
+        brightness_variance: 0.2,
+        enabled: false
+    }
+}

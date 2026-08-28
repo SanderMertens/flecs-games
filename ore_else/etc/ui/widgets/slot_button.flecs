@@ -1,0 +1,73 @@
+// Craft / build slot button
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const FontKey = 13
+const SlotSize = 72
+const SlotRadius = 3
+const FaceColor: Rgba = {46, 50, 58, 255}
+const FaceHover: Rgba = {66, 72, 82, 255}
+const FaceDim: Rgba = {30, 33, 39, 255}
+const EdgeColor: Rgba = {88, 94, 106, 255}
+const EdgeDim: Rgba = {52, 56, 64, 255}
+const MutedLabel: Rgba = {132, 139, 152, 255}
+const IconLit: Rgba = {255, 255, 255, 255}
+const IconDim: Rgba = {255, 255, 255, 150}
+const EdgeNormal: Border = {radius: SlotRadius, width: 1, color: EdgeColor}
+const EdgeDimmed: Border = {radius: SlotRadius, width: 1, color: EdgeDim}
+
+template SlotButton {
+    prop item: entity = 0
+    prop icon: entity = 0
+    prop craft = false
+    prop key = ""
+    prop hotKey = ""
+
+    const w = SlotSize
+    const h = SlotSize
+
+    Slot: {item: item, craft: craft}
+    Hotkey: {key: hotKey}
+    WidgetState
+    Afford: {value: true}
+
+    const afford = $this[Afford].value
+
+    const btnFace: Rgba = match $this[WidgetState].hover {
+        true: FaceHover
+        false: FaceColor
+    }
+
+    Layout: {width: w, height: h}
+    Rect: {w, h}
+    Border: match afford {
+        true: EdgeNormal
+        false: EdgeDimmed
+    }
+    Rgba: match afford {
+        true: btnFace
+        false: FaceDim
+    }
+
+    if icon {
+        icon_img {
+            Position: {14, 8}
+            Rect: {44, 44}
+            Image: {texture: icon, fit: Contain}
+            Rgba: match afford {
+                true: IconLit
+                false: IconDim
+            }
+        }
+    }
+
+    hotkey_label {
+        Position: {8, 4}
+        Text: {text: key, size: FontKey}
+        Rgba: MutedLabel
+    }
+}

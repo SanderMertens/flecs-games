@@ -1,0 +1,133 @@
+// Solar panel
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const steelShade: Rgba = {112, 120, 136, 255}
+const steelDeep: Rgba = {56, 62, 76, 255}
+const hazard: Rgba = {240, 176, 58, 255}
+const accent: Rgba = {92, 236, 222, 255}
+const solarGlass: Rgba = {58, 126, 232, 255}
+const solarFrame: Rgba = {96, 104, 122, 255}
+
+@detail "Generates power."
+@tree Parent
+@name "Solar panel"
+prefab SolarPanel {
+    Icon: {texture: icons.solar}
+    Recipe: {inputs: [IronPlate: 4, CopperPlate: 6], craft_time: 2}
+    Health: {value: 100, max: 100}
+    PowerProducer: {watts: 20}
+
+    base {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.09, 0}
+        Box: {1.72, 0.18, 1.72}
+        Rgba: steelDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    apron {
+        SurfaceWear: {dust: 0.4, grime: 0.8}
+        Position3: {0, 0.22, 0}
+        Box: {1.44, 0.08, 1.44}
+        Rgba: steelShade
+        PbrMaterial: {metallic: 0.45, roughness: 0.5}
+    }
+
+    mast {
+        SurfaceWear: {dust: 0.55, grime: 0.6}
+        Position3: {0, 0.68, -0.54}
+        Box: {0.2, 0.98, 0.2}
+        Rgba: steelShade
+    }
+
+    brace {
+        SurfaceWear: {dust: 0.55, grime: 0.6}
+        Position3: {0, 0.62, -0.22}
+        Rotation3: {-0.62, 0, 0}
+        Box: {0.13, 0.8, 0.13}
+        Rgba: steelShade
+    }
+
+    strut {
+        SurfaceWear: {dust: 0.55, grime: 0.6}
+        Position3: {0, 0.4, 0.52}
+        Box: {0.13, 0.56, 0.13}
+        Rgba: steelShade
+    }
+
+    panel {
+        SurfaceWear: {dust: 0.75, grime: 0.25}
+        Position3: {0, 0.92, 0}
+        Rotation3: {0.5, 0, 0}
+        Box: {1.62, 0.07, 1.46}
+        Rgba: solarFrame
+        PbrMaterial: {metallic: 0.5, roughness: 0.45}
+
+        rib {
+            SurfaceWear: {dust: 0.7, grime: 0.25}
+            Position3: {0, 0.05, 0}
+            Box: {1.62, 0.04, 0.1}
+            Rgba: solarFrame
+        }
+
+        spine {
+            SurfaceWear: {dust: 0.7, grime: 0.25}
+            Position3: {0, 0.05, 0}
+            Box: {0.1, 0.04, 1.46}
+            Rgba: solarFrame
+        }
+
+        cell_a : SolarCells {
+            SurfaceWear: {dust: 0.3, edge: 0, scratch: 0}
+            Position3: {-0.4, 0.05, 0.34}
+            Box: {0.68, 0.03, 0.6}
+        }
+
+        cell_b : SolarCells {
+            SurfaceWear: {dust: 0.3, edge: 0, scratch: 0}
+            Position3: {0.4, 0.05, 0.34}
+            Box: {0.68, 0.03, 0.6}
+        }
+
+        cell_c : SolarCells {
+            SurfaceWear: {dust: 0.3, edge: 0, scratch: 0}
+            Position3: {-0.4, 0.05, -0.34}
+            Box: {0.68, 0.03, 0.6}
+        }
+
+        cell_d : SolarCells {
+            SurfaceWear: {dust: 0.3, edge: 0, scratch: 0}
+            Position3: {0.4, 0.05, -0.34}
+            Box: {0.68, 0.03, 0.6}
+        }
+
+        lip {
+            SurfaceWear: {dust: 0.3, grime: 0.3}
+            Position3: {0, 0.04, 0.71}
+            Box: {1.62, 0.05, 0.06}
+            Rgba: hazard
+        }
+    }
+
+    junction {
+        SurfaceWear: {dust: 0.65, grime: 0.55}
+        Position3: {0.62, 0.32, -0.58}
+        Box: {0.4, 0.32, 0.3}
+        Rgba: steelShade
+
+        light {
+            Position3: {0, 0.06, 0.14}
+            Rotation3: {1.5708, 0, 0}
+            Light: {
+                color: accent, w: 0.22, d: 0.08, h: 0.04,
+                strength: 2.4
+            }
+        }
+    }
+}

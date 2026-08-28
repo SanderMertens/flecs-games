@@ -1,0 +1,33 @@
+// Craft queue list (rows derived from the order state, shown while an order is open)
+
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+
+const craft = CraftState[CraftState]
+const queueShow = craft.row_count > 0 && $?[(GameState, Playing)]
+
+queue_panel {
+    if !queueShow {
+        flecs.core.Disabled
+    }
+
+    Anchor: {h: Right, v: Bottom, x: -18, y: -40}
+    Panel: {w: 252, h: 14 + craft.row_count * 28, capH: 6}
+
+    for i in 0..craft.row_count {
+        const r = craft.rows[i]
+
+        QueueRow "row_{r.order}_{r.slot}"(
+            row: i,
+            item: r.item,
+            icon: r.icon,
+            text: r.text,
+            order: r.order,
+            active: r.active,
+            stalled: r.stalled,
+            cancel: r.cancel,
+            sub: r.sub,
+            progress: r.progress)
+    }
+}

@@ -1,0 +1,109 @@
+// Particle effects
+
+module bunny_hopper.assets
+using flecs.engine.*
+
+dust {
+    Particles: {
+        capacity: 256,
+        gravity: 5,
+        drag: 2.5,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.5
+        }
+    }
+}
+
+prefab DustBurstLow {
+    ParticleBurst: {
+        count: 11,
+        size: 0.14,
+        size_variance: 0.06,
+        grow: 0.25,
+        max_age: 0.55,
+        max_age_variance: 0.2,
+        color: {225, 210, 185, 255},
+        velocity: {0, 1, 0},
+        velocity_variance: {1.1, 0.6, 0.6},
+        offset: {0, 0.08, 0},
+        spread: {0.5, 0.05, 0.3},
+        radial: 0.85
+    }
+}
+
+prefab DustBurstHigh {
+    ParticleBurst: {
+        count: 23,
+        size: 0.14,
+        size_variance: 0.06,
+        grow: 0.55,
+        max_age: 0.55,
+        max_age_variance: 0.2,
+        color: {225, 210, 185, 255},
+        velocity: {0, 2.25, 0},
+        velocity_variance: {2.5, 1.45, 1.45},
+        offset: {0, 0.08, 0},
+        spread: {0.5, 0.05, 0.3},
+        radial: 1.9
+    }
+}
+
+sparkle {
+    Particles: {
+        capacity: 128,
+        emissive: 2,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.4
+        }
+    }
+}
+
+prefab SparkleBurst {
+    ParticleBurst: {
+        count: 18,
+        size: 0.11,
+        size_variance: 0.05,
+        max_age: 0.5,
+        max_age_variance: 0,
+        color: {255, 220, 80, 255},
+        velocity: {0, 5, 0},
+        velocity_variance: {0, 3, 0},
+        offset: {0, 0, 0},
+        spread: {0.5, 0, 0.5}
+    }
+}
+
+hit {
+    Particles: {
+        capacity: 128,
+        gravity: 9,
+        drag: 2,
+        emissive: 0,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.6
+        }
+    }
+}
+
+prefab HitBurst {
+    ParticleBurst: {
+        count: 28,
+        size: 0.16,
+        size_variance: 0.07,
+        grow: 0.1,
+        max_age: 0.5,
+        max_age_variance: 0.2,
+        color: {255, 0, 0, 255},
+        velocity: {0, 2, 0},
+        velocity_variance: {2.6, 1.8, 1.8},
+        offset: {0, 0.7, 0},
+        spread: {0.25, 0.3, 0.25},
+        radial: 2.4
+    }
+}

@@ -1,0 +1,96 @@
+using lettuce_pray
+using lettuce_pray.assets
+using flecs.script
+using flecs.engine.*
+
+cfg {
+    export const lawn: LettuceLawn = {x0: -8, z0: -4, tile: 2}
+    export const plantScale: f32 = 1.35
+
+    export const spawnX: f32 = 13
+    export const despawnX: f32 = 17
+    export const mowerX: f32 = -9.7
+    export const mowerTriggerX: f32 = -8.85
+    export const loseX: f32 = -10.8
+    export const eatRange: f32 = 1.3
+
+    export const sunSkyY: f32 = 16
+    export const sunSkyInterval: f32 = 10
+
+    export const spawnInterval: f32 = 2.6
+    export const waveGap: f32 = 22
+    export const firstWave: f32 = 20
+    export const waveCount: i32 = 10
+    export const zombieBase: i32 = 2
+    export const zombieStep: i32 = 2
+    export const coneWave: i32 = 3
+    export const bucketWave: i32 = 6
+
+    export const startSun: i32 = 125
+}
+
+tiles {
+    for r in 0..5 {
+        for c in 0..9 {
+            "tile_{r}_{c}" {
+                Position3: {cfg.lawn.x0 + c * cfg.lawn.tile, -0.15, cfg.lawn.z0 + r * cfg.lawn.tile}
+                Box: {cfg.lawn.tile - 0.05, 0.3, cfg.lawn.tile - 0.05}
+                Rgba: {76, 128 + 58 * ((r + c) % 2), 68, 255}
+            }
+        }
+    }
+}
+
+mowers {
+    for i in 0..5 {
+        "mower_{i}" : Mower {
+            LettuceMower: {row: i}
+            Position3: {cfg.mowerX, 0, cfg.lawn.z0 + i * cfg.lawn.tile}
+            Rotation3: {0, 0, 0}
+            Scale3: {1, 1, 1}
+            DynamicTransform
+        }
+    }
+}
+
+plants { }
+zombies { }
+peas { }
+suns { }
+
+$ {
+    LettuceGame: {
+        sun: cfg.startSun,
+        selected: Sprout,
+        shovel: false,
+        wave: 0,
+        waves: cfg.waveCount,
+        planted: 0,
+        killed: 0,
+        spawn_left: 0,
+        alive: 0,
+        wave_timer: cfg.firstWave,
+        spawn_timer: 0,
+        sun_timer: 6,
+        camera: camera,
+        plants: plants,
+        zombies: zombies,
+        peas: peas,
+        suns: suns,
+        sun_prefab: SunDrop,
+        pea_prefab: Pea,
+        marker_prefab: TileMarker,
+        zombie_prefab: Zombie,
+        cone_prefab: ConeZombie,
+        bucket_prefab: BucketZombie,
+        fx_pool: fx,
+        glow_pool: glow,
+        splat_burst: SplatBurst,
+        chomp_burst: ChompBurst,
+        boom_burst: BoomBurst,
+        pop_burst: PopBurst,
+        armor_burst: ArmorBurst
+    }
+
+    (LettuceGameState, Playing)
+}

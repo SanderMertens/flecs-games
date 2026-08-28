@@ -1,0 +1,144 @@
+// Brute
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const bruteShell: Rgba = {148, 62, 54, 255}
+const bruteDark: Rgba = {88, 34, 32, 255}
+const bruteLimb: Rgba = {58, 26, 26, 255}
+const bruteEye: Rgba = {255, 120, 64, 255}
+const tusk: Rgba = {236, 226, 204, 255}
+
+@tree Parent
+prefab Brute {
+    Critter: {step: 1.5, bob: 0.14}
+    Radius: {value: 1.1}
+    Health: {value: 100}
+    Speed: {value: 2.4}
+    Damage: {value: 50}
+    Range: {value: 1.9}
+    DeathBurst: {burst: CombustBurst}
+
+    abdomen {
+        Position3: {0, 1.04, -0.86}
+        Rotation3: {0.22, 0, 0}
+        Box: {1.14, 0.96, 1.24}
+        Rgba: bruteDark
+
+        spike_a {
+            Position3: {-0.3, 0.56, 0.1}
+            Rotation3: {-0.3, 0, -0.3}
+            Cone: {segments: 8, smooth: true, length: 0.5}
+            Scale3: {0.14, 1, 0.14}
+            Rgba: bruteShell
+        }
+
+        spike_b {
+            Position3: {0.3, 0.56, -0.16}
+            Rotation3: {-0.3, 0, 0.3}
+            Cone: {segments: 8, smooth: true, length: 0.5}
+            Scale3: {0.14, 1, 0.14}
+            Rgba: bruteShell
+        }
+    }
+
+    thorax {
+        Position3: {0, 1.08, 0.16}
+        Box: {1.18, 0.9, 1.0}
+        Rgba: bruteShell
+
+        carapace {
+            Position3: {0, 0.44, -0.06}
+            Box: {1.0, 0.24, 0.84}
+            Rgba: bruteDark
+        }
+    }
+
+    head {
+        Position3: {0, 0.94, 0.88}
+        Box: {0.82, 0.62, 0.7}
+        Rgba: bruteDark
+
+        crest {
+            Position3: {0, 0.36, -0.08}
+            Box: {0.7, 0.18, 0.5}
+            Rgba: bruteShell
+        }
+
+        eye_left {
+            Position3: {-0.24, 0.1, 0.35}
+            Box: {0.18, 0.14, 0.06}
+            Rgba: bruteEye
+            Emissive: {strength: 2.6, color: bruteEye}
+        }
+
+        eye_right {
+            Position3: {0.24, 0.1, 0.35}
+            Box: {0.18, 0.14, 0.06}
+            Rgba: bruteEye
+            Emissive: {strength: 2.6, color: bruteEye}
+        }
+
+        mandible_left {
+            Position3: {-0.3, -0.24, 0.44}
+            Rotation3: {0, 0.5, 0}
+            Box: {0.14, 0.16, 0.56}
+            Rgba: bruteLimb
+        }
+
+        mandible_right {
+            Position3: {0.3, -0.24, 0.44}
+            Rotation3: {0, -0.5, 0}
+            Box: {0.14, 0.16, 0.56}
+            Rgba: bruteLimb
+        }
+
+        tusk_left {
+            Position3: {-0.2, -0.34, 0.6}
+            Rotation3: {0.5, 0, 0}
+            Cone: {segments: 8, smooth: true, length: 0.34}
+            Scale3: {0.09, 1, 0.09}
+            Rgba: tusk
+        }
+
+        tusk_right {
+            Position3: {0.2, -0.34, 0.6}
+            Rotation3: {0.5, 0, 0}
+            Cone: {segments: 8, smooth: true, length: 0.34}
+            Scale3: {0.09, 1, 0.09}
+            Rgba: tusk
+        }
+    }
+
+    for i in 0..6 {
+        const side: f32 = 1 - 2 * (i % 2)
+        const row: f32 = math.floor(i / 2)
+
+        "leg_{i}" {
+            Position3: {side * 0.58, 0.84, 0.48 - row * 0.54}
+            Limb: {phase: i * 1.05, swing: 0.42}
+
+            thigh {
+                Position3: {side * 0.36, 0.06, 0}
+                Rotation3: {0, 0, side * -0.55}
+                Box: {0.72, 0.16, 0.16}
+                Rgba: bruteLimb
+            }
+
+            shin {
+                Position3: {side * 0.72, -0.36, 0}
+                Box: {0.16, 0.72, 0.16}
+                Rgba: bruteLimb
+            }
+
+            foot {
+                Position3: {side * 0.72, -0.72, 0.06}
+                Box: {0.26, 0.13, 0.38}
+                Rgba: bruteLimb
+            }
+        }
+    }
+}

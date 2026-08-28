@@ -1,0 +1,45 @@
+// Panel chrome: dark plate, thin edge and a hazard strip along the top
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const PanelFill: Rgba = {21, 23, 27, 236}
+const PanelEdge: Rgba = {74, 80, 90, 255}
+const PanelRadius = 3
+
+ui_tex {
+    hazard_strip {
+        Svg: {file: "etc/assets/hazard_strip.svg", width: 2048, height: 12}
+    }
+}
+
+template Panel {
+    prop w: f32 = 252
+    prop h: f32 = 100
+    prop cap = true
+    prop capH: f32 = 7
+    prop fill: Rgba = {21, 23, 27, 236}
+    prop edge: Rgba = {74, 80, 90, 255}
+
+    Rect: {w, h}
+    Border: {radius: PanelRadius, width: 1, color: edge}
+    Rgba: fill
+
+    if cap {
+        chrome {
+            Position: {0, 0}
+            Rect: {w, capH}
+            Border: {
+                radius_top_left: PanelRadius,
+                radius_top_right: PanelRadius,
+                width: 1,
+                color: edge
+            }
+            Rgba: {255, 255, 255, 255}
+            Image: {texture: ui_tex.hazard_strip, fit: Cover}
+        }
+    }
+}

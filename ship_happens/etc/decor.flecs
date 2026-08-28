@@ -1,0 +1,232 @@
+// Wall decor props
+
+using flecs.script
+using flecs.engine.*
+
+decor_assets {
+    prefab chart_tex {
+        Texture: {"etc/assets/props/chart_down.svg", 1024, 768}
+    }
+
+    prefab board_tex {
+        Texture: {"etc/assets/props/whiteboard.svg", 1024, 512}
+    }
+
+    prefab note_a_tex {
+        Texture: {"etc/assets/props/postit_a.svg", 768, 768}
+    }
+
+    prefab note_b_tex {
+        Texture: {"etc/assets/props/postit_b.svg", 768, 768}
+    }
+
+    prefab note_c_tex {
+        Texture: {"etc/assets/props/postit_c.svg", 768, 768}
+    }
+
+    prefab note_d_tex {
+        Texture: {"etc/assets/props/postit_d.svg", 768, 768}
+    }
+
+    prefab ChartBoard {
+        Quad: {1.4, 1.05}
+        PbrTextures: {albedo: chart_tex}
+    }
+
+    prefab WhiteBoardFace {
+        Quad: {3.2, 1.6}
+        PbrTextures: {albedo: board_tex}
+    }
+
+    prefab ChartPoster {
+        frame {
+            Position3: {0, 0, 0}
+            Box: {1.52, 1.17, 0.03}
+            Rgba: {88, 70, 52, 255}
+        }
+
+        board : ChartBoard {
+            Position3: {0, 0, 0.03}
+        }
+    }
+
+    prefab WhiteBoard {
+        frame {
+            Position3: {0, 0, 0}
+            Box: {3.36, 1.76, 0.04}
+            Rgba: {202, 206, 212, 255}
+        }
+
+        board : WhiteBoardFace {
+            Position3: {0, 0, 0.035}
+        }
+
+        tray {
+            Position3: {0, -0.91, 0.07}
+            Box: {1.0, 0.05, 0.12}
+            Rgba: {182, 188, 196, 255}
+        }
+
+        marker_red {
+            Position3: {-0.22, -0.865, 0.08}
+            Box: {0.16, 0.035, 0.035}
+            Rgba: {200, 70, 60, 255}
+        }
+
+        marker_blue {
+            Position3: {0.08, -0.865, 0.08}
+            Box: {0.16, 0.035, 0.035}
+            Rgba: {70, 110, 190, 255}
+        }
+    }
+
+    prefab PostItA {
+        Quad: {0.26, 0.26}
+        PbrTextures: {albedo: note_a_tex}
+    }
+
+    prefab PostItB {
+        Quad: {0.26, 0.26}
+        PbrTextures: {albedo: note_b_tex}
+    }
+
+    prefab PostItC {
+        Quad: {0.26, 0.26}
+        PbrTextures: {albedo: note_c_tex}
+    }
+
+    prefab PostItD {
+        Quad: {0.26, 0.26}
+        PbrTextures: {albedo: note_d_tex}
+    }
+}
+
+decor {
+    chart_side : decor_assets.ChartPoster {
+        Position3: {11.18, 1.85, -4.4}
+        Rotation3: {0, -math.PI / 2, 0}
+    }
+
+    whiteboard : decor_assets.WhiteBoard {
+        Position3: {-11.18, 1.7, -2.5}
+        Rotation3: {0, math.PI / 2, 0}
+    }
+
+    note_1 : decor_assets.PostItA {
+        Position3: {-2.25, 0.95, -7.08}
+        Rotation3: {0, 0, 0.12}
+    }
+
+    note_2 : decor_assets.PostItB {
+        Position3: {-1.92, 0.68, -7.08}
+        Rotation3: {0, 0, -0.22}
+        Quad: {0.24, 0.24}
+    }
+
+    note_3 : decor_assets.PostItC {
+        Position3: {0.4, 1.95, -7.08}
+        Rotation3: {0, 0, 0.3}
+        Quad: {0.24, 0.24}
+    }
+
+    note_4 : decor_assets.PostItD {
+        Position3: {4.72, 1.72, -7.08}
+        Rotation3: {0, 0, 0.08}
+    }
+
+    note_5 : decor_assets.PostItA {
+        Position3: {5.06, 1.64, -7.08}
+        Rotation3: {0, 0, -0.18}
+        Quad: {0.25, 0.25}
+    }
+
+    note_6 : decor_assets.PostItB {
+        Position3: {4.9, 2.0, -7.08}
+        Rotation3: {0, 0, 0.05}
+    }
+
+    note_7 : decor_assets.PostItC {
+        Position3: {-5.08, 1.82, -7.08}
+        Rotation3: {0, 0, -0.12}
+        Quad: {0.27, 0.27}
+    }
+
+    note_8 : decor_assets.PostItD {
+        Position3: {-11.18, 1.92, -0.44}
+        Rotation3: {0, math.PI / 2, -0.1}
+    }
+
+    note_9 : decor_assets.PostItA {
+        Position3: {-11.18, 1.56, -0.22}
+        Rotation3: {0, math.PI / 2, 0.24}
+        Quad: {0.24, 0.24}
+    }
+
+    note_10 : decor_assets.PostItB {
+        Position3: {11.18, 1.48, -2.35}
+        Rotation3: {0, -math.PI / 2, 0.16}
+    }
+
+    note_11 : decor_assets.PostItC {
+        Position3: {11.18, 1.32, -5.9}
+        Rotation3: {0, -math.PI / 2, -0.26}
+        Quad: {0.24, 0.24}
+    }
+
+    note_12 : decor_assets.PostItD {
+        Position3: {11.18, 2.12, -5.55}
+        Rotation3: {0, -math.PI / 2, 0.1}
+        Quad: {0.25, 0.25}
+    }
+
+    note_13 : decor_assets.PostItA {
+        Position3: {0.15, 1.72, -7.08}
+        Rotation3: {0, 0, -0.15}
+    }
+
+    note_14 : decor_assets.PostItB {
+        Position3: {-0.42, 1.5, -7.08}
+        Rotation3: {0, 0, 0.2}
+        Quad: {0.25, 0.25}
+    }
+
+    note_15 : decor_assets.PostItD {
+        Position3: {-7.6, 0.85, -7.08}
+        Rotation3: {0, 0, 0.1}
+        Quad: {0.26, 0.26}
+    }
+
+    note_16 : decor_assets.PostItA {
+        Position3: {-4.7, 1.45, -7.08}
+        Rotation3: {0, 0, 0.22}
+        Quad: {0.24, 0.24}
+    }
+
+    note_17 : decor_assets.PostItB {
+        Position3: {-11.18, 1.7, 2.6}
+        Rotation3: {0, math.PI / 2, -0.18}
+    }
+
+    note_18 : decor_assets.PostItC {
+        Position3: {-11.18, 1.42, 3.05}
+        Rotation3: {0, math.PI / 2, 0.12}
+        Quad: {0.25, 0.25}
+    }
+
+    note_19 : decor_assets.PostItD {
+        Position3: {11.18, 1.6, 3.4}
+        Rotation3: {0, -math.PI / 2, 0.15}
+    }
+
+    note_20 : decor_assets.PostItA {
+        Position3: {11.18, 1.85, 5.2}
+        Rotation3: {0, -math.PI / 2, -0.1}
+        Quad: {0.27, 0.27}
+    }
+
+    note_21 : decor_assets.PostItB {
+        Position3: {8.3, 0.95, -7.08}
+        Rotation3: {0, 0, -0.2}
+        Quad: {0.24, 0.24}
+    }
+}

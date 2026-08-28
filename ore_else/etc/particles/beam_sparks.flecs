@@ -1,0 +1,40 @@
+// Sparks where a laser beam lands
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template BeamSparks {
+    prop color: Rgba = {240, 96, 172, 255}
+    prop rate: f32 = 180
+    prop peak: f32 = 5
+    prop radius: f32 = 5.5
+
+    Rgba: color
+    PointLight: {intensity: 0, range: radius}
+    FlashLight: {peak: peak, fade: 0}
+
+    ParticleEmitter: {
+        pool: glow,
+        rate: rate,
+        size: 0.12,
+        size_variance: 0.05,
+        grow: -0.22,
+        max_age: 0.34,
+        max_age_variance: 0.1,
+        color: {255, 250, 252, 255},
+        color_ramp: {
+            mid: color,
+            mid_pos: 0.3,
+            end: {120, 30, 80, 0}
+        },
+        velocity: {0, 1.2, 0},
+        velocity_variance: {2.4, 2.4, 2.4},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.07,
+        radial: 3.2,
+        brightness_variance: 0.6,
+        enabled: false
+    }
+}

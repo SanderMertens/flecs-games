@@ -1,0 +1,27 @@
+// Slow smoke puff from a factory vent
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+prefab SmokePuff {
+    ParticleBurst: {
+        count: 5,
+        size: 0.24,
+        size_variance: 0.1,
+        grow: 1.1,
+        max_age: 0.9,
+        max_age_variance: 0.3,
+        color: {148, 144, 140, 200},
+        color_ramp: {
+            end: {104, 98, 94, 120}
+        },
+        velocity: {0, 3.4, 0},
+        velocity_variance: {0.5, 0.6, 0.5},
+        offset: {0, 0.06, 0},
+        spread: {0.14, 0.06, 0.14},
+        radial: 0.3
+    }
+}

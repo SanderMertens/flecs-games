@@ -1,0 +1,17 @@
+// Muzzle flash
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template MuzzleFlash {
+    prop color: Rgba = {255, 196, 112, 255}
+    prop peak: f32 = 5
+    prop fade: f32 = 45
+    prop radius: f32 = 4.5
+
+    Rgba: color
+    PointLight: {intensity: 0, range: radius}
+    FlashLight: {peak: peak, fade: fade}
+}

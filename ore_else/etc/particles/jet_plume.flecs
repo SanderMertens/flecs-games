@@ -1,0 +1,39 @@
+// Jetpack plume
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+template JetPlume {
+    prop rate: f32 = 70
+    prop color: Rgba = {255, 236, 150, 235}
+    prop vy: f32 = -6
+    prop size: f32 = 0.13
+
+    ParticleEmitter: {
+        pool: fire,
+        rate: rate,
+        size: size,
+        size_variance: 0.05,
+        grow: 0.5,
+        max_age: 0.3,
+        max_age_variance: 0.1,
+        color: color,
+        color_ramp: {
+            mid: {248, 92, 40, 225},
+            end: {114, 108, 102, 110},
+            mid_pos: 0.35
+        },
+        velocity: {0, vy, 0},
+        velocity_variance: {0.35, 0.8, 0.35},
+        shape: ParticleShapeCone,
+        shape_radius: 0.07,
+        shape_angle: 14,
+        rotation_variance: 3.14,
+        spin_variance: 6,
+        brightness_variance: 0.3,
+        inherit_velocity: 0.45,
+        enabled: false
+    }
+}

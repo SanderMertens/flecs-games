@@ -1,0 +1,78 @@
+// Pause screen: quality setting and the controls reference
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const PauseW = 640
+const PauseH = 388
+const PauseCapH = 7
+const PauseCapPad = 8
+const PauseFont = 15
+const PauseKeyW = 150
+const PauseTextW = 428
+const PauseGap = 16
+const PauseFill: Rgba = {15, 16, 19, 252}
+const PauseTextColor: Rgba = {226, 231, 238, 255}
+const PauseSoftColor: Rgba = {146, 154, 166, 255}
+
+template PauseControl {
+    prop key = ""
+    prop action = ""
+
+    Layout: {direction: Row, spacing: PauseGap}
+
+    key_label {
+        Layout: {width: PauseKeyW}
+        Text: {text: key, size: PauseFont, align: Right}
+        Rgba: PauseTextColor
+    }
+
+    action_label {
+        Layout: {width: PauseTextW}
+        Text: {text: action, size: PauseFont}
+        Rgba: PauseSoftColor
+    }
+}
+
+template PauseScreen {
+    Anchor: {h: Center, v: Middle, y: -40}
+    Panel: {w: PauseW, h: PauseH, capH: PauseCapH, fill: PauseFill}
+
+    title {
+        Position: {0, 40 + PauseCapPad}
+        Layout: {width: PauseW}
+        Text: {text: "PAUSED", size: 28, align: Center}
+        Rgba: PauseTextColor
+    }
+
+    quality {
+        Position: {251, 88 + PauseCapPad}
+        QualityButton: {w: 138, h: 26, size: 12, pad: 11}
+    }
+
+    controls {
+        Position: {23, 134 + PauseCapPad}
+        Layout: {direction: Column, spacing: 7}
+
+        PauseControl walk(key: "W A S D", action: "Walk")
+        PauseControl run(key: "Shift", action: "Walk faster")
+        PauseControl zoom(key: "Mouse wheel", action: "Zoom in/out")
+        PauseControl place(key: "Left click", action: "Place selected building")
+        PauseControl demolish(key: "Right click",
+            action: "Demolish/mine object under mouse cursor")
+        PauseControl inventory(key: "E", action: "Open / close the inventory")
+        PauseControl pick(key: "Q",
+            action: "Select the building under the cursor / deselect")
+        PauseControl cancel(key: "ESC", action: "Cancel / Pause")
+    }
+
+    sub {
+        Position: {0, 338 + PauseCapPad}
+        Layout: {width: PauseW}
+        Text: {text: "Press ESC to resume", size: PauseFont, align: Center}
+        Rgba: PauseSoftColor
+    }
+}

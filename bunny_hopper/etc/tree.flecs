@@ -1,0 +1,20 @@
+// Tree asset
+
+module bunny_hopper.assets
+using flecs.engine.*
+
+prefab Tree {
+    BunnyScenery: {parallax: 0.75, wrap_min: -36, wrap_span: 72}
+
+    trunk {
+        Position3: {0, 0.9, 0}
+        Box: {0.45, 1.8, 0.45}
+        Rgba: {110, 80, 50, 255}
+    }
+
+    canopy {
+        Position3: {0, 2.7, 0}
+        Sphere: {segments: 16, smooth: true, radius: 1.6}
+        Rgba: {60, 145, 65, 255}
+    }
+}

@@ -1,0 +1,253 @@
+// Behemoth
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const beheShell: Rgba = {86, 132, 58, 255}
+const beheDark: Rgba = {50, 82, 38, 255}
+const beheLimb: Rgba = {34, 56, 30, 255}
+const beheEye: Rgba = {168, 255, 96, 255}
+const beheSpot: Rgba = {126, 255, 158, 255}
+const beheHorn: Rgba = {228, 224, 186, 255}
+
+@tree Parent
+prefab Behemoth {
+    Critter: {step: 2.2, bob: 0.2}
+    Radius: {value: 2.2}
+    Health: {value: 1400}
+    Speed: {value: 1.2}
+    Damage: {value: 100}
+    Range: {value: 3.2}
+    DeathBurst: {burst: CombustBurst}
+
+    abdomen {
+        Position3: {0, 2.1, -1.9}
+        Rotation3: {0.18, 0, 0}
+        Box: {2.3, 1.9, 2.6}
+        Rgba: beheDark
+
+        spot_a {
+            Position3: {-0.8, 0.9, 0.2}
+            Sphere: {segments: 8, smooth: true, radius: 0.22}
+            Rgba: beheSpot
+            Emissive: {strength: 2.4, color: beheSpot}
+        }
+
+        spot_b {
+            Position3: {0.72, 0.86, -0.5}
+            Sphere: {segments: 8, smooth: true, radius: 0.18}
+            Rgba: beheSpot
+            Emissive: {strength: 2.4, color: beheSpot}
+        }
+
+        spot_c {
+            Position3: {0.1, 0.98, 0.75}
+            Sphere: {segments: 8, smooth: true, radius: 0.15}
+            Rgba: beheSpot
+            Emissive: {strength: 2.4, color: beheSpot}
+        }
+
+        spine_left {
+            Position3: {-0.6, 1.0, -0.4}
+            Rotation3: {-0.42, 0, -0.26}
+            Cone: {segments: 8, smooth: true, length: 1.7}
+            Scale3: {0.26, 1, 0.26}
+            Rgba: beheShell
+        }
+
+        spine_right {
+            Position3: {0.6, 1.0, -0.4}
+            Rotation3: {-0.42, 0, 0.26}
+            Cone: {segments: 8, smooth: true, length: 1.7}
+            Scale3: {0.26, 1, 0.26}
+            Rgba: beheShell
+        }
+
+        spine_mid {
+            Position3: {0, 1.05, -1.0}
+            Rotation3: {-0.6, 0, 0}
+            Cone: {segments: 8, smooth: true, length: 1.4}
+            Scale3: {0.2, 1, 0.2}
+            Rgba: beheShell
+        }
+    }
+
+    thorax {
+        Position3: {0, 2.2, 0.3}
+        Box: {2.4, 1.9, 2.2}
+        Rgba: beheShell
+
+        flank_left {
+            Position3: {-1.16, -0.2, 0.1}
+            Box: {0.2, 0.6, 1.3}
+            Rgba: beheSpot
+            Emissive: {strength: 1.6, color: beheSpot}
+        }
+
+        flank_right {
+            Position3: {1.16, -0.2, 0.1}
+            Box: {0.2, 0.6, 1.3}
+            Rgba: beheSpot
+            Emissive: {strength: 1.6, color: beheSpot}
+        }
+    }
+
+    for i in 0..4 {
+        const w: f32 = 2.5 - i * 0.22
+
+        "plate_{i}" {
+            Position3: {0, 3.06 - i * 0.09, 1.0 - i * 0.86}
+            Limb: {phase: i * 0.7, swing: 0.05}
+
+            shell {
+                Position3: {0, 0, 0}
+                Rotation3: {0.14, 0, 0}
+                Box: {w, 0.38, 1.0}
+                Rgba: beheDark
+            }
+
+            ridge {
+                Position3: {0, 0.24, -0.06}
+                Box: {w * 0.4, 0.3, 0.62}
+                Rgba: beheShell
+            }
+
+            seam {
+                Position3: {0, 0.06, 0.48}
+                Box: {w * 0.92, 0.1, 0.1}
+                Rgba: beheSpot
+                Emissive: {strength: 2.6, color: beheSpot}
+            }
+
+            barb_left {
+                Position3: {-w * 0.44, 0.22, 0}
+                Rotation3: {0, 0, -0.9}
+                Cone: {segments: 6, smooth: true, length: 0.72}
+                Scale3: {0.13, 1, 0.13}
+                Rgba: beheShell
+            }
+
+            barb_right {
+                Position3: {w * 0.44, 0.22, 0}
+                Rotation3: {0, 0, 0.9}
+                Cone: {segments: 6, smooth: true, length: 0.72}
+                Scale3: {0.13, 1, 0.13}
+                Rgba: beheShell
+            }
+        }
+    }
+
+    head {
+        Position3: {0, 2.36, 2.36}
+        Rotation3: {-0.12, 0, 0}
+        Box: {1.86, 1.34, 1.7}
+        Rgba: beheDark
+
+        crown {
+            Position3: {0, 0.82, -0.16}
+            Box: {1.62, 0.42, 1.16}
+            Rgba: beheShell
+        }
+
+        for i in 0..5 {
+            const side: f32 = 1 - 2 * (i % 2)
+            const rank: f32 = math.floor(i / 2)
+
+            "eye_{i}" {
+                Position3: {
+                    side * (0.2 + rank * 0.24),
+                    0.5 - rank * 0.26,
+                    0.8 - rank * 0.06
+                }
+                Sphere: {segments: 8, smooth: true, radius: 0.17 - rank * 0.03}
+                Rgba: beheEye
+                Emissive: {strength: 3.6, color: beheEye}
+            }
+        }
+
+        brow {
+            Position3: {0, 0.62, 0.66}
+            Box: {1.5, 0.16, 0.34}
+            Rgba: beheSpot
+            Emissive: {strength: 2.2, color: beheSpot}
+        }
+
+        mandible_left {
+            Position3: {-0.66, -0.52, 1.0}
+            Rotation3: {0, 0.5, 0}
+            Box: {0.32, 0.36, 1.3}
+            Rgba: beheLimb
+        }
+
+        mandible_right {
+            Position3: {0.66, -0.52, 1.0}
+            Rotation3: {0, -0.5, 0}
+            Box: {0.32, 0.36, 1.3}
+            Rgba: beheLimb
+        }
+
+        tusk_left {
+            Position3: {-0.52, -0.66, 1.1}
+            Rotation3: {0.75, -0.22, 0}
+            Cone: {segments: 8, smooth: true, length: 1.5}
+            Scale3: {0.2, 1, 0.2}
+            Rgba: beheHorn
+        }
+
+        tusk_right {
+            Position3: {0.52, -0.66, 1.1}
+            Rotation3: {0.75, 0.22, 0}
+            Cone: {segments: 8, smooth: true, length: 1.5}
+            Scale3: {0.2, 1, 0.2}
+            Rgba: beheHorn
+        }
+
+        horn_left {
+            Position3: {-0.72, 0.72, 0.1}
+            Rotation3: {-1.05, -0.3, 0}
+            Cone: {segments: 8, smooth: true, length: 2.1}
+            Scale3: {0.17, 1, 0.17}
+            Rgba: beheHorn
+        }
+
+        horn_right {
+            Position3: {0.72, 0.72, 0.1}
+            Rotation3: {-1.05, 0.3, 0}
+            Cone: {segments: 8, smooth: true, length: 2.1}
+            Scale3: {0.17, 1, 0.17}
+            Rgba: beheHorn
+        }
+    }
+
+    for i in 0..8 {
+        const side: f32 = 1 - 2 * (i % 2)
+        const row: f32 = math.floor(i / 2)
+
+        "leg_{i}" {
+            Position3: {side * 1.14, 1.7, 1.0 - row * 1.0}
+            Limb: {phase: i * 0.79, swing: 0.28}
+
+            thigh {
+                Position3: {side * 0.72, 0.12, 0}
+                Rotation3: {0, 0, side * -0.5}
+                Box: {1.44, 0.32, 0.32}
+                Rgba: beheLimb
+            }
+
+            shin {
+                Position3: {side * 1.42, -0.72, 0}
+                Box: {0.32, 1.44, 0.32}
+                Rgba: beheLimb
+            }
+
+            foot {
+                Position3: {side * 1.42, -1.44, 0.12}
+                Box: {0.54, 0.26, 0.78}
+                Rgba: beheLimb
+            }
+        }
+    }
+}

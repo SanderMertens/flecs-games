@@ -1,0 +1,107 @@
+// Icon textures
+
+module ore_else.assets
+
+using flecs.engine.*
+
+icons {
+    iron {
+        Svg: {file: "etc/assets/icons/iron.svg", width: 128, height: 128}
+    }
+
+    copper {
+        Svg: {file: "etc/assets/icons/copper.svg", width: 128, height: 128}
+    }
+
+    stone {
+        Svg: {file: "etc/assets/icons/stone.svg", width: 128, height: 128}
+    }
+
+    luminite {
+        Svg: {file: "etc/assets/icons/luminite.svg", width: 128, height: 128}
+    }
+
+    iron_plate {
+        Svg: {file: "etc/assets/icons/iron_plate.svg", width: 128, height: 128}
+    }
+
+    copper_plate {
+        Svg: {file: "etc/assets/icons/copper_plate.svg", width: 128, height: 128}
+    }
+
+    stone_brick {
+        Svg: {file: "etc/assets/icons/stone_brick.svg", width: 128, height: 128}
+    }
+
+    wire {
+        Svg: {file: "etc/assets/icons/wire.svg", width: 128, height: 128}
+    }
+
+    electronics {
+        Svg: {file: "etc/assets/icons/electronics.svg", width: 128, height: 128}
+    }
+
+    rocket_engine {
+        Svg: {file: "etc/assets/icons/rocket_engine.svg", width: 128, height: 128}
+    }
+
+    rocket_fuel {
+        Svg: {file: "etc/assets/icons/rocket_fuel.svg", width: 128, height: 128}
+    }
+
+    rocket_cargo {
+        Svg: {file: "etc/assets/icons/rocket_cargo.svg", width: 128, height: 128}
+    }
+
+    rocket_life {
+        Svg: {file: "etc/assets/icons/rocket_life.svg", width: 128, height: 128}
+    }
+
+    wall {
+        Svg: {file: "etc/assets/icons/wall.svg", width: 128, height: 128}
+    }
+
+    drill {
+        Svg: {file: "etc/assets/icons/drill.svg", width: 128, height: 128}
+    }
+
+    solar {
+        Svg: {file: "etc/assets/icons/solar.svg", width: 128, height: 128}
+    }
+
+    gun_turret {
+        Svg: {file: "etc/assets/icons/gun_turret.svg", width: 128, height: 128}
+    }
+
+    laser_turret {
+        Svg: {file: "etc/assets/icons/laser_turret.svg", width: 128, height: 128}
+    }
+
+    missile_turret {
+        Svg: {file: "etc/assets/icons/missile_turret.svg", width: 128, height: 128}
+    }
+
+    factory {
+        Svg: {file: "etc/assets/icons/factory.svg", width: 128, height: 128}
+    }
+
+    rocket_pad {
+        Svg: {file: "etc/assets/icons/rocket_pad.svg", width: 128, height: 128}
+    }
+
+    drone_pad {
+        Svg: {file: "etc/assets/icons/drone_pad.svg", width: 128, height: 128}
+    }
+
+    heart {
+        Svg: {file: "etc/assets/icons/heart.svg", width: 128, height: 128}
+    }
+
+    critter {
+        Svg: {file: "etc/assets/icons/critter.svg", width: 128, height: 128}
+    }
+
+    power {
+        Svg: {file: "etc/assets/icons/power.svg", width: 128, height: 128}
+    }
+}

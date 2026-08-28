@@ -1,0 +1,31 @@
+// Poof burst
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab PoofBurst {
+    ParticleBurst: {
+        pool: fx,
+        count: 18,
+        size: 0.15,
+        size_variance: 0.06,
+        grow: 0.35,
+        max_age: 0.55,
+        max_age_variance: 0.22,
+        color: {198, 168, 132, 255},
+        color_ramp: {
+            end: {150, 132, 112, 120}
+        },
+        velocity: {0, 1.5, 0},
+        velocity_variance: {0.7, 0.7, 0.7},
+        offset: {0, 0.1, 0},
+        shape: ParticleShapeHemisphere,
+        shape_radius: 0.34,
+        radial: 1.9,
+        rotation_variance: 3.14,
+        spin_variance: 2.2,
+        brightness_variance: 0.25
+    }
+}

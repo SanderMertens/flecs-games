@@ -1,0 +1,15 @@
+// Connector rules
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+BuildingRule2x1 (
+    left: [Wall]
+    right: [Wall]
+    out: WallSegment
+    rotate: true
+)

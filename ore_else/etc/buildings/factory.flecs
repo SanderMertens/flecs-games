@@ -1,0 +1,564 @@
+// Factory: a 2x2 crafting worker building
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const facSteel: Rgba = {172, 180, 194, 255}
+const facShade: Rgba = {112, 120, 136, 255}
+const facDeep: Rgba = {56, 62, 76, 255}
+const facHazard: Rgba = {240, 176, 58, 255}
+const facAccent: Rgba = {92, 236, 222, 255}
+const facGlow: Rgba = {255, 156, 62, 255}
+const facBeaconOff: Rgba = {110, 82, 34, 255}
+const facEmber: Rgba = {255, 108, 38, 255}
+const facLampDead: Rgba = {248, 84, 72, 255}
+
+prefab PressPuff {
+    ParticleBurst: {
+        count: 9,
+        size: 0.13,
+        size_variance: 0.06,
+        grow: 1.3,
+        max_age: 0.34,
+        max_age_variance: 0.12,
+        color: {228, 214, 196, 220},
+        color_ramp: {
+            end: {104, 98, 94, 120}
+        },
+        velocity: {0, 0.7, 0},
+        velocity_variance: {1.5, 0.5, 1.0},
+        offset: {0, 0.02, 0},
+        spread: {0.42, 0.03, 0.24},
+        radial: 2.6
+    }
+}
+
+prefab PressSparks {
+    ParticleBurst: {
+        count: 12,
+        size: 0.045,
+        size_variance: 0.02,
+        grow: -0.06,
+        max_age: 0.26,
+        max_age_variance: 0.1,
+        color: {255, 250, 232, 255},
+        color_ramp: {
+            mid: {255, 236, 176, 255},
+            end: {255, 116, 26, 210},
+            mid_pos: 0.3
+        },
+        velocity: {0, 3.6, 0},
+        velocity_variance: {1.4, 1.6, 1.4},
+        offset: {0, 0.03, 0},
+        spread: {0.34, 0.02, 0.2},
+        radial: 7.5
+    }
+}
+
+@detail "Speeds up crafting."
+@tree Parent
+@name "Factory"
+prefab Factory {
+    Icon: {texture: icons.factory}
+    Recipe: {inputs: [IronPlate: 20, Wire: 20, Electronics: 5, StoneBrick: 10], craft_time: 12}
+    Health: {value: 100, max: 100}
+    PowerConsumer: {watts: 75}
+    PowerCategory: {kind: Construction}
+    Footprint: {w: 2, h: 2}
+    Crafter: {speed: 1}
+
+    deck {
+        SurfaceWear: {dust: 0.15, grime: 0.95}
+        Position3: {0, 0.12, 0}
+        Box: {3.9, 0.24, 3.9}
+        Rgba: facDeep
+        PbrMaterial: {metallic: 0.35, roughness: 0.6}
+    }
+
+    apron {
+        SurfaceWear: {dust: 0.4, grime: 0.8}
+        Position3: {0, 0.28, 0}
+        Box: {3.5, 0.08, 3.5}
+        Rgba: facShade
+        PbrMaterial: {metallic: 0.45, roughness: 0.5}
+    }
+
+    lip_front : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {0, 0.34, 1.75}
+        Box: {3.9, 0.08, 0.34}
+    }
+
+    lip_back : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {0, 0.34, -1.75}
+        Box: {3.9, 0.08, 0.34}
+    }
+
+    lip_left : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {-1.75, 0.34, 0}
+        Rotation3: {0, 1.5708, 0}
+        Box: {3.22, 0.08, 0.34}
+    }
+
+    lip_right : HazardBorderShort {
+        SurfaceWear: {dust: 0.35, grime: 0.45}
+        Position3: {1.75, 0.34, 0}
+        Rotation3: {0, 1.5708, 0}
+        Box: {3.22, 0.08, 0.34}
+    }
+
+    hall {
+        SurfaceWear: {dust: 0.75, grime: 0.6}
+        Position3: {0, 1.12, -1.06}
+        Box: {3.4, 1.5, 1.5}
+        Rgba: facSteel
+        PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+        grille : VentGrille {
+            SurfaceWear: {dust: 0.45, grime: 0.7}
+            Position3: {0, -0.32, 0.76}
+        }
+
+        steam_l {
+            Position3: {-0.9, -0.26, 0.86}
+            VentSteam: {rate: 8}
+            WorkEmitter
+        }
+
+        steam_c {
+            Position3: {0, -0.26, 0.86}
+            VentSteam: {rate: 6}
+            WorkEmitter
+        }
+
+        steam_r {
+            Position3: {0.9, -0.26, 0.86}
+            VentSteam: {rate: 8}
+            WorkEmitter
+        }
+
+        saw_a {
+            SurfaceWear: {dust: 0.65, grime: 0.4}
+            Position3: {-1.1, 0.9, 0}
+            Rotation3: {-0.6, 0, 0}
+            Box: {1.0, 0.1, 1.28}
+            Rgba: facShade
+        }
+
+        saw_b {
+            SurfaceWear: {dust: 0.65, grime: 0.4}
+            Position3: {0, 0.9, 0}
+            Rotation3: {-0.6, 0, 0}
+            Box: {1.0, 0.1, 1.28}
+            Rgba: facShade
+        }
+
+        saw_c {
+            SurfaceWear: {dust: 0.65, grime: 0.4}
+            Position3: {1.1, 0.9, 0}
+            Rotation3: {-0.6, 0, 0}
+            Box: {1.0, 0.1, 1.28}
+            Rgba: facShade
+        }
+    }
+
+    stack_l {
+        SurfaceWear: {dust: 0.6, grime: 0.45}
+        Position3: {-1.24, 2.42, -1.5}
+        Cylinder: {segments: 10, smooth: true, length: 1.0}
+        Scale3: {0.2, 1, 0.2}
+        Rgba: facShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+
+        band {
+            SurfaceWear: {dust: 0.3, grime: 0.4}
+            Position3: {0, 0.4, 0}
+            Cylinder: {segments: 10, smooth: true, length: 0.14}
+            Scale3: {1.2, 1, 1.2}
+            Rgba: facHazard
+        }
+    }
+
+    stack_r {
+        SurfaceWear: {dust: 0.6, grime: 0.45}
+        Position3: {1.24, 2.42, -1.5}
+        Cylinder: {segments: 10, smooth: true, length: 1.0}
+        Scale3: {0.2, 1, 0.2}
+        Rgba: facShade
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+
+        band {
+            SurfaceWear: {dust: 0.3, grime: 0.4}
+            Position3: {0, 0.4, 0}
+            Cylinder: {segments: 10, smooth: true, length: 0.14}
+            Scale3: {1.2, 1, 1.2}
+            Rgba: facHazard
+        }
+    }
+
+    puff_l {
+        Position3: {-1.24, 2.98, -1.5}
+        Vent: {interval: 0.5, burst: SmokePuff}
+    }
+
+    puff_r {
+        Position3: {1.24, 2.98, -1.5}
+        Vent: {interval: 0.62, burst: SmokePuff}
+    }
+
+    beacon_l {
+        Position3: {-1.62, 1.9, -1.06}
+        Light: {
+            color: facHazard, work: true,
+            w: 0.22, d: 0.22, h: 0.16, strength: 3.4,
+            blink: 2
+        }
+    }
+
+    beacon_r {
+        Position3: {1.62, 1.9, -1.06}
+        Light: {
+            color: facHazard, work: true,
+            w: 0.22, d: 0.22, h: 0.16, strength: 3.4,
+            blink: 2
+        }
+    }
+
+    belt {
+        SurfaceWear: {dust: 0.5, grime: 0.6}
+        Position3: {0, 0.56, 1.24}
+        Box: {3.3, 0.18, 0.86}
+        Rgba: facDeep
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+
+        edge_l {
+            SurfaceWear: {dust: 0.6, grime: 0.55}
+            Position3: {-1.7, 0.06, 0}
+            Box: {0.12, 0.22, 0.86}
+            Rgba: facShade
+        }
+
+        edge_r {
+            SurfaceWear: {dust: 0.6, grime: 0.55}
+            Position3: {1.7, 0.06, 0}
+            Box: {0.12, 0.22, 0.86}
+            Rgba: facShade
+        }
+    }
+
+    roller_a {
+        Position3: {-1.3, 0.7, 1.24}
+        Rotation3: {0, 0, 1.5708}
+
+        drum {
+            SurfaceWear: {dust: 0.35, grime: 0.45}
+            Spinner: {speed: 5}
+            Cylinder: {segments: 10, smooth: true, length: 0.78}
+            Scale3: {0.12, 1, 0.12}
+            Rgba: facSteel
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+
+            key {
+                Position3: {0, 0.06, 0.1}
+                Box: {0.06, 0.7, 0.06}
+                Rgba: facHazard
+            }
+        }
+    }
+
+    roller_b {
+        Position3: {-0.44, 0.7, 1.24}
+        Rotation3: {0, 0, 1.5708}
+
+        drum {
+            SurfaceWear: {dust: 0.35, grime: 0.45}
+            Spinner: {speed: 5}
+            Cylinder: {segments: 10, smooth: true, length: 0.78}
+            Scale3: {0.12, 1, 0.12}
+            Rgba: facSteel
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+
+            key {
+                Position3: {0, 0.06, 0.1}
+                Box: {0.06, 0.7, 0.06}
+                Rgba: facHazard
+            }
+        }
+    }
+
+    roller_c {
+        Position3: {0.44, 0.7, 1.24}
+        Rotation3: {0, 0, 1.5708}
+
+        drum {
+            SurfaceWear: {dust: 0.35, grime: 0.45}
+            Spinner: {speed: 5}
+            Cylinder: {segments: 10, smooth: true, length: 0.78}
+            Scale3: {0.12, 1, 0.12}
+            Rgba: facSteel
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+
+            key {
+                Position3: {0, 0.06, 0.1}
+                Box: {0.06, 0.7, 0.06}
+                Rgba: facHazard
+            }
+        }
+    }
+
+    roller_d {
+        Position3: {1.3, 0.7, 1.24}
+        Rotation3: {0, 0, 1.5708}
+
+        drum {
+            SurfaceWear: {dust: 0.35, grime: 0.45}
+            Spinner: {speed: 5}
+            Cylinder: {segments: 10, smooth: true, length: 0.78}
+            Scale3: {0.12, 1, 0.12}
+            Rgba: facSteel
+            PbrMaterial: {metallic: 0.7, roughness: 0.3}
+
+            key {
+                Position3: {0, 0.06, 0.1}
+                Box: {0.06, 0.7, 0.06}
+                Rgba: facHazard
+            }
+        }
+    }
+
+    anvil {
+        SurfaceWear: {dust: 0.5, grime: 0.5}
+        Position3: {0, 0.62, 0.16}
+        Box: {1.5, 0.3, 1.0}
+        Rgba: facShade
+        PbrMaterial: {metallic: 0.55, roughness: 0.45}
+    }
+
+    hot_plate {
+        Position3: {0, 0.79, 0.16}
+        Box: {1.24, 0.04, 0.76}
+        Rgba: facEmber
+        Emissive: {strength: 0.06, color: facEmber}
+        WorkLight: {on: 2.6, off: 0.06, hold: 0.45}
+    }
+
+    work_glow {
+        Position3: {0, 0.83, 0.16}
+        Box: {1.1, 0.08, 0.66}
+        Rgba: facGlow
+        Emissive: {strength: 0.08, color: facGlow}
+        PointLight: {intensity: 0, range: 6.5}
+        WorkLight: {on: 1.8, off: 0.08, light: 5.5, pulse: 0.45, hold: 0.45}
+    }
+
+    column_l {
+        SurfaceWear: {dust: 0.6, grime: 0.6}
+        Position3: {-1.28, 1.28, 0.16}
+        Box: {0.26, 1.6, 0.3}
+        Rgba: facShade
+        PbrMaterial: {metallic: 0.55, roughness: 0.45}
+    }
+
+    column_r {
+        SurfaceWear: {dust: 0.6, grime: 0.6}
+        Position3: {1.28, 1.28, 0.16}
+        Box: {0.26, 1.6, 0.3}
+        Rgba: facShade
+        PbrMaterial: {metallic: 0.55, roughness: 0.45}
+    }
+
+    crown {
+        SurfaceWear: {dust: 0.75, grime: 0.3}
+        Position3: {0, 2.14, 0.16}
+        Box: {2.9, 0.26, 0.56}
+        Rgba: facSteel
+        PbrMaterial: {metallic: 0.55, roughness: 0.42}
+
+        stripe {
+            SurfaceWear: {dust: 0.3, grime: 0.4}
+            Position3: {0, 0, 0.3}
+            Box: {2.9, 0.09, 0.04}
+            Rgba: facHazard
+        }
+
+        status_l {
+            Position3: {-1.0, 0.03, 0.28}
+            Rotation3: {1.5708, 0, 0}
+            Light: {
+                color: facAccent, dead: facLampDead, status: true,
+                w: 0.44, d: 0.12, h: 0.05, strength: 2.6
+            }
+        }
+
+        status_r {
+            Position3: {1.0, 0.03, 0.28}
+            Rotation3: {1.5708, 0, 0}
+            Light: {
+                color: facAccent, dead: facLampDead, status: true,
+                w: 0.44, d: 0.12, h: 0.05, strength: 2.6
+            }
+        }
+    }
+
+    ram {
+        Position3: {0, 1.72, 0.16}
+        Piston: {
+            rest: 1.72, travel: 0.62, speed: 6,
+            impact: -0.32, burst: PressPuff, spark: PressSparks
+        }
+
+        rod {
+            SurfaceWear: {dust: 0.25, grime: 0.3}
+            Position3: {0, 0.3, 0}
+            Cylinder: {segments: 8, smooth: true, length: 0.66}
+            Scale3: {0.12, 1, 0.12}
+            Rgba: facSteel
+            PbrMaterial: {metallic: 0.75, roughness: 0.22}
+        }
+
+        guide_l {
+            SurfaceWear: {dust: 0.5, grime: 0.4}
+            Position3: {-0.5, 0.2, 0}
+            Box: {0.1, 0.5, 0.1}
+            Rgba: facShade
+        }
+
+        guide_r {
+            SurfaceWear: {dust: 0.5, grime: 0.4}
+            Position3: {0.5, 0.2, 0}
+            Box: {0.1, 0.5, 0.1}
+            Rgba: facShade
+        }
+
+        head {
+            SurfaceWear: {dust: 0.55, grime: 0.35}
+            Position3: {0, -0.14, 0}
+            Box: {1.16, 0.34, 0.72}
+            Rgba: facSteel
+            PbrMaterial: {metallic: 0.6, roughness: 0.35}
+
+            edge {
+                Position3: {0, -0.2, 0}
+                Box: {1.0, 0.1, 0.6}
+                Rgba: facHazard
+            }
+        }
+    }
+
+    wheel_post_l {
+        SurfaceWear: {dust: 0.6, grime: 0.5}
+        Position3: {-1.34, 2.18, -0.7}
+        Cylinder: {segments: 12, smooth: true, length: 0.62}
+        Scale3: {0.56, 1, 0.56}
+        Rgba: facDeep
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+
+        collar {
+            SurfaceWear: {dust: 0.3, grime: 0.4}
+            Position3: {0, 0.28, 0}
+            Cylinder: {segments: 12, smooth: true, length: 0.1}
+            Scale3: {1.18, 1, 1.18}
+            Rgba: facShade
+        }
+    }
+
+    wheel_post_r {
+        SurfaceWear: {dust: 0.6, grime: 0.5}
+        Position3: {1.34, 2.18, -0.7}
+        Cylinder: {segments: 12, smooth: true, length: 0.62}
+        Scale3: {0.56, 1, 0.56}
+        Rgba: facDeep
+        PbrMaterial: {metallic: 0.5, roughness: 0.5}
+
+        collar {
+            SurfaceWear: {dust: 0.3, grime: 0.4}
+            Position3: {0, 0.28, 0}
+            Cylinder: {segments: 12, smooth: true, length: 0.1}
+            Scale3: {1.18, 1, 1.18}
+            Rgba: facShade
+        }
+    }
+
+    wheel_left {
+        Position3: {-1.34, 2.62, -0.7}
+
+        flywheel {
+            Spinner: {speed: 5}
+            Position3: {0, 0, 0}
+            Rotation3: {0, 0, 0}
+
+            shroud {
+                SurfaceWear: {dust: 0.35, grime: 0.4}
+                Cylinder: {segments: 16, smooth: true, length: 0.1}
+                Scale3: {0.34, 1, 0.34}
+                Rgba: facShade
+                PbrMaterial: {metallic: 0.65, roughness: 0.32}
+            }
+
+            face_front : FanDisc {
+                SurfaceWear: {dust: 0.3, grime: 0.35}
+                Position3: {0, 0.06, 0}
+                Rotation3: {-1.5708, 0, 0}
+                Scale3: {0.7, 0.7, 1}
+            }
+
+            face_back : FanDisc {
+                SurfaceWear: {dust: 0.3, grime: 0.35}
+                Position3: {0, -0.06, 0}
+                Rotation3: {1.5708, 0, 0}
+                Scale3: {0.7, 0.7, 1}
+            }
+        }
+    }
+
+    wheel_right {
+        Position3: {1.34, 2.62, -0.7}
+
+        flywheel {
+            Spinner: {speed: 5}
+            Position3: {0, 0, 0}
+            Rotation3: {0, 0, 0}
+
+            shroud {
+                SurfaceWear: {dust: 0.35, grime: 0.4}
+                Cylinder: {segments: 16, smooth: true, length: 0.1}
+                Scale3: {0.34, 1, 0.34}
+                Rgba: facShade
+                PbrMaterial: {metallic: 0.65, roughness: 0.32}
+            }
+
+            face_front : FanDisc {
+                SurfaceWear: {dust: 0.3, grime: 0.35}
+                Position3: {0, 0.06, 0}
+                Rotation3: {-1.5708, 0, 0}
+                Scale3: {0.7, 0.7, 1}
+            }
+
+            face_back : FanDisc {
+                SurfaceWear: {dust: 0.3, grime: 0.35}
+                Position3: {0, -0.06, 0}
+                Rotation3: {1.5708, 0, 0}
+                Scale3: {0.7, 0.7, 1}
+            }
+        }
+    }
+
+    crate_a {
+        Position3: {-1.5, 0.55, 1.0}
+        Box: {0.5, 0.46, 0.5}
+        Rgba: facShade
+    }
+
+    crate_b {
+        Position3: {-1.5, 0.55, 1.62}
+        Rotation3: {0, 0.4, 0}
+        Box: {0.5, 0.46, 0.5}
+        Rgba: facSteel
+    }
+}

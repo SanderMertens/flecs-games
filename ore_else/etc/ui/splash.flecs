@@ -1,0 +1,5 @@
+// Full-screen splash panels
+
+include splash/pause_screen
+include splash/title_screen
+include splash/end_screen

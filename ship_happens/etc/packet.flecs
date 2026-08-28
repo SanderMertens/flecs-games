@@ -1,0 +1,221 @@
+// Toolbar packets for placing office furniture
+//
+// Follows the HUD design system; dark panels use DarkPanel, light
+// surfaces use dark labels.
+
+module ship_happens.assets
+using flecs.engine.*
+using ship_happens
+
+const FontLarge = 18
+const FontSmall = 16
+
+const DarkPanel: Rgba = {22, 26, 34, 200}
+const DarkPanelHover: Rgba = {34, 42, 54, 220}
+const LightText: Rgba = {240, 244, 250, 255}
+const SoftText: Rgba = {168, 178, 194, 255}
+const CashText: Rgba = {130, 220, 130, 255}
+const DarkLabel: Rgba = {36, 42, 54, 255}
+const MutedLabel: Rgba = {110, 116, 128, 255}
+const PriceText: Rgba = {30, 110, 60, 255}
+const PacketFace: Rgba = {214, 218, 226, 255}
+const PacketFaceHover: Rgba = {228, 232, 240, 255}
+const PacketFaceCrunch: Rgba = {248, 210, 196, 255}
+const PacketFaceActive: Rgba = {196, 224, 250, 255}
+const PacketEdge: Border = {radius: 8, width: 2, color: {140, 146, 158, 255}}
+const PacketEdgeCrunch: Border = {radius: 8, width: 2, color: {236, 100, 70, 255}}
+const PacketEdgeActive: Border = {radius: 8, width: 2, color: {90, 170, 250, 255}}
+
+icons {
+    desk {
+        Svg: {file: "etc/assets/icons/desk.svg", width: 128, height: 128}
+    }
+
+    coffee {
+        Svg: {file: "etc/assets/icons/coffee.svg", width: 128, height: 128}
+    }
+
+    snacks {
+        Svg: {file: "etc/assets/icons/snacks.svg", width: 128, height: 128}
+    }
+
+    arcade {
+        Svg: {file: "etc/assets/icons/arcade.svg", width: 128, height: 128}
+    }
+
+    plant {
+        Svg: {file: "etc/assets/icons/plant.svg", width: 128, height: 128}
+    }
+
+    bulldoze {
+        Svg: {file: "etc/assets/icons/bulldoze.svg", width: 128, height: 128}
+    }
+
+    crunch {
+        Svg: {file: "etc/assets/icons/crunch.svg", width: 128, height: 128}
+    }
+
+    feature {
+        Svg: {file: "etc/assets/icons/feature.svg", width: 128, height: 128}
+    }
+}
+
+template AddFeatureButton {
+    WidgetState
+    Hotkey: {key: "f"}
+    Layout: {width: 88, height: 84}
+    Rect: {88, 84}
+    Border: PacketEdge
+    Rgba: match $this[WidgetState].hover {
+        true: PacketFaceHover
+        false: PacketFace
+    }
+
+    icon_img {
+        Position: {24, 5}
+        Rect: {40, 40}
+        Image: {texture: icons.feature, fit: Contain}
+    }
+
+    name_label {
+        Position: {0, 47}
+        Layout: {width: 88}
+        Text: {text: "Feature", size: FontSmall, align: Center}
+        Rgba: DarkLabel
+    }
+
+    worth_label {
+        Position: {0, 63}
+        Layout: {width: 88}
+        Text: {text: "+5000", size: FontLarge, align: Center}
+        Rgba: PriceText
+    }
+
+    hotkey {
+        Position: {6, 3}
+        Text: {text: "F", size: FontSmall}
+        Rgba: MutedLabel
+    }
+}
+
+template CrunchButton {
+    mut active = false
+
+    WidgetState
+    Hotkey: {key: "c"}
+    Layout: {width: 88, height: 84}
+    Rect: {88, 84}
+
+    const crunchFace: Rgba = match $this[WidgetState].hover {
+        true: PacketFaceHover
+        false: PacketFace
+    }
+
+    Border: match active {
+        true: PacketEdgeCrunch
+        false: PacketEdge
+    }
+    Rgba: match active {
+        true: PacketFaceCrunch
+        false: crunchFace
+    }
+
+    const stateText = match active {
+        true: "ON"
+        false: "OFF"
+    }
+
+    const stateColor: Rgba = match active {
+        true: {200, 60, 40, 255}
+        false: {110, 116, 128, 255}
+    }
+
+    icon_img {
+        Position: {24, 5}
+        Rect: {40, 40}
+        Image: {texture: icons.crunch, fit: Contain}
+    }
+
+    name_label {
+        Position: {0, 47}
+        Layout: {width: 88}
+        Text: {text: "Crunch", size: FontSmall, align: Center}
+        Rgba: DarkLabel
+    }
+
+    state_label {
+        Position: {0, 63}
+        Layout: {width: 88}
+        Text: {text: stateText, size: FontLarge, align: Center}
+        Rgba: stateColor
+    }
+
+    hotkey {
+        Position: {6, 3}
+        Text: {text: "C", size: FontSmall}
+        Rgba: MutedLabel
+    }
+}
+
+template Packet {
+    prop item: entity = 0
+    prop icon: entity = 0
+    prop name = ""
+    prop key = ""
+    prop hotKey = ""
+
+    mut active = false
+
+    const w = 88
+    const h = 84
+
+    ShipPacket: {item: item}
+    Hotkey: {key: hotKey}
+    WidgetState
+    Layout: {width: w, height: h}
+    Rect: {w, h}
+
+    const packetFace: Rgba = match $this[WidgetState].hover {
+        true: PacketFaceHover
+        false: PacketFace
+    }
+
+    Border: match active {
+        true: PacketEdgeActive
+        false: PacketEdge
+    }
+    Rgba: match active {
+        true: PacketFaceActive
+        false: packetFace
+    }
+
+    if icon {
+        icon_img {
+            Position: {24, 5}
+            Rect: {40, 40}
+            Image: {texture: icon, fit: Contain}
+        }
+    }
+
+    name_label {
+        Position: {0, 47}
+        Layout: {width: w}
+        Text: {text: name, size: FontSmall, align: Center}
+        Rgba: DarkLabel
+    }
+
+    if item {
+        cost_label {
+            Position: {0, 63}
+            Layout: {width: w}
+            Text: {text: "{item[ShipCost].money}", size: FontLarge, align: Center}
+            Rgba: PriceText
+        }
+    }
+
+    hotkey {
+        Position: {6, 3}
+        Text: {text: key, size: FontSmall}
+        Rgba: MutedLabel
+    }
+}

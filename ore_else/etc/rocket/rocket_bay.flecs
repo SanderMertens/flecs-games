@@ -1,0 +1,56 @@
+// Cargo bay
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const rocketShade: Rgba = {150, 158, 174, 255}
+const rocketDark: Rgba = {48, 54, 68, 255}
+const rocketSteel: Rgba = {172, 180, 194, 255}
+const rkBayH: f32 = 0.78
+const rkRadius: f32 = 0.42
+
+@tree Parent
+template RocketBay {
+    prop lit: bool = false
+
+    hull {
+        Position3: {0, 0, 0}
+        Cylinder: {segments: 20, smooth: true, length: rkBayH - 0.03}
+        Scale3: {(rkRadius + 0.05) * 2, 1, (rkRadius + 0.05) * 2}
+        Rgba: rocketShade
+        PbrMaterial: {metallic: 0.66, roughness: 0.36}
+    }
+
+    rim_low {
+        Position3: {0, 0 - rkBayH * 0.5 + 0.035, 0}
+        Cylinder: {segments: 20, smooth: true, length: 0.07}
+        Scale3: {(rkRadius + 0.09) * 2, 1, (rkRadius + 0.09) * 2}
+        Rgba: rocketDark
+        PbrMaterial: {metallic: 0.8, roughness: 0.3}
+    }
+
+    rib {
+        Position3: {0, 0, 0}
+        Cylinder: {segments: 20, smooth: true, length: 0.05}
+        Scale3: {(rkRadius + 0.08) * 2, 1, (rkRadius + 0.08) * 2}
+        Rgba: rocketSteel
+        PbrMaterial: {metallic: 0.8, roughness: 0.3}
+    }
+
+    for i in 0..4 {
+        const a = 1.5708 * i
+
+        "port_{i}" {
+            Position3: {
+                math.cos(a) * (rkRadius + 0.06),
+                0.06,
+                math.sin(a) * (rkRadius + 0.06)
+            }
+            Rotation3: {0, 0 - a, 0}
+            RocketPort: {lit: lit}
+        }
+    }
+}

@@ -1,0 +1,340 @@
+// Alien vegetation assets
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+
+const floraRng: math.Rng = {seed: mapSeedProp}
+
+@tree Parent
+template Frondstalk {
+    prop height: f32 = 2.1
+    prop fronds: i32 = 7
+    prop skirt: i32 = 3
+    prop blade: f32 = 1.65
+    prop bladeWide: f32 = 0.6
+    prop stalkR: f32 = 0.105
+    prop stalkTint: Rgba = {98, 78, 84, 255}
+    prop rootTint: Rgba = {80, 64, 60, 255}
+
+    const h = height * (0.78 + floraRng.f(0.48))
+    const lean = 0.05 + floraRng.f(0.22)
+    const tone = math.floor(floraRng.f(1.999))
+    const t1 = lean * 0.34
+    const t2 = lean * 1
+    const t3 = lean * 1.8
+    const l1 = h * 0.44
+    const l2 = h * 0.33
+    const l3 = h * 0.25
+    const e1x = math.sin(t1) * l1
+    const e1y = math.cos(t1) * l1
+    const e2x = e1x + math.sin(t2) * l2
+    const e2y = e1y + math.cos(t2) * l2
+    const e3x = e2x + math.sin(t3) * l3
+    const e3y = e2y + math.cos(t3) * l3
+    const r1 = stalkR * (0.84 + floraRng.f(0.4))
+    const scale = h / height
+
+    mound {
+        Position3: {0, 0, 0}
+        Rotation3: {0, floraRng.f(6.283), 0}
+        Scale3: {0.4 * scale, 0.16 * scale, 0.34 * scale}
+        HemiSphere: {segments: 7, smooth: false, radius: 1}
+        Rgba: rootTint
+        PbrMaterial: {metallic: 0, roughness: 0.95}
+        SurfaceWear: {dust: 0.45, edge: 0, scratch: 0}
+    }
+
+    for k in 0..3 {
+        const ra = 2.094 * k + floraRng.f(1.2)
+        const rr = 0.17 + floraRng.f(0.14)
+        const rw = 0.11 + floraRng.f(0.12)
+
+        "root_{k}" {
+            Position3: {
+                math.cos(ra) * rr,
+                0.03 + floraRng.f(0.04),
+                math.sin(ra) * rr
+            }
+            Rotation3: {
+                floraRng.f(0.5) - 0.25,
+                floraRng.f(6.283),
+                floraRng.f(0.5) - 0.25
+            }
+            Box: {rw, 0.08 + floraRng.f(0.06), rw * 0.62}
+            Rgba: rootTint
+            PbrMaterial: {metallic: 0, roughness: 0.92}
+            SurfaceWear: {dust: 0.7, seed: k * 0.19, edge: 0, scratch: 0}
+        }
+    }
+
+    seg_a {
+        Position3: {e1x * 0.5, e1y * 0.5, 0}
+        Rotation3: {0, 0, 0 - t1}
+        Cylinder: {segments: 7, smooth: false, length: l1 * 1.08}
+        Scale3: {r1 * 2, 1, r1 * 2}
+        Rgba: stalkTint
+        PbrMaterial: {metallic: 0, roughness: 0.88}
+        SurfaceWear: {dust: 0.55, edge: 0, scratch: 0}
+    }
+
+    seg_b {
+        Position3: {(e1x + e2x) * 0.5, (e1y + e2y) * 0.5, 0}
+        Rotation3: {0, 0, 0 - t2}
+        Cylinder: {segments: 7, smooth: false, length: l2 * 1.1}
+        Scale3: {r1 * 1.58, 1, r1 * 1.58}
+        Rgba: stalkTint
+        PbrMaterial: {metallic: 0, roughness: 0.88}
+        SurfaceWear: {dust: 0.5, seed: 0.3, edge: 0, scratch: 0}
+    }
+
+    seg_c {
+        Position3: {(e2x + e3x) * 0.5, (e2y + e3y) * 0.5, 0}
+        Rotation3: {0, 0, 0 - t3}
+        Cylinder: {segments: 7, smooth: false, length: l3 * 1.12}
+        Scale3: {r1 * 1.1, 1, r1 * 1.1}
+        Rgba: stalkTint
+        PbrMaterial: {metallic: 0, roughness: 0.88}
+        SurfaceWear: {dust: 0.45, seed: 0.6, edge: 0, scratch: 0}
+    }
+
+    for k in 0..fronds {
+        const a = 6.283 * k / fronds + floraRng.f(0.9) - 0.45
+        const tt = 0.36 + floraRng.f(0.66)
+        const bl = blade * scale * (0.76 + floraRng.f(0.56))
+        const bw = bladeWide * scale * (0.8 + floraRng.f(0.46))
+        const px = e3x - math.sin(tt) * math.cos(a) * bl * 0.5
+        const py = e3y + math.cos(tt) * bl * 0.5
+        const pz = math.sin(tt) * math.sin(a) * bl * 0.5
+
+        if tone < 1 {
+            "frond_{k}" : FloraFrond {
+                Position3: {px, py, pz}
+                Rotation3: {0, a, tt}
+                Scale3: {bw, bl, 1}
+                SurfaceWear: {dust: 0.25, seed: k * 0.23, edge: 0, scratch: 0}
+            }
+        } else {
+            "frond_{k}" : FloraFrondB {
+                Position3: {px, py, pz}
+                Rotation3: {0, a, tt}
+                Scale3: {bw, bl, 1}
+                SurfaceWear: {dust: 0.25, seed: k * 0.23, edge: 0, scratch: 0}
+            }
+        }
+    }
+
+    for k in 0..skirt {
+        const a = 6.283 * k / skirt + floraRng.f(1.4)
+        const tt = 1.1 + floraRng.f(0.46)
+        const bl = blade * scale * (0.5 + floraRng.f(0.34))
+        const bw = bladeWide * scale * (0.62 + floraRng.f(0.32))
+        const px = e1x - math.sin(tt) * math.cos(a) * bl * 0.5
+        const py = e1y + math.cos(tt) * bl * 0.5
+        const pz = math.sin(tt) * math.sin(a) * bl * 0.5
+
+        if tone < 1 {
+            "skirt_{k}" : FloraFrondB {
+                Position3: {px, py, pz}
+                Rotation3: {0, a, tt}
+                Scale3: {bw, bl, 1}
+                SurfaceWear: {dust: 0.4, seed: k * 0.31, edge: 0, scratch: 0}
+            }
+        } else {
+            "skirt_{k}" : FloraFrond {
+                Position3: {px, py, pz}
+                Rotation3: {0, a, tt}
+                Scale3: {bw, bl, 1}
+                SurfaceWear: {dust: 0.4, seed: k * 0.31, edge: 0, scratch: 0}
+            }
+        }
+    }
+}
+
+@tree Parent
+template Ashcup {
+    prop leaves: i32 = 7
+    prop size: f32 = 0.68
+    prop nubs: i32 = 3
+    prop rootTint: Rgba = {84, 70, 66, 255}
+    prop nubTint: Rgba = {150, 128, 118, 255}
+
+    const s = size * (0.68 + floraRng.f(0.7))
+    const tone = math.floor(floraRng.f(1.999))
+
+    mound {
+        Position3: {0, 0, 0}
+        Rotation3: {0, floraRng.f(6.283), 0}
+        Scale3: {s * 0.66, s * 0.24, s * 0.58}
+        HemiSphere: {segments: 6, smooth: false, radius: 1}
+        Rgba: rootTint
+        PbrMaterial: {metallic: 0, roughness: 0.95}
+        SurfaceWear: {dust: 0.5, edge: 0, scratch: 0}
+    }
+
+    for k in 0..leaves {
+        const a = 6.283 * k / leaves + floraRng.f(1) - 0.5
+        const tt = 0.58 + floraRng.f(0.58)
+        const bl = s * (1 + floraRng.f(0.8))
+        const bw = s * (0.76 + floraRng.f(0.52))
+        const px = 0 - math.sin(tt) * math.cos(a) * bl * 0.46
+        const py = s * 0.06 + math.cos(tt) * bl * 0.46
+        const pz = math.sin(tt) * math.sin(a) * bl * 0.46
+
+        if tone < 1 {
+            "leaf_{k}" : FloraMembrane {
+                Position3: {px, py, pz}
+                Rotation3: {0, a, tt}
+                Scale3: {bw, bl, 1}
+                SurfaceWear: {dust: 0.3, seed: k * 0.27, edge: 0, scratch: 0}
+            }
+        } else {
+            "leaf_{k}" : FloraMembraneB {
+                Position3: {px, py, pz}
+                Rotation3: {0, a, tt}
+                Scale3: {bw, bl, 1}
+                SurfaceWear: {dust: 0.3, seed: k * 0.27, edge: 0, scratch: 0}
+            }
+        }
+    }
+
+    for k in 0..nubs {
+        const a = floraRng.f(6.283)
+        const rr = s * floraRng.f(0.3)
+        const nw = s * (0.07 + floraRng.f(0.06))
+
+        "nub_{k}" {
+            Position3: {
+                math.cos(a) * rr,
+                s * 0.12 + nw * 0.5,
+                math.sin(a) * rr
+            }
+            Rotation3: {
+                floraRng.f(0.7) - 0.35,
+                floraRng.f(6.283),
+                floraRng.f(0.7) - 0.35
+            }
+            Box: {nw, nw * 1.7, nw}
+            Rgba: nubTint
+            PbrMaterial: {metallic: 0, roughness: 0.8}
+            SurfaceWear: {dust: 0.5, seed: k * 0.37, edge: 0, scratch: 0}
+        }
+    }
+}
+
+@tree Parent
+template Quillbulb {
+    prop size: f32 = 0.62
+    prop quills: i32 = 7
+    prop veils: i32 = 3
+    prop bulbTint: Rgba = {138, 122, 116, 255}
+    prop quillTint: Rgba = {112, 88, 100, 255}
+    prop rootTint: Rgba = {82, 68, 62, 255}
+    prop podTint: Rgba = {214, 122, 154, 255}
+    prop podGlow: f32 = 0.35
+
+    const s = size * (0.72 + floraRng.f(0.62))
+    const by = s * 0.62
+    const bw = s * (0.9 + floraRng.f(0.34))
+    const bh = s * (0.56 + floraRng.f(0.24))
+
+    mound {
+        Position3: {0, 0, 0}
+        Rotation3: {0, floraRng.f(6.283), 0}
+        Scale3: {s * 0.72, s * 0.2, s * 0.64}
+        HemiSphere: {segments: 6, smooth: false, radius: 1}
+        Rgba: rootTint
+        PbrMaterial: {metallic: 0, roughness: 0.95}
+        SurfaceWear: {dust: 0.5, edge: 0, scratch: 0}
+    }
+
+    neck {
+        Position3: {0, by * 0.4, 0}
+        Rotation3: {0, floraRng.f(6.283), 0}
+        Cone: {segments: 7, smooth: false, length: by * 0.9}
+        Scale3: {bw * 0.62, 1, bw * 0.58}
+        Rgba: quillTint
+        PbrMaterial: {metallic: 0, roughness: 0.9}
+        SurfaceWear: {dust: 0.6, edge: 0, scratch: 0}
+    }
+
+    bulb {
+        Position3: {s * 0.05, by, 0}
+        Rotation3: {
+            floraRng.f(0.5) - 0.25,
+            floraRng.f(6.283),
+            floraRng.f(0.5) - 0.25
+        }
+        Scale3: {bw, bh, bw * 0.86}
+        IcoSphere: {segments: 2, smooth: false, radius: 0.5}
+        Rgba: bulbTint
+        PbrMaterial: {metallic: 0, roughness: 0.84}
+        SurfaceWear: {dust: 0.6, edge: 0, scratch: 0}
+    }
+
+    for k in 0..quills {
+        const a = 6.283 * k / quills + floraRng.f(0.8) - 0.4
+        const tt = 0.24 + floraRng.f(0.72)
+        const ql = s * (0.75 + floraRng.f(0.9))
+        const qr = s * (0.035 + floraRng.f(0.03))
+
+        "quill_{k}" {
+            Position3: {
+                0 - math.sin(tt) * math.cos(a) * ql * 0.42,
+                by + bh * 0.2 + math.cos(tt) * ql * 0.42,
+                math.sin(tt) * math.sin(a) * ql * 0.42
+            }
+            Rotation3: {0, a, tt}
+            Cone: {segments: 5, smooth: false, length: ql}
+            Scale3: {qr * 2, 1, qr * 2}
+            Rgba: quillTint
+            PbrMaterial: {metallic: 0, roughness: 0.82}
+            SurfaceWear: {dust: 0.45, seed: k * 0.29, edge: 0, scratch: 0}
+        }
+    }
+
+    for k in 0..veils {
+        const a = 6.283 * k / veils + floraRng.f(1.1)
+        const tt = 1.15 + floraRng.f(0.42)
+        const vl = s * (1.45 + floraRng.f(0.85))
+        const vw = s * (0.95 + floraRng.f(0.55))
+
+        "veil_{k}" : FloraMembraneB {
+            Position3: {
+                0 - math.sin(tt) * math.cos(a) * vl * 0.44,
+                by * 0.7 + math.cos(tt) * vl * 0.44,
+                math.sin(tt) * math.sin(a) * vl * 0.44
+            }
+            Rotation3: {0, a, tt}
+            Scale3: {vw, vl, 1}
+            SurfaceWear: {dust: 0.35, seed: k * 0.33, edge: 0, scratch: 0}
+        }
+    }
+
+    for k in 0..2 {
+        const a = 3.14 * k + floraRng.f(2)
+        const pr = bw * 0.42
+        const pw = s * (0.055 + floraRng.f(0.035))
+
+        "pod_{k}" {
+            Position3: {
+                math.cos(a) * pr,
+                by + bh * 0.44,
+                math.sin(a) * pr
+            }
+            Rotation3: {
+                floraRng.f(0.6) - 0.3,
+                floraRng.f(6.283),
+                floraRng.f(0.6) - 0.3
+            }
+            Scale3: {pw * 2, pw * 2.4, pw * 2}
+            IcoSphere: {segments: 1, smooth: false, radius: 0.5}
+            Rgba: podTint
+            PbrMaterial: {metallic: 0, roughness: 0.5}
+            Emissive: {strength: podGlow, color: podTint}
+        }
+    }
+}

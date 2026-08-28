@@ -1,0 +1,36 @@
+// Button that raises an input action when clicked
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const ActionFace: Rgba = {46, 50, 58, 236}
+const ActionHover: Rgba = {66, 72, 82, 240}
+const ActionEdge: Rgba = {88, 94, 106, 255}
+const ActionLabel: Rgba = {226, 231, 238, 255}
+
+template ActionButton {
+    prop action: entity = 0
+    prop label = ""
+    prop w: f32 = 196
+    prop h: f32 = 38
+    prop size: f32 = 17
+
+    UiAction: {action: action}
+    WidgetState
+    Rect: {w, h}
+    Border: {radius: 3, width: 1, color: ActionEdge}
+    Rgba: match $this[WidgetState].hover {
+        true: ActionHover
+        false: ActionFace
+    }
+
+    caption {
+        Position: {0, (h - size) / 2 - 1}
+        Layout: {width: w}
+        Text: {text: label, size: size, align: Center}
+        Rgba: ActionLabel
+    }
+}

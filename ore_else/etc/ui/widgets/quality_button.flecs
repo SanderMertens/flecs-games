@@ -1,0 +1,51 @@
+// Rendering quality button: cycles the quality tier, label read from the
+// renderQuality variable. Shown at the top of the pause menu.
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const QualityFace: Rgba = {21, 23, 27, 236}
+const QualityHover: Rgba = {38, 42, 49, 240}
+const QualityEdge: Rgba = {74, 80, 90, 255}
+const QualityCaption: Rgba = {146, 154, 166, 255}
+const QualityValue: Rgba = {240, 176, 58, 255}
+
+template QualityButton {
+    prop w: f32 = 138
+    prop h: f32 = 26
+    prop size: f32 = 12
+    prop pad: f32 = 11
+
+    QualityCycle
+    WidgetState
+    Rect: {w, h}
+    Border: {radius: 3, width: 1, color: QualityEdge}
+    Rgba: match $this[WidgetState].hover {
+        true: QualityHover
+        false: QualityFace
+    }
+
+    caption {
+        Position: {pad, (h - size) / 2 - 1}
+        Text: {text: "QUALITY", size: size}
+        Rgba: QualityCaption
+    }
+
+    value {
+        Position: {0, (h - size) / 2 - 1}
+        Layout: {width: w - pad}
+        Text: {
+            text: match renderQuality {
+                Low: "LOW"
+                Medium: "MEDIUM"
+                _: "HIGH"
+            },
+            size: size,
+            align: Right
+        }
+        Rgba: QualityValue
+    }
+}

@@ -1,0 +1,29 @@
+// Spitter acid glob
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const acid: Rgba = {110, 200, 96, 255}
+const acidEye: Rgba = {188, 255, 120, 255}
+
+@tree Parent
+prefab Glob {
+    Projectile: {radius: 1.1, life: 6, gravity: 9}
+
+    blob {
+        Position3: {0, 0, 0}
+        Sphere: {segments: 10, smooth: true, radius: 0.22}
+        Rgba: acid
+        Emissive: {strength: 2.4, color: acid}
+    }
+
+    drip {
+        Position3: {0, -0.12, -0.14}
+        Sphere: {segments: 8, smooth: true, radius: 0.11}
+        Rgba: acidEye
+        Emissive: {strength: 2, color: acidEye}
+    }
+}

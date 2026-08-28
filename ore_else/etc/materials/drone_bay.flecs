@@ -1,0 +1,23 @@
+// Drone landing bay marking
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab bay_tex {
+    Texture: {"etc/assets/drone_bay.svg", 256, 256}
+}
+
+prefab bay_norm {
+    Texture: {"etc/assets/drone_bay_normal.svg", 256, 256}
+}
+
+prefab BayPad {
+    Quad: {1.46, 1.46}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.35, roughness: 0.58}
+    PbrTextures: {albedo: bay_tex, normal: bay_norm}
+}

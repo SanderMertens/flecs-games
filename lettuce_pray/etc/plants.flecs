@@ -1,0 +1,261 @@
+module lettuce_pray.assets
+using flecs.script
+using flecs.engine.*
+using lettuce_pray
+
+const stemGreen: Rgba = {68, 142, 58, 255}
+const leafGreen: Rgba = {92, 178, 70, 255}
+const eyeDark: Rgba = {32, 34, 30, 255}
+const eyeWhite: Rgba = {248, 248, 240, 255}
+
+prefab Sprout {
+    LettuceProducer
+    LettuceCost: {50}
+    LettuceMaxHealth: {70}
+    LettuceAnimSpeed: {1.8}
+    LettuceActionInterval: {13}
+    LettuceActionTimer: {6}
+
+    stem {
+        Position3: {0, 0.44, 0}
+        Box: {0.17, 0.88, 0.17}
+        Rgba: stemGreen
+    }
+
+    leaf_left {
+        Position3: {-0.3, 0.32, 0.02}
+        Rotation3: {0, 0, 0.55}
+        Box: {0.52, 0.11, 0.3}
+        Rgba: leafGreen
+    }
+
+    leaf_right {
+        Position3: {0.3, 0.32, -0.02}
+        Rotation3: {0, 0, -0.55}
+        Box: {0.52, 0.11, 0.3}
+        Rgba: leafGreen
+    }
+
+    head {
+        Position3: {0, 1.02, 0.06}
+
+        for i in 0..10 {
+            const a = i * math.PI * 2 / 10
+
+            "petal_{i}" {
+                Position3: {math.cos(a) * 0.35, math.sin(a) * 0.35, 0}
+                Rotation3: {0, 0, a}
+                Box: {0.32, 0.17, 0.09}
+                Rgba: {255, 206, 62, 255}
+                Emissive: {strength: 0.4, color: {255, 200, 60, 255}}
+            }
+        }
+
+        core {
+            Position3: {0, 0, 0.11}
+            Sphere: {segments: 14, smooth: true, radius: 0.27}
+            Scale3: {1, 1, 0.55}
+            Rgba: {138, 84, 42, 255}
+        }
+
+        eye_left {
+            Position3: {-0.1, 0.03, 0.24}
+            Sphere: {segments: 8, smooth: true, radius: 0.055}
+            Rgba: eyeDark
+        }
+
+        eye_right {
+            Position3: {0.1, 0.03, 0.24}
+            Sphere: {segments: 8, smooth: true, radius: 0.055}
+            Rgba: eyeDark
+        }
+    }
+}
+
+prefab PeaPod {
+    LettuceCost: {100}
+    LettuceMaxHealth: {70}
+    LettuceAnimSpeed: {1.8}
+    LettuceShooter: {height: 1.06}
+    LettuceActionInterval: {1.35}
+    LettuceActionTimer: {0}
+    LettuceDamage: {damage: 22}
+    LettuceSpeed: {12}
+
+    stem {
+        Position3: {0, 0.48, 0}
+        Box: {0.2, 0.96, 0.2}
+        Rgba: stemGreen
+    }
+
+    leaf_left {
+        Position3: {-0.32, 0.36, 0.02}
+        Rotation3: {0, 0, 0.6}
+        Box: {0.5, 0.11, 0.28}
+        Rgba: leafGreen
+    }
+
+    leaf_right {
+        Position3: {0.3, 0.28, -0.14}
+        Rotation3: {0, 0.4, -0.5}
+        Box: {0.44, 0.11, 0.26}
+        Rgba: leafGreen
+    }
+
+    head {
+        Position3: {0.02, 1.06, 0}
+        Sphere: {segments: 16, smooth: true, radius: 0.37}
+        Rgba: {104, 196, 78, 255}
+    }
+
+    snout {
+        Position3: {0.46, 1.08, 0}
+        Rotation3: {0, 0, -math.PI / 2}
+        Cylinder: {segments: 12, smooth: true, length: 0.36}
+        Scale3: {0.5, 1, 0.5}
+        Rgba: {82, 168, 62, 255}
+    }
+
+    lip {
+        Position3: {0.65, 1.08, 0}
+        Rotation3: {0, 0, -math.PI / 2}
+        Cylinder: {segments: 12, smooth: true, length: 0.1}
+        Scale3: {0.6, 1, 0.6}
+        Rgba: {66, 148, 54, 255}
+    }
+
+    eye_left {
+        Position3: {0.24, 1.2, 0.24}
+        Sphere: {segments: 10, smooth: true, radius: 0.1}
+        Rgba: eyeWhite
+    }
+
+    eye_right {
+        Position3: {0.24, 1.2, -0.24}
+        Sphere: {segments: 10, smooth: true, radius: 0.1}
+        Rgba: eyeWhite
+    }
+
+    pupil_left {
+        Position3: {0.31, 1.2, 0.26}
+        Sphere: {segments: 8, smooth: true, radius: 0.055}
+        Rgba: eyeDark
+    }
+
+    pupil_right {
+        Position3: {0.31, 1.2, -0.26}
+        Sphere: {segments: 8, smooth: true, radius: 0.055}
+        Rgba: eyeDark
+    }
+}
+
+prefab Lettuce {
+    LettuceCost: {50}
+    LettuceMaxHealth: {420}
+    LettuceAnimSpeed: {1.8}
+
+    heart {
+        Position3: {0, 0.5, 0}
+        Sphere: {segments: 18, smooth: true, radius: 0.56}
+        Scale3: {1, 0.96, 1}
+        Rgba: {186, 226, 128, 255}
+    }
+
+    for i in 0..7 {
+        const a = i * math.PI * 2 / 7
+
+        "leaf_{i}" {
+            Position3: {math.cos(a) * 0.4, 0.44 + math.sin(a * 3) * 0.06, math.sin(a) * 0.4}
+            Rotation3: {0, -a, 0.3}
+            Sphere: {segments: 12, smooth: true, radius: 0.44}
+            Scale3: {0.86, 0.62, 0.52}
+            Rgba: {124, 196, 88, 255}
+        }
+    }
+
+    for i in 0..5 {
+        const a = i * math.PI * 2 / 5 + 0.4
+
+        "outer_{i}" {
+            Position3: {math.cos(a) * 0.52, 0.2, math.sin(a) * 0.52}
+            Rotation3: {0, -a, 0.55}
+            Sphere: {segments: 12, smooth: true, radius: 0.46}
+            Scale3: {0.92, 0.5, 0.6}
+            Rgba: {96, 170, 72, 255}
+        }
+    }
+
+    eye_left {
+        Position3: {-0.2, 0.66, 0.5}
+        Sphere: {segments: 10, smooth: true, radius: 0.14}
+        Rgba: eyeWhite
+    }
+
+    eye_right {
+        Position3: {0.2, 0.66, 0.5}
+        Sphere: {segments: 10, smooth: true, radius: 0.14}
+        Rgba: eyeWhite
+    }
+
+    pupil_left {
+        Position3: {-0.2, 0.66, 0.6}
+        Sphere: {segments: 8, smooth: true, radius: 0.075}
+        Rgba: eyeDark
+    }
+
+    pupil_right {
+        Position3: {0.2, 0.66, 0.6}
+        Sphere: {segments: 8, smooth: true, radius: 0.075}
+        Rgba: eyeDark
+    }
+
+    mouth {
+        Position3: {0, 0.42, 0.56}
+        Box: {0.26, 0.09, 0.12}
+        Rgba: eyeDark
+    }
+}
+
+prefab Chili {
+    LettuceCost: {150}
+    LettuceMaxHealth: {45}
+    LettuceAnimSpeed: {1.8}
+    LettuceBomb: {radius: 3.6}
+    LettuceDamage: {damage: 9000}
+    LettuceActionTimer: {1.5}
+
+    body {
+        Position3: {0, 0.56, 0}
+        Rotation3: {math.PI, 0, 0}
+        Scale3: {0.66, 1, 0.66}
+        Cone: {segments: 16, smooth: true, length: 1.24}
+        Rgba: {224, 48, 38, 255}
+        Emissive: {strength: 1.6, color: {255, 74, 30, 255}}
+    }
+
+    cap {
+        Position3: {0, 1.2, 0}
+        Sphere: {segments: 12, smooth: true, radius: 0.2}
+        Scale3: {1, 0.6, 1}
+        Rgba: {74, 148, 60, 255}
+    }
+
+    stalk {
+        Position3: {-0.05, 1.4, 0}
+        Rotation3: {0, 0, 0.35}
+        Box: {0.11, 0.34, 0.11}
+        Rgba: {74, 148, 60, 255}
+    }
+
+    eye_left {
+        Position3: {-0.16, 0.78, 0.31}
+        Sphere: {segments: 8, smooth: true, radius: 0.075}
+        Rgba: eyeDark
+    }
+
+    eye_right {
+        Position3: {0.16, 0.78, 0.31}
+        Sphere: {segments: 8, smooth: true, radius: 0.075}
+        Rgba: eyeDark
+    }
+}

@@ -1,0 +1,57 @@
+// Guided missile
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const missileSteel: Rgba = {198, 202, 214, 255}
+const missileFlame: Rgba = {255, 148, 72, 255}
+
+@tree Parent
+prefab Missile {
+    Projectile: {radius: 0.8, life: 5, gravity: 0}
+    Homing: {turn_rate: 6, reacquire: 6}
+
+    body {
+        Position3: {0, 0, 0}
+        Rotation3: {1.5708, 0, 0}
+        Cylinder: {segments: 8, smooth: true, length: 0.6}
+        Scale3: {0.1, 1, 0.1}
+        Rgba: missileSteel
+    }
+
+    tip {
+        Position3: {0, 0, 0.4}
+        Rotation3: {1.5708, 0, 0}
+        Cone: {segments: 8, smooth: true, length: 0.28}
+        Scale3: {0.1, 1, 0.1}
+        Rgba: missileFlame
+    }
+
+    fin_left {
+        Position3: {-0.12, 0, -0.22}
+        Box: {0.16, 0.04, 0.2}
+        Rgba: missileSteel
+    }
+
+    fin_right {
+        Position3: {0.12, 0, -0.22}
+        Box: {0.16, 0.04, 0.2}
+        Rgba: missileSteel
+    }
+
+    flame {
+        Position3: {0, 0, -0.38}
+        Sphere: {segments: 8, smooth: true, radius: 0.12}
+        Rgba: missileFlame
+        Emissive: {strength: 3, color: missileFlame}
+        PointLight: {intensity: 3, range: 6}
+    }
+
+    trail {
+        Position3: {0, 0, -0.44}
+        MissileTrail: {}
+    }
+}

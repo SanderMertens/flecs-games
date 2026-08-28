@@ -1,0 +1,120 @@
+// Skitter
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const chitin: Rgba = {104, 78, 148, 255}
+const chitinDark: Rgba = {62, 44, 92, 255}
+const chitinLimb: Rgba = {46, 34, 68, 255}
+const skitterEye: Rgba = {255, 196, 72, 255}
+
+@tree Parent
+prefab Skitter {
+    Critter: {step: 1.9, bob: 0.09}
+    Radius: {value: 0.56}
+    Health: {value: 50}
+    Speed: {value: 5.2}
+    Damage: {value: 8}
+    Range: {value: 1.4}
+    DeathBurst: {burst: CombustBurst}
+
+    abdomen {
+        Position3: {0, 0.46, -0.36}
+        Rotation3: {0.18, 0, 0}
+        Box: {0.44, 0.4, 0.52}
+        Rgba: chitinDark
+
+        ridge {
+            Position3: {0, 0.22, 0}
+            Box: {0.2, 0.14, 0.4}
+            Rgba: chitin
+        }
+    }
+
+    thorax {
+        Position3: {0, 0.46, 0.06}
+        Box: {0.5, 0.38, 0.42}
+        Rgba: chitin
+
+        plate {
+            Position3: {0, 0.2, -0.02}
+            Box: {0.4, 0.1, 0.34}
+            Rgba: chitinDark
+        }
+    }
+
+    head {
+        Position3: {0, 0.44, 0.42}
+        Box: {0.34, 0.28, 0.32}
+        Rgba: chitinDark
+
+        eye_left {
+            Position3: {-0.11, 0.06, 0.16}
+            Box: {0.1, 0.1, 0.05}
+            Rgba: skitterEye
+            Emissive: {strength: 2.4, color: skitterEye}
+        }
+
+        eye_right {
+            Position3: {0.11, 0.06, 0.16}
+            Box: {0.1, 0.1, 0.05}
+            Rgba: skitterEye
+            Emissive: {strength: 2.4, color: skitterEye}
+        }
+
+        mandible_left {
+            Position3: {-0.13, -0.1, 0.2}
+            Rotation3: {0, 0.42, 0}
+            Box: {0.06, 0.07, 0.26}
+            Rgba: chitinLimb
+        }
+
+        mandible_right {
+            Position3: {0.13, -0.1, 0.2}
+            Rotation3: {0, -0.42, 0}
+            Box: {0.06, 0.07, 0.26}
+            Rgba: chitinLimb
+        }
+    }
+
+    stinger {
+        Position3: {0, 0.76, -0.6}
+        Rotation3: {-0.7, 0, 0}
+        Cone: {segments: 8, smooth: true, length: 0.36}
+        Scale3: {0.1, 1, 0.1}
+        Rgba: skitterEye
+        Emissive: {strength: 1.2, color: skitterEye}
+    }
+
+    for i in 0..6 {
+        const side: f32 = 1 - 2 * (i % 2)
+        const row: f32 = math.floor(i / 2)
+
+        "leg_{i}" {
+            Position3: {side * 0.23, 0.36, 0.2 - row * 0.22}
+            Limb: {phase: i * 1.05, swing: 0.5}
+
+            thigh {
+                Position3: {side * 0.17, 0.04, 0}
+                Rotation3: {0, 0, side * -0.55}
+                Box: {0.34, 0.07, 0.07}
+                Rgba: chitinLimb
+            }
+
+            shin {
+                Position3: {side * 0.34, -0.17, 0}
+                Box: {0.07, 0.34, 0.07}
+                Rgba: chitinLimb
+            }
+
+            foot {
+                Position3: {side * 0.34, -0.34, 0.03}
+                Box: {0.11, 0.06, 0.17}
+                Rgba: chitinLimb
+            }
+        }
+    }
+}

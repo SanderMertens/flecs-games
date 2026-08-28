@@ -1,0 +1,31 @@
+// Small dust puff where a bullet hits a body
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+prefab HitPuff {
+    ParticleBurst: {
+        pool: fx,
+        count: 7,
+        size: 0.17,
+        size_variance: 0.06,
+        grow: 0.6,
+        max_age: 0.36,
+        max_age_variance: 0.12,
+        color: {226, 209, 184, 225},
+        color_ramp: {
+            end: {176, 162, 144, 60}
+        },
+        velocity: {0, 0.9, 0},
+        velocity_variance: {0.4, 0.4, 0.4},
+        offset: {0, 0.02, 0},
+        shape: ParticleShapeSphere,
+        shape_radius: 0.12,
+        radial: 1.4,
+        rotation_variance: 3.14,
+        spin_variance: 2,
+        brightness_variance: 0.2
+    }
+}

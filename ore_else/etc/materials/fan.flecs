@@ -1,0 +1,23 @@
+// Factory cooling fan face
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab fan_tex {
+    Texture: {"etc/assets/fan_blades.svg", 256, 256}
+}
+
+prefab fan_norm {
+    Texture: {"etc/assets/fan_blades_normal.svg", 256, 256}
+}
+
+prefab FanDisc {
+    Quad: {1.02, 1.02}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.62, roughness: 0.34}
+    PbrTextures: {albedo: fan_tex, normal: fan_norm}
+}

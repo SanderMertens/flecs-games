@@ -1,0 +1,129 @@
+// Ore deposits
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+const rng: math.Rng = {seed: mapSeed}
+const centerRng: math.Rng = {seed: mapSeedCenter}
+
+const ironTint: Rgba = {84, 138, 210, 255}
+const ironPad: Rgba = {66, 66, 74, 255}
+const copperTint: Rgba = {244, 138, 46, 255}
+const copperPad: Rgba = {78, 62, 52, 255}
+const stoneTint: Rgba = {186, 184, 180, 255}
+const stonePad: Rgba = {82, 76, 70, 255}
+const luminiteTint: Rgba = {84, 240, 216, 255}
+const luminitePad: Rgba = {50, 68, 72, 255}
+
+deposits {
+    for j in 0..4 {
+        const col = 23 + (j % 2)
+        const row = 23 + math.floor(j / 2)
+        const amt = 1000
+
+        "luminite_center_{j}" {
+            Position3: {
+                cfg.map.x0 + col * cfg.map.tile, 0,
+                cfg.map.z0 + row * cfg.map.tile
+            }
+            Rotation3: {0, centerRng.f(6.28), 0}
+            Scale3: {1, 1, 1}
+            Deposit: {resource: Luminite, amount: amt, capacity: amt}
+            DepositSparkle: {}
+            Ore: {
+                tint: luminiteTint, padTint: luminitePad, glow: 1.4,
+                metallic: 0.1, roughness: 0.06,
+                chunks: 10, chunkSize: 0.2, chunkTall: 2.2,
+                spread: 0.5, wearDust: 0.18
+            }
+        }
+    }
+
+    for i in 0..2 {
+        const a = i * 3.1416 + rng.f(0.9)
+        const rad = 4.5 + rng.f(3)
+        const cc = math.round(24 + math.cos(a) * rad)
+        const cr = math.round(24 + math.sin(a) * rad)
+
+        for j in 0..9 {
+            const col = cc + (j % 3) - 1
+            const row = cr + math.floor(j / 3) - 1
+            const amt = 1000
+
+            "iron_{i}_{j}" {
+                Position3: {
+                    cfg.map.x0 + col * cfg.map.tile, 0,
+                    cfg.map.z0 + row * cfg.map.tile
+                }
+                Rotation3: {0, rng.f(6.28), 0}
+                Scale3: {1, 1, 1}
+                Deposit: {resource: Iron, amount: amt, capacity: amt}
+                Ore: {
+                    tint: ironTint, padTint: ironPad, glow: 0.25,
+                    metallic: 0.45, roughness: 0.12,
+                    chunks: 12, chunkSize: 0.28, spread: 0.62
+                }
+            }
+        }
+    }
+
+    for i in 0..2 {
+        const a = 1.0472 + i * 3.1416 + rng.f(0.9)
+        const rad = 6 + rng.f(3.75)
+        const cc = math.round(24 + math.cos(a) * rad)
+        const cr = math.round(24 + math.sin(a) * rad)
+
+        for j in 0..9 {
+            const col = cc + (j % 3) - 1
+            const row = cr + math.floor(j / 3) - 1
+            const amt = 1000
+
+            "copper_{i}_{j}" {
+                Position3: {
+                    cfg.map.x0 + col * cfg.map.tile, 0,
+                    cfg.map.z0 + row * cfg.map.tile
+                }
+                Rotation3: {0, rng.f(6.28), 0}
+                Scale3: {1, 1, 1}
+                Deposit: {resource: Copper, amount: amt, capacity: amt}
+                Ore: {
+                    tint: copperTint, padTint: copperPad, glow: 0.25,
+                    metallic: 0.25, roughness: 0.12,
+                    chunks: 12, chunkSize: 0.28, spread: 0.62
+                }
+            }
+        }
+    }
+
+    for i in 0..2 {
+        const a = 2.0944 + i * 3.1416 + rng.f(0.8)
+        const rad = 3.75 + rng.f(3)
+        const cc = math.round(24 + math.cos(a) * rad)
+        const cr = math.round(24 + math.sin(a) * rad)
+
+        for j in 0..9 {
+            const col = cc + (j % 3) - 1
+            const row = cr + math.floor(j / 3) - 1
+            const amt = 1000
+
+            "stone_{i}_{j}" {
+                Position3: {
+                    cfg.map.x0 + col * cfg.map.tile, 0,
+                    cfg.map.z0 + row * cfg.map.tile
+                }
+                Rotation3: {0, rng.f(6.28), 0}
+                Scale3: {1, 1, 1}
+                Deposit: {resource: Stone, amount: amt, capacity: amt}
+                Ore: {
+                    tint: stoneTint, padTint: stonePad, glow: 0.25,
+                    metallic: 0.05, roughness: 0.3,
+                    chunks: 13, chunkSize: 0.34, chunkTall: 0.85,
+                    spread: 0.66
+                }
+            }
+        }
+    }
+}

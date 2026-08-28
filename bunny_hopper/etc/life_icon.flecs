@@ -1,0 +1,24 @@
+// Icon asset for remaining bunny lives
+
+module bunny_hopper.assets
+using flecs.engine.*
+
+icons {
+    bunny_life {
+        Svg: {file: "etc/assets/icons/bunny_life.svg", width: 128, height: 128}
+    }
+}
+
+template LifeIcon {
+    prop index = 0
+    prop size = 46
+    prop alpha = 255
+
+    Layout: {width: size, height: size}
+
+    icon {
+        Rect: {size, size}
+        Image: {texture: icons.bunny_life, fit: Contain}
+        Rgba: {255, 255, 255, alpha}
+    }
+}

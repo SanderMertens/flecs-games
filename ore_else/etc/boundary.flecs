@@ -1,0 +1,48 @@
+// Hazard band around the playable area
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+const bandOut: f32 = 48.45
+const bandY: f32 = 0.06
+const capSeg: f32 = 8.15
+const sideSeg: f32 = 8
+const capStart: f32 = -44.825
+const sideStart: f32 = -44
+
+boundary {
+    for i in 0..12 {
+        const x = capStart + i * capSeg
+
+        "north_{i}" : HazardBoundary {
+            Position3: {x, bandY, -bandOut}
+            Box: {capSeg, 0.06, 0.9}
+            SurfaceWear: {dust: 0.35, grime: 0.2, seed: i * 0.083, edge: 0.6, scratch: 1}
+        }
+
+        "south_{i}" : HazardBoundary {
+            Position3: {x, bandY, bandOut}
+            Box: {capSeg, 0.06, 0.9}
+            SurfaceWear: {dust: 0.35, grime: 0.2, seed: 0.41 + i * 0.049, edge: 0.6, scratch: 1}
+        }
+    }
+
+    for i in 0..12 {
+        const z = sideStart + i * sideSeg
+
+        "west_{i}" : HazardBoundary {
+            Position3: {-bandOut, bandY, z}
+            Rotation3: {0, 1.570796, 0}
+            SurfaceWear: {dust: 0.35, grime: 0.2, seed: 0.17 + i * 0.061, edge: 0.6, scratch: 1}
+        }
+
+        "east_{i}" : HazardBoundary {
+            Position3: {bandOut, bandY, z}
+            Rotation3: {0, 1.570796, 0}
+            SurfaceWear: {dust: 0.35, grime: 0.2, seed: 0.63 + i * 0.031, edge: 0.6, scratch: 1}
+        }
+    }
+}

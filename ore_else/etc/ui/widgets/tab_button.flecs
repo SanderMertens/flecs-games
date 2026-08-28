@@ -1,0 +1,76 @@
+// Collect section tab button
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+const FontTab = 15
+const TabWidth = 148
+const TabHeight = 30
+const TabRadius = 3
+const TabFace: Rgba = {32, 35, 41, 255}
+const TabHover: Rgba = {50, 55, 63, 255}
+const TabActive: Rgba = {60, 52, 28, 255}
+const TabEdge: Rgba = {52, 56, 64, 255}
+const TabEdgeActive: Rgba = {240, 176, 58, 255}
+const TabLabel: Rgba = {146, 154, 166, 255}
+const TabLabelActive: Rgba = {246, 220, 168, 255}
+const TabUnderline: Rgba = {240, 176, 58, 255}
+const TabBorder: Border = {radius: TabRadius, width: 1, color: TabEdge}
+const TabBorderActive: Border = {radius: TabRadius, width: 1, color: TabEdgeActive}
+
+template TabButton {
+    prop label = ""
+    prop tab: i32 = 0
+    prop hotKey = ""
+
+    const w = TabWidth
+    const h = TabHeight
+    const active = tab == UiState[UiState].tab
+
+    Tab: {index: tab}
+    Hotkey: {key: hotKey}
+    WidgetState
+
+    const tabFace: Rgba = match $this[WidgetState].hover {
+        true: TabHover
+        false: TabFace
+    }
+
+    Layout: {width: w, height: h}
+    Rect: {w, h}
+    Border: match active {
+        true: TabBorderActive
+        false: TabBorder
+    }
+    Rgba: match active {
+        true: TabActive
+        false: tabFace
+    }
+
+    if !active {
+        label_dim {
+            Position: {0, 7}
+            Layout: {width: w}
+            Text: {text: label, size: FontTab, align: Center}
+            Rgba: TabLabel
+        }
+    }
+
+    if active {
+        label_lit {
+            Position: {0, 7}
+            Layout: {width: w}
+            Text: {text: label, size: FontTab, align: Center}
+            Rgba: TabLabelActive
+        }
+
+        underline {
+            Position: {8, h - 3}
+            Rect: {w - 16, 2}
+            Rgba: TabUnderline
+        }
+    }
+}

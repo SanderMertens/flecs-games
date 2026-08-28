@@ -1,0 +1,227 @@
+// Game HUD
+
+using flecs.engine.*
+using flecs.script
+using flecs.script.core
+using ore_else
+using ore_else.assets
+using ore_else.resources
+
+const FontSize = 17
+const PanelW = 252
+const PanelPad = 14
+const PanelRadius = 3
+const CapH = 7
+const CapPad = 8
+const BarW = 224
+const BarRadius = 2
+
+const StatusW = 640
+const StatusH = 46
+const HpBarW = 84
+const WaveBarW = 92
+const PowerBarW = 72
+
+const OreColor: Rgba = {236, 176, 104, 255}
+const LuminiteColor: Rgba = {96, 240, 218, 255}
+const WellColor: Rgba = {13, 14, 17, 255}
+const HaveColor: Rgba = {124, 226, 148, 255}
+const ShortColor: Rgba = {228, 96, 84, 255}
+const DividerColor: Rgba = {62, 68, 78, 255}
+const WaveColor: Rgba = {138, 122, 174, 255}
+const WaveSoonColor: Rgba = {240, 152, 72, 255}
+
+hud {
+    const clock = Clock[Clock]
+    const luminite = LuminiteProgress[LuminiteProgress]
+    const power = PowerState[PowerState]
+    const ui = UiState[UiState]
+    const waves = WaveState[WaveState]
+    const rocket = RocketState[RocketState]
+    const playing = $?[(GameState, Playing)]
+    const paused = $?[(GameState, Paused)]
+    const title = $?[(GameState, Title)]
+    const live = playing || paused
+    const ended = !live && !title
+
+    const powerColor: Rgba = match power.ratio < 1 {
+        true: {228, 96, 84, 255}
+        false: {124, 226, 148, 255}
+    }
+
+    const hpFrac: f32 = astronaut[Health].value / astronaut[Health].max
+
+    const mineProgress: f32 = astronaut[MineProgress].value
+
+    const hpWarn: Rgba = match hpFrac < 0.6 {
+        true: {248, 196, 112, 255}
+        false: {124, 226, 148, 255}
+    }
+
+    const hpColor: Rgba = match hpFrac < 0.3 {
+        true: {228, 96, 84, 255}
+        false: hpWarn
+    }
+
+    const waveSoon: Rgba = match waves.frac > 0.75 {
+        true: WaveSoonColor
+        false: WaveColor
+    }
+
+    const waveFlash: Rgba = match math.sin(clock.time_elapsed * 8) > 0 {
+        true: {248, 96, 84, 255}
+        false: {132, 48, 44, 255}
+    }
+
+    const waveColor: Rgba = match waves.spawn_left > 0 {
+        true: waveFlash
+        false: waveSoon
+    }
+
+    if !title {
+        status_panel {
+            Anchor: {h: Right, x: -18, y: 16}
+            Panel: {w: StatusW, h: StatusH, capH: CapH}
+
+            hp_gauge {
+                Position: {12, CapPad}
+                StatusGauge: {
+                    iconTexture: icons.heart,
+                    bar: HpBarW,
+                    frac: hpFrac,
+                    color: hpColor
+                }
+            }
+
+            divider_a {
+                Position: {134, 11 + CapPad}
+                Rect: {1, 16}
+                Rgba: DividerColor
+            }
+
+            luminite_gauge {
+                Position: {146, CapPad}
+                StatusGauge: {
+                    iconTexture: icons.luminite,
+                    text: "{luminite.luminite_held} / {luminite.luminite_shipped}",
+                    color: LuminiteColor
+                }
+            }
+
+            divider_b {
+                Position: {278, 11 + CapPad}
+                Rect: {1, 16}
+                Rgba: DividerColor
+            }
+
+            wave_gauge {
+                Position: {290, CapPad}
+                StatusGauge: {
+                    iconTexture: icons.critter,
+                    bar: WaveBarW,
+                    frac: waves.frac,
+                    color: waveColor
+                }
+            }
+
+            divider_c {
+                Position: {420, 11 + CapPad}
+                Rect: {1, 16}
+                Rgba: DividerColor
+            }
+
+            power_gauge {
+                Position: {432, CapPad}
+                StatusGauge: {
+                    iconTexture: icons.power,
+                    text: "{math.floor(power.prod):.0} / {math.floor(power.demand):.0} W",
+                    bar: PowerBarW,
+                    barX: 124,
+                    frac: power.ratio,
+                    color: powerColor
+                }
+            }
+        }
+    }
+
+    if live && ui.toast > 0 {
+        const toastColor: Rgba = match ui.toast_warn {
+            true: ShortColor
+            false: LuminiteColor
+        }
+
+        toast {
+            Anchor: {h: Center, v: Bottom, y: -150}
+            Layout: {width: 640}
+            Text: {
+                text: "{ui.toast_text}",
+                size: FontSize,
+                align: Center
+            }
+            Rgba: toastColor
+        }
+    }
+
+    if live && mineProgress > 0 {
+        mine_bar {
+            Anchor: {h: Center, v: Bottom, y: -102}
+            Rect: {224, 14}
+            Border: {radius: BarRadius, width: 1, color: DividerColor}
+            Rgba: WellColor
+
+            fill {
+                Position: {0, 0}
+                Rect: {3 + 221 * mineProgress, 14}
+                Border: {radius: BarRadius}
+                Rgba: OreColor
+            }
+        }
+    }
+
+    if live && hpFrac < 0.3 {
+        alert {
+            Anchor: {h: Center, y: 24}
+            Layout: {width: PanelW}
+            Text: {text: "! SUIT BREACH !", size: FontSize, align: Center}
+            Rgba: match math.sin(clock.time_elapsed * 8) > 0 {
+                true: {255, 96, 84, 255}
+                false: {124, 44, 40, 255}
+            }
+        }
+    }
+
+    if live && rocket.pad {
+        const readyColor: Rgba = match math.sin(clock.time_elapsed * 6) > 0 {
+            true: {124, 226, 148, 255}
+            false: {68, 148, 96, 255}
+        }
+
+        const hintColor: Rgba = match rocket.valid {
+            true: readyColor
+            false: {248, 196, 112, 255}
+        }
+
+        rocket_hint {
+            Anchor: {h: Center, v: Bottom, y: -78}
+            Layout: {width: 780}
+            Text: {
+                text: "{rocket.status_text}",
+                size: FontSize,
+                align: Center
+            }
+            Rgba: hintColor
+        }
+    }
+
+    if title {
+        TitleScreen title_panel()
+    }
+
+    if paused {
+        PauseScreen pause_panel()
+    }
+
+    if ended {
+        EndScreen end_panel()
+    }
+}

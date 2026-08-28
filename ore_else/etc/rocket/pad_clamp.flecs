@@ -1,0 +1,44 @@
+// Launch pad hold-down clamp
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const rocketShade: Rgba = {150, 158, 174, 255}
+const rocketDark: Rgba = {48, 54, 68, 255}
+const rocketSteel: Rgba = {172, 180, 194, 255}
+const rocketTrim: Rgba = {238, 138, 52, 255}
+
+@tree Parent
+template PadClamp {
+    prop yaw: f32 = 0
+    prop tx: f32 = 0
+    prop tz: f32 = 0
+    prop tilt: f32 = 0
+
+    Rotation3: {tx * tilt, yaw, tz * tilt}
+    Box: {0.34, 0.78, 0.2}
+    Rgba: rocketSteel
+    PbrMaterial: {metallic: 0.6, roughness: 0.4}
+
+    arm {
+        Position3: {0, 0.22, 0.28}
+        Box: {0.18, 0.14, 0.46}
+        Rgba: rocketShade
+    }
+
+    jaw {
+        Position3: {0, 0.22, 0.53}
+        Box: {0.26, 0.2, 0.12}
+        Rgba: rocketDark
+    }
+
+    lamp {
+        Position3: {0, 0.47, 0}
+        Box: {0.24, 0.1, 0.22}
+        Rgba: rocketTrim
+        Emissive: {strength: 2.4, color: rocketTrim}
+    }
+}

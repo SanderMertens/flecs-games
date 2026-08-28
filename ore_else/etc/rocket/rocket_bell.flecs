@@ -1,0 +1,48 @@
+// Engine bell
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+
+const rocketShade: Rgba = {150, 158, 174, 255}
+const rocketDark: Rgba = {48, 54, 68, 255}
+const rocketSoot: Rgba = {32, 34, 42, 255}
+const emberGlow: Rgba = {255, 150, 70, 255}
+
+@tree Parent
+template RocketBell {
+    prop scale: f32 = 1
+
+    cone {
+        Position3: {0, 0.105, 0}
+        Cone: {segments: 14, smooth: true, length: 0.21}
+        Scale3: {0.34 * scale, 1, 0.34 * scale}
+        Rgba: rocketDark
+        PbrMaterial: {metallic: 0.78, roughness: 0.34}
+    }
+
+    ember {
+        Position3: {0, 0.014, 0}
+        Cylinder: {segments: 12, smooth: true, length: 0.028}
+        Scale3: {0.22 * scale, 1, 0.22 * scale}
+        Rgba: emberGlow
+        Emissive: {strength: 1.6, color: emberGlow}
+    }
+
+    throat {
+        Position3: {0, 0.3, 0}
+        Cylinder: {segments: 12, smooth: true, length: 0.26}
+        Scale3: {0.15 * scale, 1, 0.15 * scale}
+        Rgba: rocketShade
+        PbrMaterial: {metallic: 0.82, roughness: 0.24}
+    }
+
+    gimbal {
+        Position3: {0, 0.45, 0}
+        Sphere: {segments: 10, smooth: true, radius: 0.088 * scale}
+        Rgba: rocketSoot
+        PbrMaterial: {metallic: 0.9, roughness: 0.3}
+    }
+}

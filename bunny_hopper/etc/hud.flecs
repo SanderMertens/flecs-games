@@ -1,0 +1,71 @@
+// Game HUD
+
+include scene
+
+using flecs.engine.*
+using flecs.script.core
+using bunny_hopper
+using bunny_hopper.assets
+
+const PanelColor: Rgba = {20, 30, 20, 170}
+const TextColor: Rgba = {255, 255, 255, 255}
+
+hud {
+    const bunnyGame = BunnyGame[BunnyGame]
+    const bunnyLives = player[BunnyLives]
+    const playing = $?[(BunnyGameState, Playing)]
+
+    score {
+        Anchor: {x: 24, y: 24}
+        Text: {
+            text: "Carrots: {bunnyGame.carrots}",
+            size: 30
+        }
+        Rgba: TextColor
+    }
+
+    lives {
+        Anchor: {h: Right, x: -14, y: 14}
+        Layout: {direction: Row, padding: 12, spacing: 12}
+
+        for i in 0..cfg.maxLives {
+            const alpha = match bunnyLives.lives_left > i {
+                true: 255
+                false: 70
+            }
+            LifeIcon(index: i, alpha: alpha)
+        }
+    }
+
+    if playing && bunnyGame.carrots < 3 {
+        hint {
+            Anchor: {h: Center, v: Bottom, y: -60}
+            Text: {
+                text: "SPACE to hop - hop again in the air for big carrots!",
+                size: 24
+            }
+            Rgba: TextColor
+        }
+    }
+
+    if !playing {
+        end_panel {
+            Anchor: {h: Center, y: 256}
+            Rect: {560, 170}
+            Border: {radius: 8}
+            Rgba: PanelColor
+
+            title {
+                Position: {0, 28}
+                Text: {text: "GAME OVER", size: 64, align: Center}
+                Rgba: TextColor
+            }
+
+            sub {
+                Position: {0, 110}
+                Text: {text: "Press R to try again", size: 26, align: Center}
+                Rgba: TextColor
+            }
+        }
+    }
+}

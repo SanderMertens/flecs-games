@@ -1,0 +1,23 @@
+// Wall access plate
+
+module ore_else.assets
+
+using flecs.script
+using flecs.engine.*
+using ore_else
+using ore_else.resources
+
+prefab plate_tex {
+    Texture: {"etc/assets/wall_plate.svg", 256, 256}
+}
+
+prefab plate_norm {
+    Texture: {"etc/assets/wall_plate_normal.svg", 256, 256}
+}
+
+prefab AccessPlate {
+    Box: {0.34, 0.36, 0.05}
+    Rgba: {255, 255, 255, 255}
+    PbrMaterial: {metallic: 0.66, roughness: 0.4}
+    PbrTextures: {albedo: plate_tex, normal: plate_norm}
+}

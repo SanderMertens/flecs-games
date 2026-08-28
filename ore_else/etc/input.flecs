@@ -1,0 +1,81 @@
+module ore_else
+using flecs.engine.*
+using ore_else.actions
+using ore_else
+
+input {
+    InputPriority: {0}
+    Behaviors: [
+        script {
+            await pressed(Forward)
+            astronaut { PlayerIntent: {forward: true} }
+            await released(Forward)
+            astronaut { PlayerIntent: {forward: false} }
+        },
+        script {
+            await pressed(Back)
+            astronaut { PlayerIntent: {back: true} }
+            await released(Back)
+            astronaut { PlayerIntent: {back: false} }
+        },
+        script {
+            await pressed(Left)
+            astronaut { PlayerIntent: {left: true} }
+            await released(Left)
+            astronaut { PlayerIntent: {left: false} }
+        },
+        script {
+            await pressed(Right)
+            astronaut { PlayerIntent: {right: true} }
+            await released(Right)
+            astronaut { PlayerIntent: {right: false} }
+        },
+        script {
+            await pressed(Run)
+            astronaut { PlayerIntent: {run: true} }
+            await released(Run)
+            astronaut { PlayerIntent: {run: false} }
+        },
+        script {
+            await pressed(Mine)
+            await cancelDrag()
+            astronaut { PlayerIntent: {mine: true} }
+            await released(Mine)
+            astronaut { PlayerIntent: {mine: false} }
+        },
+        script {
+            try {
+                const ev = await dragged(Place)
+                await placeRegion(ev)
+            } catch(Cancelled) {
+                await abortPlacement()
+            }
+        },
+        script {
+            const ev = await pressed(Pipette)
+            await pickUnderCursor(ev.mouse)
+        },
+        script {
+            await pressed(Cancel)
+            await cancel()
+        },
+        script {
+            await pressed(Restart)
+            await restart()
+        }
+    ]
+}
+
+inventory {
+    InputPriority: {1}
+    Behaviors: [
+        script {
+            await pressed(Inventory)
+            const opened = await inventorySet(true)
+            if opened {
+                await pressedAny([Inventory, Cancel, Pick])
+                await inventorySet(false)
+            }
+        }
+    ]
+}

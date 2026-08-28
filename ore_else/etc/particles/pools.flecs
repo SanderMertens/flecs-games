@@ -1,0 +1,139 @@
+// Particle pools
+
+module ore_else.assets
+
+using flecs.engine.*
+using ore_else
+
+sprPuff {
+    Svg: {file: "etc/assets/particles/puff.svg", width: 256, height: 256}
+}
+
+sprFlare {
+    Svg: {file: "etc/assets/particles/flare.svg", width: 256, height: 256}
+}
+
+sprSpark {
+    Svg: {file: "etc/assets/particles/spark.svg", width: 128, height: 128}
+}
+
+sprChunk {
+    Svg: {file: "etc/assets/particles/chunk.svg", width: 64, height: 64}
+}
+
+fx {
+    Particles: {
+        texture: sprPuff,
+        capacity: 512,
+        gravity: 5,
+        drag: 2.5,
+        soft_depth: 0.35,
+        lighting: 0.8,
+        turbulence: 0.7,
+        turbulence_scale: 1.2,
+        turbulence_speed: 0.6,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.05,
+            fade_out: 0.5
+        }
+    }
+    ParticleCurves: {size: curvePuff}
+}
+
+glow {
+    Particles: {
+        texture: sprSpark,
+        capacity: 512,
+        gravity: 4,
+        drag: 1.5,
+        emissive: 1.6,
+        blend_mode: ParticleBlendAdditive,
+        sort_mode: ParticleSortNone,
+        soft_depth: 0.25,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseOut,
+            fade_in: 0.04,
+            fade_out: 0.45
+        }
+    }
+    ParticleCurves: {size: curveTaper}
+}
+
+smoke {
+    Particles: {
+        texture: sprPuff,
+        capacity: 512,
+        gravity: 0.6,
+        drag: 0.9,
+        soft_depth: 0.5,
+        lighting: 0.85,
+        turbulence: 1.5,
+        turbulence_scale: 0.55,
+        turbulence_speed: 0.45
+    }
+    ParticleCurves: {size: curveSwell, alpha: curveSmokeFade}
+}
+
+trail {
+    Particles: {
+        texture: sprPuff,
+        capacity: 768,
+        gravity: -0.35,
+        drag: 1.4,
+        soft_depth: 0.5,
+        lighting: 0.9,
+        turbulence: 0.9,
+        turbulence_scale: 0.7,
+        turbulence_speed: 0.5
+    }
+    ParticleCurves: {size: curveSwell, alpha: curveSmokeFade}
+}
+
+fire {
+    Particles: {
+        texture: sprFlare,
+        capacity: 384,
+        gravity: -1.6,
+        drag: 3,
+        emissive: 2.6,
+        blend_mode: ParticleBlendAdditive,
+        sort_mode: ParticleSortNone,
+        soft_depth: 0.6,
+        turbulence: 2.2,
+        turbulence_scale: 1.4,
+        turbulence_speed: 1.4
+    }
+    ParticleCurves: {size: curveFlare, alpha: curveSpike}
+}
+
+debris {
+    Particles: {
+        texture: sprChunk,
+        capacity: 256,
+        gravity: 17,
+        drag: 0.3,
+        lighting: 1,
+        alpha_envelope: {
+            mode: ParticleEnvelopeEaseIn,
+            fade_out: 0.25
+        }
+    }
+}
+
+ember {
+    Particles: {
+        texture: sprSpark,
+        capacity: 256,
+        gravity: -0.8,
+        drag: 1.1,
+        emissive: 2.2,
+        blend_mode: ParticleBlendAdditive,
+        sort_mode: ParticleSortNone,
+        soft_depth: 0.25,
+        turbulence: 1.8,
+        turbulence_scale: 1.1,
+        turbulence_speed: 0.8
+    }
+    ParticleCurves: {alpha: curveEmberFade, size: curveTaper}
+}

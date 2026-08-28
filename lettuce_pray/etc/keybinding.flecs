@@ -1,0 +1,18 @@
+module lettuce_pray
+using flecs.engine.*
+
+actions {
+    Use { InputAction: {"Collect the sun, dig with the shovel or plant the selected seed on the hovered tile"} }
+    Dig { InputAction: {"Dig up the plant under the cursor, or cancel the current selection"} }
+    Cancel { InputAction: {"Drop the selected seed or the shovel"} }
+    Restart { InputAction: {"Restart after the game has ended"} }
+}
+
+$ {
+    InputMap: [
+        keys.MouseLeft: { lettuce_pray.actions.Use },
+        keys.MouseRight: { lettuce_pray.actions.Dig },
+        keys.Escape: { lettuce_pray.actions.Cancel },
+        keys.R: { lettuce_pray.actions.Restart }
+    ]
+}

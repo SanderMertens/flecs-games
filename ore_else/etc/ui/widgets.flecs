@@ -1,0 +1,17 @@
+// Shared UI widget templates
+
+include widgets/panel
+include widgets/status_gauge
+include widgets/action_button
+include widgets/build_hotkey
+include widgets/stock_slot
+include widgets/slot_button
+include widgets/tab_button
+include widgets/queue_row
+include widgets/rocket_button
+include widgets/rocket_step
+include widgets/rocket_section
+include widgets/power_segment
+include widgets/power_free
+include widgets/power_panel
+include widgets/quality_button

@@ -1,0 +1,168 @@
+// Engine configuration
+
+using flecs.engine
+using flecs.engine.*
+using flecs.script
+
+surface {
+    Surface: {
+        title: "Ore Else"
+        width: 1440
+        height: 900
+        resolution_scale: 1
+        vsync: true
+    }
+}
+
+camera {
+    Camera: {
+        fov: math.PI / 3.6,
+        near_: 0.5,
+        far_: 500
+    }
+    Position3: {0, 15, 14}
+    LookAt: {0, 1.2, 0}
+    DynamicTransform
+}
+
+sky {
+    sun {
+        Position3: {-1.4, 1.8, 1.2}
+        DirectionalLight: {intensity: 1.5}
+        CelestialLight: {
+            toa_intensity: 3.2,
+            toa_color: {255, 214, 176, 255}
+        }
+        LookAt: {0, 0, 0}
+        Rgba: {255, 206, 168, 255}
+    }
+
+    moon {
+        Position3: {1.2, 1.6, -1}
+        DirectionalLight: {intensity: 0}
+        CelestialLight: {
+            toa_intensity: 0.004,
+            toa_color: {190, 200, 255, 255}
+        }
+        LookAt: {0, 0, 0}
+        Rgba: {200, 210, 255, 255}
+    }
+
+    stars {
+        Stars: {
+            density: 0.9,
+            cells: 220,
+            size: 140,
+            color_variation: 1
+        }
+        CelestialLight: {
+            toa_intensity: 0.05,
+            toa_color: {220, 230, 255, 255}
+        }
+        Rotation3: {0.4, 0, 0}
+    }
+
+    atmosphere {
+        Atmosphere: {
+            sun: sun,
+            moon: moon,
+            stars: stars
+        }
+    }
+}
+
+view {
+    geometry { GeometryBatch }
+    skybox { SkyBoxBatch }
+
+    ssao {
+        SSAO: { radius: 0.5 }
+    }
+
+    bloom {
+        Bloom: {}
+    }
+
+    autoExposure {
+        AutoExposure: {
+            min_log_luma: -16,
+            low_percentile: 0,
+            min_brightness: 0.05,
+            max_brightness: 0.5
+        }
+    }
+
+    tonyMcMapFace {
+        Tony: { auto_exposure: autoExposure }
+    }
+
+    RenderView: {
+        camera: camera,
+        atmosphere: sky.atmosphere,
+        ambient_intensity: 0.5,
+        screen_px_threshold: 3,
+        shadow: {
+            enabled: true,
+            map_size: 4096,
+            max_range: 140,
+            bias: 0.0001
+        },
+        surface_effects: {
+            dust: {
+                enabled: true,
+                color: {206, 176, 132},
+                sharpness: 1.8,
+                roughness: 1
+            }
+            grime: {
+                enabled: true,
+                color: {54, 42, 32},
+                threshold: 0.3,
+                height: 0.55,
+                falloff: 0.5,
+                roughness: 0.9
+            }
+            scale: 1.1
+            range_fade: 0.25
+            edge: {
+                enabled: true,
+                amount: 0.85,
+                onset: 4,
+                full: 18,
+                breakup: 0.6,
+                width: 0.025,
+                contrast: 0.9,
+                softness: 0.25
+            }
+            burn: {
+                enabled: true,
+                color: {22, 18, 16},
+                amount: 1,
+                scale: 0.45,
+                softness: 0.3,
+                roughness: 0.9,
+                ember: 0
+            }
+        },
+
+        cloud_shadow: {
+            enabled: true,
+            strength: 0.6,
+            scale: 13,
+            coverage: 0.45,
+            softness: 0.35,
+            speed: 3,
+            direction: 0.7
+        },
+        effects: [
+            { enabled: true, effect: ssao },
+            { enabled: true, effect: bloom },
+            { enabled: true, effect: autoExposure },
+            { enabled: true, effect: tonyMcMapFace }
+        ]
+    }
+
+    RenderBatchSet: {
+        batches: [ geometry, skybox ]
+    }
+}

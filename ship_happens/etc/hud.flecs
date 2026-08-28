@@ -1,0 +1,258 @@
+// Game HUD
+//
+// Panels: 96 high, radius 10, 14px inner margin, rows at y 10 / 36 / 66.
+
+include scene
+
+using flecs.engine.*
+using flecs.script.core
+using ship_happens
+using ship_happens.assets
+
+const FontSize = 18
+
+const PanelColor: Rgba = {22, 26, 34, 200}
+const TextColor: Rgba = {240, 244, 250, 255}
+const SoftColor: Rgba = {168, 178, 194, 255}
+const CashColor: Rgba = {130, 220, 130, 255}
+const DebtColor: Rgba = {255, 120, 110, 255}
+const AccentColor: Rgba = {245, 205, 90, 255}
+const DeadlineColor: Rgba = {240, 160, 60, 255}
+const WellColor: Rgba = {25, 28, 32, 255}
+const AlertColor: Rgba = {225, 60, 50, 255}
+
+hud {
+    const game = ShipGame[ShipGame]
+    const playing = $?[(ShipGameState, Playing)]
+
+    const inDebt = game.money < 0
+
+    const revMult = match game.morale_bonus {
+        true: 3
+        false: 1
+    }
+
+    const est = game.features_total * cfg.featureRevenue * revMult
+
+    info_panel {
+        Anchor: {x: 18, y: 16}
+        Layout: {direction: Column, padding: 12, spacing: 8, width: 250, height: 96}
+        Rect: {}
+        Border: {radius: 10}
+        Rgba: PanelColor
+
+        const moneyColor: Rgba = match inDebt {
+            true: {255, 120, 110, 255}
+            false: {240, 244, 250, 255}
+        }
+
+        title {
+            Text: {text: "{game.game_name}", size: FontSize}
+            Rgba: TextColor
+        }
+
+        amount {
+            Text: {text: "Cost: $ {game.money}", size: FontSize}
+            Rgba: moneyColor
+        }
+
+        revenue {
+            Text: {text: "Estimated revenue: $ {est}", size: FontSize}
+            Rgba: CashColor
+        }
+    }
+
+    project_panel {
+        Anchor: {h: Center, x: -75, y: 16}
+        Rect: {460, 96}
+        Border: {radius: 10}
+        Rgba: PanelColor
+
+        blocks {
+            Position: {14, 12}
+
+            const n = game.features_total
+            const bw = (432 - (n - 1) * 4) / n
+            const fw = bw * game.feature_progress / cfg.featureWork
+
+            for i in 0..n {
+                const fill: Rgba = match i < game.features_done {
+                    true: {245, 205, 90, 255}
+                    false: {25, 28, 32, 255}
+                }
+
+                "block_{i}" {
+                    Position: {i * (bw + 4), 0}
+                    Rect: {bw, 14}
+                    Border: {radius: 4}
+                    Rgba: fill
+
+                    if i == game.features_done && fw > 1 {
+                        fill_bar {
+                            Rect: {fw, 14}
+                            Border: {radius: 4}
+                            Rgba: {245, 205, 90, 255}
+                        }
+                    }
+                }
+            }
+
+            if game.behind_frac >= 0 {
+                red_line {
+                    Position: {432 * game.behind_frac - 1, -3}
+                    Rect: {3, 20}
+                    Rgba: AlertColor
+                }
+            }
+        }
+
+        if game.features_done < game.features_total {
+            now_building {
+                Position: {14, 38}
+                Text: {text: "Now building: {game.feature_name}", size: FontSize}
+                Rgba: AccentColor
+            }
+        }
+
+        feature_count {
+            Position: {0, 38}
+            Layout: {width: 446}
+            Text: {text: "{game.features_done}/{game.features_total}", size: FontSize, align: Right}
+            Rgba: SoftColor
+        }
+
+        deadline_label {
+            Position: {14, 68}
+            Text: {text: "Deadline", size: FontSize}
+            Rgba: SoftColor
+        }
+
+        deadline_bg {
+            Position: {80, 66}
+            Rect: {288, 12}
+            Border: {radius: 6}
+            Rgba: WellColor
+        }
+
+        deadline_fill {
+            Position: {80, 66}
+            Rect: {3 + 285 * game.deadline_left / cfg.deadline, 12}
+            Border: {radius: 6}
+            Rgba: DeadlineColor
+        }
+
+        deadline_time {
+            Position: {0, 64}
+            Layout: {width: 446}
+            Text: {text: "{game.clock}", size: FontSize, align: Right}
+            Rgba: DeadlineColor
+        }
+    }
+
+    mood_panel {
+        Anchor: {h: Right, x: -18, y: 16}
+        Rect: {250, 96}
+        Border: {radius: 10}
+        Rgba: PanelColor
+
+        const bonusText = match game.morale_bonus {
+            true: "Morale bonus (3x)"
+            false: "No morale bonus :("
+        }
+
+        const bonusColor: Rgba = match game.morale_bonus {
+            true: {130, 220, 130, 255}
+            false: {168, 178, 194, 255}
+        }
+
+        const moodColor: Rgba = match game.avg_mood >= 0.75 {
+            true: {245, 205, 90, 255}
+            false: {225, 60, 50, 255}
+        }
+
+        mood_label {
+            Position: {14, 10}
+            Text: {text: "Mood:", size: FontSize}
+            Rgba: TextColor
+        }
+
+        mood_bg {
+            Position: {14, 40}
+            Rect: {222, 12}
+            Border: {radius: 6}
+            Rgba: WellColor
+        }
+
+        mood_fill {
+            Position: {14, 40}
+            Rect: {3 + 219 * game.avg_mood, 12}
+            Border: {radius: 6}
+            Rgba: moodColor
+        }
+
+        bonus_label {
+            Position: {14, 66}
+            Text: {text: bonusText, size: FontSize}
+            Rgba: bonusColor
+        }
+    }
+
+    if playing && game.devs == 0 {
+        hint {
+            Anchor: {h: Center, v: Bottom, y: -136}
+            Layout: {width: 800}
+            Text: {
+                text: "Place desks to put the applicants at the door to work. Add features (F) for more revenue - but ship before the deadline.",
+                size: FontSize,
+                align: Center
+            }
+            Rgba: SoftColor
+        }
+    }
+
+    if !playing {
+        const shippedGame = $?[(ShipGameState, Shipped)]
+
+        end_panel {
+            Anchor: {h: Center, v: Middle, y: -60}
+            Rect: {640, 210}
+            Border: {radius: 10}
+            Rgba: {16, 20, 28, 220}
+
+            title {
+                Position: {0, 30}
+                Layout: {width: 640}
+                Text: {
+                    text: match shippedGame {
+                        true: "SHIPPED!"
+                        false: "DEADLINE MISSED"
+                    },
+                    size: FontSize,
+                    align: Center
+                }
+                Rgba: TextColor
+            }
+
+            score {
+                Position: {0, 108}
+                Layout: {width: 640}
+                Text: {
+                    text: match shippedGame {
+                        true: "{game.game_name} made $ {est} with {game.features_total} features"
+                        false: "{game.game_name} died at {game.features_done} of {game.features_total} features"
+                    },
+                    size: FontSize,
+                    align: Center
+                }
+                Rgba: SoftColor
+            }
+
+            sub {
+                Position: {0, 152}
+                Layout: {width: 640}
+                Text: {text: "Press R to boot a new project", size: FontSize, align: Center}
+                Rgba: SoftColor
+            }
+        }
+    }
+}
