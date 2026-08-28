@@ -1,5 +1,5 @@
 # Flecs games
-A repository with example games, to help with building Flecs/ECS-based games.
+A repository with example games, to help with building [Flecs](https://github.com/SanderMertens/flecs) games.
 
 Building the games is currently not possible, because the renderer, UI and input systems are not open source. This may change in the future.
 
