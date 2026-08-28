@@ -1,0 +1,50 @@
+module cfg.units
+
+include resources
+
+using flecs.script
+using flecs.engine.*
+using biome.*
+using cfg.resources
+
+const droneGltf = "etc/assets/kaykit/space/Assets/gltf/lander_base.gltf"
+
+prefab Drone {
+    Behaviors: [
+        script {
+            const speed = 0.5
+            const landSpeed = 0.25
+            const job = await acceptJob()
+
+            try {
+                await takeOff(speed)
+                await moveTo(job.src, speed)
+                await land(job.src, landSpeed)
+                await pickUp(job.resource, job.amount, job.src, this)
+
+                await takeOff(speed)
+                await moveTo(job.dst, speed)
+                await land(job.dst, landSpeed)
+                await dropOff(job.resource, job.amount, this, job.dst)
+            } catch(DestinationGone) {
+            } catch {
+            }
+
+            try {
+                await takeOff(speed)
+                await moveTo(this[Carrier].home, speed)
+                await land(this[Carrier].home, landSpeed)
+            } catch(DestinationGone) {
+            } catch {
+            }
+        },
+        script {
+            await whileAlive(this[Carrier].home)
+            await delete(this)
+        }
+    ]
+
+    DynamicTransform
+    Scale3: {1.5, 1.5, 1.5}
+    Gltf: {droneGltf}
+}

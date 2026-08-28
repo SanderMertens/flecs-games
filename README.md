@@ -26,5 +26,10 @@ Mine as much luminite, ship it off planet, and fight off the locals until it's t
 
 [![image](images/ore_else.png)](https://flecs.dev/games/ore_else)
 
+## Biome
+Terraform a planet.
+
+![image](images/biome.png)
+
 ## Assets
 All of the assets are created from scratch and are included in the game/etc folders.

@@ -1,0 +1,52 @@
+include biome
+
+using flecs.engine.*
+using biome.*
+
+scene.buildings {
+    solar_0 : buildings.Solar {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 60, y: 60, span_x: 1, span_y: 1}
+    }
+    solar_1 : buildings.Solar {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 61, y: 60, span_x: 1, span_y: 1}
+    }
+    solar_2 : buildings.Solar {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 62, y: 60, span_x: 1, span_y: 1}
+    }
+    solar_3 : buildings.Solar {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 60, y: 61, span_x: 1, span_y: 1}
+    }
+    solar_4 : buildings.Solar {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 61, y: 61, span_x: 1, span_y: 1}
+    }
+    solar_5 : buildings.Solar {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 62, y: 61, span_x: 1, span_y: 1}
+    }
+    wire_0 : buildings.Wire {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 63, y: 60, span_x: 1, span_y: 1}
+    }
+    wire_1 : buildings.Wire {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 64, y: 60, span_x: 1, span_y: 1}
+    }
+    wire_2 : buildings.Wire {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 65, y: 60, span_x: 1, span_y: 1}
+    }
+    wire_3 : buildings.Wire {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 66, y: 60, span_x: 1, span_y: 1}
+    }
+    test_biome_on_wire : buildings.Biome {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 67, y: 58, span_x: 3, span_y: 3}
+    }
+    test_drill_on_wire : buildings.Drill {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 64, y: 59, span_x: 1, span_y: 1}
+    }
+    test_lights_on_wire : buildings.Lights {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 65, y: 59, span_x: 1, span_y: 1}
+    }
+    test_drill_on_drill : buildings.Drill {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 64, y: 58, span_x: 1, span_y: 1}
+    }
+    test_drill_diagonal : buildings.Drill {
+        TerrainPosition: {terrain: biome.terrain.Terrain, x: 67, y: 61, span_x: 1, span_y: 1}
+    }
+}

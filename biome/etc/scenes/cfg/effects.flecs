@@ -1,0 +1,136 @@
+module cfg.effects
+
+using flecs.engine.*
+
+build_pool {
+  Particles: {
+    capacity: 4096
+    gravity: 0.3
+    drag: 4
+    emissive: 0
+    size_envelope: {mode: ParticleEnvelopeEaseOut, fade_out: 0.1}
+    alpha_envelope: {mode: ParticleEnvelopeEaseInOut, fade_in: 0.05, fade_out: 0.35}
+  }
+}
+
+prefab build_burst {
+  ParticleBurst: {
+    pool: build_pool
+    count: 25
+    size: 0.5
+    size_variance: 0.6
+    grow: 0.5
+    max_age: 1
+    max_age_variance: 0.25
+    color: {155, 130, 100, 200}
+    velocity: {0, 1.5, 0}
+    velocity_variance: {12, 2, 12}
+    offset: {0, 0.6, 0}
+    radial: 9
+  }
+}
+
+prefab doze_burst {
+  ParticleBurst: {
+    pool: build_pool
+    count: 20
+    size: 0.5
+    size_variance: 0.6
+    grow: 0.5
+    max_age: 0.9
+    max_age_variance: 0.25
+    color: {120, 115, 105, 200}
+    velocity: {0, 2.5, 0}
+    velocity_variance: {6, 2, 6}
+    offset: {0, 0.6, 0}
+    radial: 7
+  }
+}
+
+drill_pool {
+  Particles: {
+    capacity: 2048
+    gravity: 2.5
+    drag: 2
+    emissive: 0
+    size_envelope: {mode: ParticleEnvelopeEaseOut, fade_out: 0.25}
+    alpha_envelope: {mode: ParticleEnvelopeEaseInOut, fade_in: 0.05, fade_out: 0.35}
+  }
+}
+
+prefab DrillEmitter {
+  ParticleEmitter: {
+    pool: drill_pool
+    rate: 30
+    size: 0.25
+    size_variance: 0.12
+    grow: 0.15
+    max_age: 0.8
+    max_age_variance: 0.2
+    color: {145, 125, 100, 210}
+    velocity: {0, 1.2, 0}
+    velocity_variance: {1.8, 0.8, 1.8}
+    offset: {0, 0.5, 0}
+    spread: {1.5, 0.2, 1.5}
+    radial: 1.5
+    enabled: false
+  }
+}
+
+biome_pool {
+  Particles: {
+    capacity: 1024
+    gravity: 0
+    drag: 0.5
+    emissive: 1.2
+    alpha_envelope: {mode: ParticleEnvelopeEaseInOut, fade_in: 0.2, fade_out: 0.35}
+  }
+}
+
+prefab BiomeEmitter {
+  ParticleEmitter: {
+    pool: biome_pool
+    rate: 10
+    size: 0.5
+    size_variance: 0.1
+    max_age: 12
+    max_age_variance: 1
+    color: {110, 230, 130, 190}
+    velocity: {0, 1, 0}
+    velocity_variance: {0.15, 0.15, 0.15}
+    offset: {0, 0.5, 0}
+    spread: {7, 0.5, 7}
+    enabled: false
+  }
+}
+
+smoke_pool {
+  Particles: {
+    capacity: 2048
+    gravity: -0.15
+    drag: 0.35
+    emissive: 0
+    size_envelope: {mode: ParticleEnvelopeEaseOut, fade_out: 0.2}
+    alpha_envelope: {mode: ParticleEnvelopeEaseInOut, fade_in: 0.1, fade_out: 0.5}
+  }
+}
+
+prefab SmokeEmitter {
+  ParticleEmitter: {
+    pool: smoke_pool
+    rate: 1
+    size: 0.45
+    size_variance: 0.15
+    grow: 1.1
+    max_age: 8
+    max_age_variance: 0.6
+    color: {65, 65, 65, 75}
+    velocity: {0, 1.4, 0}
+    velocity_variance: {0.25, 0.35, 0.25}
+    offset: {0, 6.8, 0}
+    spread: {0.15, 0.1, 0.15}
+    radial: 0.2
+    enabled: false
+  }
+}
+

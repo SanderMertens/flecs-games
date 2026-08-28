@@ -1,0 +1,93 @@
+using flecs.engine.*
+using flecs.script
+
+camera {
+    Camera: {
+        fov: math.PI / 3,
+        near_: 0.5,
+        far_: 1000
+    }
+    CameraController
+    Position3: {0, 2, -3}
+    LookAt: {0, 0, 0}
+}
+
+sky {
+    sun {
+        Position3: {1, 2, 1}
+        DirectionalLight: {intensity: 2}
+        CelestialLight: {
+            toa_intensity: 6,
+            toa_color: {255, 255, 255, 255}
+        }
+        Rotation3: {0, 0, 0}
+        Rgba: {255, 255, 255, 255}
+    }
+
+    moon {
+        Position3: {-1, 2, -1}
+        DirectionalLight: {intensity: 0}
+        CelestialLight: {
+            toa_intensity: 0.0005,
+            toa_color: {255, 255, 255, 255}
+        }
+        Rotation3: {0, 0, 0}
+        Rgba: {255, 255, 255, 255}
+    }
+
+    stars {
+        Stars: {
+            density: 0.9,
+            cells: 180,
+            size: 150,
+            color_variation: 1
+        }
+        CelestialLight: {
+            toa_intensity: 0.015,
+            toa_color: {255, 255, 255, 255}
+        }
+        Rotation3: {0, 0, 0}
+    }
+
+    atmosphere {
+        Atmosphere: {
+            sun: sun,
+            moon: moon,
+            stars: stars,
+            sun_disk_intensity: 20,
+            sun_disk_angular_radius: 0.02,
+            aerial_perspective_distance_km: 6,
+            aerial_perspective_intensity: 16,
+            sea_level_y: 0,
+            world_units_per_km: 1000,
+            ground_altitude_km: 0.01,
+            planet_radius_km: 3390,
+            atmosphere_thickness_km: 80,
+            rayleigh: { scale_height_km: 8, scattering_scale: 0.55 },
+            mie: {
+                scale_height_km: 4,
+                anisotropy: 0.55,
+                scattering_scale: 2.5,
+                tint: {255, 190, 140, 255}
+            },
+            ozone_scale: 0.6,
+            stratospheric_aerosol_scale: 2,
+            ground_albedo: {170, 130, 100, 255}
+            night_tint: {40, 60, 160, 255}
+            night_intensity: 0.003
+        }
+    }
+
+    time_of_day {
+        TimeOfDay: {
+            light: sun,
+            moon_light: moon,
+            stars: stars,
+            atmosphere: atmosphere,
+            hour: 9,
+            day_of_year: 140,
+            latitude: 28,
+            north_offset: 45
+        }
+    }
+}

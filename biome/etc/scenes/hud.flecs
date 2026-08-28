@@ -1,0 +1,68 @@
+include cfg/widgets
+include cfg/buildings
+include cfg/plants
+
+using cfg
+using cfg.widgets
+using cfg.resources
+
+using flecs.engine.*
+
+hud {
+  toolbar {
+    Anchor: {h: Center, v: Bottom, x: 0, y: -21}
+    Layout: {direction: Row, halign: Center, valign: Bottom, padding: 4, spacing: 4}
+    Border: {width: 2, color: PanelColor.rgba, radius: 10}
+    Rect: {width: 0, height: 0}
+    Rgba: PanelColor
+    
+    if !player.isBuildingPlaced(buildings.Base) {
+      ToolButton base("BASE", buildings.Base, hotKey: "0")
+    } else {
+      ToolButton wire("WIRE", buildings.ElectricityPole, hotKey: "1")
+      ToolButton solar("SOLAR", buildings.Solar hotKey: "2")
+      ToolButton drill("DRILL", buildings.Drill, hotKey: "3")
+    }
+
+    if player.isBuildingPlaced(buildings.Drill) {
+      ToolButton drone_pad("DRONE", buildings.DronePad, hotKey: "4")
+    }
+
+    if player.isBuildingPlaced(buildings.DronePad) {
+      ToolButton burner("BURNER", buildings.Burner, hotKey: "5")
+      ToolButton biome("BIOME", buildings.Biome, hotKey: "6")
+      ToolButton depot("DEPOT", buildings.Depot, hotKey: "7")
+      // ToolButton habitat("HABITAT", buildings.Habitat, hotKey: "8")
+    }
+
+    if player.isBuildingPlaced(buildings.Base) {
+      ToolButton doze("DOZE", hotKey: "x")
+    }
+  }
+
+  if player.isBuildingPlaced(buildings.Biome) {
+    vegetation {
+      Anchor: {h: Right, v: Bottom, x: -21, y: -21}
+      Layout: {direction: Row, halign: Right, valign: Bottom, padding: 4, spacing: 4}
+      Border: {width: 2, color: PanelColor.rgba, radius: 10}
+      Rect: {width: 0, height: 0}
+      Rgba: PanelColor
+
+      ToolButton moss("MOSS", plants.Moss, style: VegetationButtonStyle)
+      ToolButton grass("GRASS", plants.Grass, style: VegetationButtonStyle)
+      ToolButton trees("TREES", plants.Trees, style: VegetationButtonStyle)
+    }
+  }
+
+  resources {
+    Anchor: {h: Left, v: Top, x: 12, y: 12}
+    Layout: {direction: Column, padding: 0, spacing: 6}
+
+    PowerGauge()
+    ResourceGauge("IRON", Iron, color: {95, 150, 195, 255})
+    ResourceGauge("COPPER", Copper, color: {195, 128, 58, 255})
+    ResourceGauge("CARBON", Carbon, color: {80, 85, 90, 255})
+    ResourceGauge("CHEMICALS", Chemicals, color: {195, 65, 125, 255})
+    ResourceGauge("SEEDS", Seeds, color: {100, 150, 50, 255})
+  }
+}

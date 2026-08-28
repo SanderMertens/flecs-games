@@ -1,0 +1,68 @@
+module cfg.resources
+
+using flecs.engine.*
+using flecs.script
+using biome.resources
+
+Resource Iron(
+    mine_time: 10
+    mine_amount: 1
+    min_drone_amount: 10
+    max_drone_amount: 200 // will combine logistics requests up to this amount
+)
+
+Resource Copper(
+    mine_time: 10
+    mine_amount: 1
+    min_drone_amount: 10
+    max_drone_amount: 200
+)
+
+Resource Carbon(
+    mine_time: 10
+    mine_amount: 2
+    min_drone_amount: 10
+    max_drone_amount: 200
+)
+
+Resource Chemicals(
+    mine_time: 10
+    mine_amount: 2
+    min_drone_amount: 10
+    max_drone_amount: 200
+)
+
+Resource GreenHouseGass(
+    greenhouse_gas: 0.0005
+)
+
+Recipe GreenHouseGassRecipe(
+    inputs: [
+        Carbon: 10
+        Chemicals: 5
+    ]
+    output: GreenHouseGass
+    craft_time: 240
+)
+
+Resource O2(
+    o2: 0.5
+)
+
+Resource Nutrients(
+    fertility: 0.02
+)
+
+Resource Seeds(
+    min_drone_amount: 1
+    max_drone_amount: 5
+)
+
+Recipe SeedsRecipe(
+    inputs: [
+        Carbon: 5
+        Chemicals: 5
+    ]
+    output: Seeds
+    craft_time: 100
+)

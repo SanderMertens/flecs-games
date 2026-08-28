@@ -1,0 +1,95 @@
+module cfg.environment
+
+include resources
+
+using flecs.script
+using flecs.engine.*
+using biome.*
+using cfg.resources
+
+const rockAGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/stone_largeA.glb"
+const rockBGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/stone_largeB.glb"
+const rockCGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/stone_largeC.glb"
+const rockDGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/stone_largeD.glb"
+const rockEGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/stone_largeE.glb"
+const rockFGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/stone_largeF.glb"
+
+prefab IronOre {
+    Building
+    Deposit: {
+        resource: Iron
+        amount: 100 * 1000
+    }
+
+    Tint: {90, 180, 255, 128}
+    Scale3: {2, 2, 2}
+}
+
+IronOreAssets {
+    prefab A : IronOre { Gltf: {rockAGltf} }
+    prefab B : IronOre { Gltf: {rockBGltf} }
+    prefab C : IronOre { Gltf: {rockCGltf} }
+    prefab D : IronOre { Gltf: {rockDGltf} }
+    prefab E : IronOre { Gltf: {rockEGltf} }
+    prefab F : IronOre { Gltf: {rockFGltf} }
+}
+
+prefab CopperOre {
+    Building
+    Deposit: {
+        resource: Copper
+        amount: 100 * 1000
+    }
+
+    Tint: {255, 128, 0, 128}
+    Scale3: {2, 2, 2}
+}
+
+CopperOreAssets {
+    prefab A : CopperOre { Gltf: {rockAGltf} }
+    prefab B : CopperOre { Gltf: {rockBGltf} }
+    prefab C : CopperOre { Gltf: {rockCGltf} }
+    prefab D : CopperOre { Gltf: {rockDGltf} }
+    prefab E : CopperOre { Gltf: {rockEGltf} }
+    prefab F : CopperOre { Gltf: {rockFGltf} }
+}
+
+prefab Graphite {
+    Building
+    Deposit: {
+        resource: Carbon
+        amount: 100 * 1000
+    }
+
+    Tint: {10, 10, 10, 230}
+    Scale3: {2, 2, 2}
+}
+
+GraphiteAssets {
+    prefab A : Graphite { Gltf: {rockAGltf} }
+    prefab B : Graphite { Gltf: {rockBGltf} }
+    prefab C : Graphite { Gltf: {rockCGltf} }
+    prefab D : Graphite { Gltf: {rockDGltf} }
+    prefab E : Graphite { Gltf: {rockEGltf} }
+    prefab F : Graphite { Gltf: {rockFGltf} }
+}
+
+prefab ChemicalDeposit {
+    Building
+    Deposit: {
+        resource: Chemicals
+        amount: 100 * 1000
+    }
+
+    Tint: {255, 32, 128, 230}
+    Scale3: {2, 2, 2}
+}
+
+ChemicalsAssets {
+    prefab A : ChemicalDeposit { Gltf: {rockAGltf} }
+    prefab B : ChemicalDeposit { Gltf: {rockBGltf} }
+    prefab C : ChemicalDeposit { Gltf: {rockCGltf} }
+    prefab D : ChemicalDeposit { Gltf: {rockDGltf} }
+    prefab E : ChemicalDeposit { Gltf: {rockEGltf} }
+    prefab F : ChemicalDeposit { Gltf: {rockFGltf} }
+}

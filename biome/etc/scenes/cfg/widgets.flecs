@@ -1,0 +1,333 @@
+module cfg.widgets
+
+using flecs.engine.*
+using flecs.engine.material
+using biome.power
+using biome.resources
+using biome.factory
+
+export const FontSize = 18
+export const TooltipFontSize = 16
+export const PanelColor: Rgba = {19, 23, 27, 255}
+export const ButtonColor: Rgba = {49, 56, 63, 255}
+export const HoverColor: Rgba = {58, 66, 74, 255}
+export const HighlightColor: Rgba = {66, 185, 131, 255}
+export const DangerColor: Rgba = {220, 60, 50, 255}
+export const PowerColor: Rgba = {195, 155, 40, 255}
+export const PowerWarningColor: Rgba = {235, 130, 45, 255}
+
+struct Style (
+  color: Rgba
+  hover: Rgba
+  pressed: Rgba
+  active: Rgba
+  disabled: Rgba
+  font_size: u8
+)
+
+DefaultStyle {
+  Style: {
+    color: ButtonColor
+    hover: HoverColor
+    pressed: HighlightColor
+    active: ButtonColor
+    font_size: FontSize
+  }
+}
+
+ToolButtonStyle : DefaultStyle {
+  Style: {
+    active: {66, 185, 131, 128}
+    disabled: {125, 50, 50, 128}
+  }
+}
+
+VegetationButtonStyle : ToolButtonStyle {
+  Style: {
+    color: {39, 55, 44, 255}
+    hover: {49, 68, 54, 255}
+  }
+}
+
+template Label {
+  prop text = "Label"
+  prop size = FontSize
+
+  Text: {text: text, size: size}
+  Rgba: {235, 238, 245, 255}
+}
+
+template Button {
+  prop text = "Button"
+  prop width = 120
+  prop height = 32
+  prop style = DefaultStyle
+
+  mut active = false
+  mut disabled = false
+
+  OrderedChildren
+  WidgetState
+
+  Rect: {width: width, height: height}
+  Border: {width: 1, color: style[Style].color, radius: 6}
+  Rgba: style[Style].color
+
+  if $this[WidgetState].hover {
+    Rgba: style[Style].hover
+  }
+  if $this[WidgetState].lmb_down {
+    Rgba: style[Style].pressed
+  }
+  if active {
+    Rgba: style[Style].active
+  }
+  if disabled {
+    Rgba: style[Style].disabled
+  }
+
+  Transition: [
+      Rgba: {
+          duration: 0.15
+          timing_function: EaseIn
+      }
+  ]
+
+  label {
+    Layout: {halign: Center, valign: Middle}
+    Text: {text: text, size: style[Style].font_size}
+    Rgba: {235, 238, 245, 255}
+  }
+}
+
+template Panel {
+  prop width = 0
+  prop height = 0
+  prop padding = 10
+  prop spacing = 8
+
+  OrderedChildren
+  Layout: {direction: Column, padding: padding, spacing: spacing, width: width, height: height}
+  Rect: {width: 0, height: 0}
+  Rgba: {28, 32, 42, 215}
+}
+
+template Gauge {
+  prop width = 180
+  prop height = 18
+  prop value = 0.5
+  prop max = 1.0
+  prop text = ""
+  prop size = FontSize
+  prop color = HighlightColor
+  prop border_color = ButtonColor
+
+  OrderedChildren
+  Layout: {padding: 2}
+  Rect: {width: width, height: height}
+  Border: {width: 1, color: border_color, radius: 7}
+  Rgba: {24, 28, 36, 235}
+
+  const maxNorm = match max > 0 {
+    true: max
+    false: 1
+  }
+
+  const valueNorm = match value < max {
+    true: value
+    false: max
+  }
+
+  fill {
+    Border: {width: 2, color: color, radius: 6}
+    Rect: {width: (width - 4) * (valueNorm / maxNorm), height: height - 4}
+    Rgba: color
+  }
+
+  label {
+    Layout: {halign: Center, valign: Middle}
+    Text: {text: text, size: size}
+    Rgba: {235, 238, 245, 255}
+  }
+}
+
+@tree Parent
+template ToolButton {
+  prop text = "Button"
+  prop building: entity = 0
+  prop hotKey = ""
+  prop style = ToolButtonStyle
+
+  Button: {text: text, width: 80, height: 60, style: style}
+  Hotkey: {key: hotKey}
+  WidgetState
+
+  hotkey {
+    Layout: {padding: 4, halign: Right}
+    Text: {text: hotKey, size: 11}
+    Rgba: {235, 238, 245, 255}
+  }
+
+  if building && building.has(Recipe) {
+    if this[WidgetState].hover {
+      tooltip {
+        Anchor: {v: Top, y: -8}
+        Layout: {direction: Column, valign: Bottom, padding: 6, spacing: 6}
+        Rect: {width: 0, height: 0}
+        Border: {width: 1, color: ButtonColor, radius: 6}
+        Rgba: PanelColor
+
+        cost_header {
+          Text: {text: "COST", size: 12}
+          Rgba: {120, 128, 138, 255}
+        }
+
+        for (resource, amount) in building[Recipe].inputs {
+          if amount > 0 {{
+            Layout: {direction: Row, padding: 0, spacing: 5}
+
+            {
+              Text: {text: "{resource.name()}", size: TooltipFontSize}
+              Rgba: {160, 168, 178, 255}
+            }
+
+            {
+              Text: {text: "{amount}", size: TooltipFontSize}
+              Rgba: {235, 238, 245, 255}
+
+              if player.ResourceTotals[resource] < amount {
+                Rgba: DangerColor
+              }
+            }
+          }}
+        }
+
+        if building.has(Factory) {
+          const recipe = building[Factory].recipe
+
+          consumes_header {
+            Text: {text: "CONSUMES", size: 12}
+            Rgba: {120, 128, 138, 255}
+          }
+
+          for (resource, amount) in recipe[Recipe].inputs {
+            if amount > 0 {{
+              Layout: {direction: Row, padding: 0, spacing: 5}
+
+              {
+                Text: {text: "{resource.name()}", size: TooltipFontSize}
+                Rgba: {160, 168, 178, 255}
+              }
+
+              {
+                Text: {text: "{amount}", size: TooltipFontSize}
+                Rgba: {235, 238, 245, 255}
+              }
+            }}
+          }
+
+          produces_header {
+            Text: {text: "PRODUCES", size: 12}
+            Rgba: {120, 128, 138, 255}
+          }
+
+          for (resource, amount) in recipe[Recipe].outputs {
+            if amount > 0 {{
+              Layout: {direction: Row, padding: 0, spacing: 5}
+
+              {
+                Text: {text: "{resource.name()}", size: TooltipFontSize}
+                Rgba: {160, 168, 178, 255}
+              }
+
+              {
+                Text: {text: "{amount}", size: TooltipFontSize}
+                Rgba: {235, 238, 245, 255}
+              }
+            }}
+          }
+
+          const output = recipe[Recipe].output
+          if output {
+            output_row {
+              Layout: {direction: Row, padding: 0, spacing: 5}
+
+              {
+                Text: {text: "{output.name()}", size: TooltipFontSize}
+                Rgba: {160, 168, 178, 255}
+              }
+
+              {
+                Text: {text: "1", size: TooltipFontSize}
+                Rgba: {235, 238, 245, 255}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+template ResourceGauge {
+  prop text = "Resource"
+  prop resource: entity = 0
+  prop color = HighlightColor
+
+  Layout: {direction: Row, padding: 0, spacing: 6}
+
+  label {
+    Layout: {width: 80, height: 30, halign: Right, valign: Middle}
+    Text: {text: text, size: FontSize}
+    Rgba: {235, 238, 245, 255}
+  }
+
+  Gauge (
+    width: 150
+    height: 30
+    value: player.ResourceTotals[resource]
+    max: player.ResourceCapacityTotals[resource]
+    text: "{player.ResourceTotals[resource]}"
+    color: color
+  )
+}
+
+template PowerGauge {
+  const production = PowerGrid[PowerGrid].total_production
+  const demand = PowerGrid[PowerGrid].total_demand
+
+  const satisfaction = match demand > 0 {
+    true: production / demand
+    false: 1
+  }
+
+  const color = match satisfaction < 0.5 {
+    true: DangerColor
+    false: match satisfaction < 1 {
+      true: PowerWarningColor
+      false: PowerColor
+    }
+  }
+
+  Layout: {direction: Row, padding: 0, spacing: 6}
+
+  label {
+    Layout: {width: 80, height: 30, halign: Right, valign: Middle}
+    Text: {text: "POWER", size: FontSize}
+    Rgba: {235, 238, 245, 255}
+  }
+
+  const value = match demand > 0 {
+    true: (100 * production) / demand
+    false: 0
+  }
+  
+  Gauge (
+    width: 150
+    height: 30
+    value: value
+    max: 100
+    text: "{value:.0}%"
+    color: color
+  )
+}

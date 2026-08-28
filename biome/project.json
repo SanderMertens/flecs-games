@@ -1,0 +1,7 @@
+{
+    "id": "biome",
+    "type": "application",
+    "value": {
+        "use": ["flecs_engine"]
+    }
+}

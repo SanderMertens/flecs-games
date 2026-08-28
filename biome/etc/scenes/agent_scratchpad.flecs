@@ -1,0 +1,41 @@
+// Scratchpad where AI agents can modify the scene while the game is running
+// - agents should use the /script endpoint to update/extend this script:
+//   PUT localhost:27750/script/etc/scenes/agent_scratchpad.flecs
+//       payload = script content
+//
+// - Agents can create and call functions from the REST API:
+//   GET localhost:27750/call/scratchpad.example?a=10&b=20
+//
+// - If you cannot perform the requested action with the scratchpad, use the flecs REST API directly (for example entity deletion)
+//
+// Do not modify or save this file! This file should only be modified through the flecs REST API.
+//
+// Example code:
+
+scratchpad {
+    struct Example (
+        value: f32
+    )
+
+    example_entity {
+        Example: {10}
+    }
+
+    template ExampleMany {
+        prop count = 10
+
+        for i in 0..count {
+            {
+                Example: {i}
+            }
+        }
+    }
+
+    ExampleMany many(4)
+
+    fn example(a: i32, b: i32) -> entity {
+        new {
+            Example: {a + b}
+        }
+    }
+}

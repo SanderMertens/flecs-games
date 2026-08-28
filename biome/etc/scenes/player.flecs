@@ -1,0 +1,35 @@
+using biome.buildings
+using biome.resources
+using cfg.resources
+
+player {
+    export const BuildingsPlaced: u64 = 0
+
+    fn isBuildingPlaced(b: entity) -> bool {
+        BuildingsPlaced & (1 << b[BuildingBit])
+    }
+
+    export const ResourceTotals: StorageMap = [
+        Iron: 0
+        Copper: 0
+        Carbon: 0
+        Chemicals: 0
+        Seeds: 0
+    ]
+
+    export const ResourceCapacityTotals: StorageMap = [
+        Iron: 0
+        Copper: 0
+        Carbon: 0
+        Chemicals: 0
+        Seeds: 0
+    ]
+
+    export const ResourceReservedTotals: StorageMap = [
+        Iron: 0
+        Copper: 0
+        Carbon: 0
+        Chemicals: 0
+        Seeds: 0
+    ]
+}

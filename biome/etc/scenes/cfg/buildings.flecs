@@ -1,0 +1,382 @@
+module cfg.buildings
+
+include effects
+include resources
+include environment
+include units
+
+using flecs.script
+using flecs.engine.*
+using biome.*
+
+using cfg.resources
+using cfg.units
+
+const baseGltf = "etc/assets/kaykit/space/Assets/gltf/basemodule_F.gltf"
+const habitatGltf = "etc/assets/kaykit/space/Assets/gltf/basemodule_B.gltf"
+const droneLandingPadGltf = "etc/assets/kaykit/space/Assets/gltf/landingpad_small.gltf"
+const droneGltf = "etc/assets/kaykit/space/Assets/gltf/lander_base.gltf"
+const solarGltf = "etc/assets/kaykit/space/Assets/gltf/solarpanel.gltf"
+const drillGltf = "etc/assets/kaykit/space/Assets/gltf/drill_structure.gltf"
+const storageGltf = "etc/assets/kaykit/space/Assets/gltf/cargodepot_B.gltf"
+const lightsGltf = "etc/assets/kaykit/space/Assets/gltf/lights.gltf"
+const domeGltf = "etc/assets/kaykit/space/Assets/gltf/dome.gltf"
+const farmGltf = "etc/assets/kaykit/space/Assets/gltf/space_farm_large_sprinkler.gltf"
+const corridorGltf = "etc/assets/kaykit/space/Assets/gltf/tunnel_straight_A.gltf"
+const burnerGltf = "etc/assets/kenney/city-kit-industrial/Models/GLB format/chimney-large.glb"
+
+prefab PoweredBuilding {
+    Tint: {0, 0, 0, 0}
+
+    Transition: [
+        Tint: {
+            duration: 0.5
+            timing_function: EaseInOut
+        }
+    ]
+}
+
+prefab Base : PoweredBuilding {
+    Building: {
+        max_count: 1
+        footprint: {1, 1}
+    }
+
+    Power: {
+        demand: 50
+        conductor: true
+    }
+
+    PlayerStorage: {
+        capacity: 2000
+        resources: [
+            Iron:   500
+            Copper: 500
+            Carbon: 500
+            Chemicals: 0
+            Seeds: 0
+        ]
+    }
+
+    Scale3: {2, 2, 2}
+    Gltf: {baseGltf}
+}
+
+prefab Solar {
+    Building: {
+        can_doze: true
+        footprint: {1, 1}
+    }
+
+    Power: {
+        producer: true
+        conductor: true
+    }
+
+    Recipe: {
+        inputs: [
+            Iron: 50
+            Copper: 50
+            Carbon: 10
+        ]
+    }
+
+    Gltf: {solarGltf}
+    Scale3: {3, 3, 3}
+}
+
+const ElectricityWireColor: Rgba = {210, 150, 50}
+
+prefab ElectricityWire {
+    Position3: {0, 0.75, 0}
+    Box: {5, 0.3, 0.3}
+    Rgba: ElectricityWireColor
+}
+
+prefab ElectricalConnection {
+    Position3: {-1.25, 0.3, 0}
+    Rotation3: {0, 0, -0.3456}
+    Box: {2.66, 0.3, 0.3}
+    Rgba: ElectricityWireColor
+}
+
+prefab BaseDroneConnection {
+    Position3: {0, 0.2, 0}
+    Box: {5, 0.1, 0.1}
+    Rgba: {255, 0, 0, 255}
+}
+
+@tree Parent
+prefab ElectricityPole {
+    Building: {
+        can_doze: true
+        footprint: {1, 1}
+    }
+
+    Power: {
+        conductor: true
+    }
+
+    Recipe: {
+        inputs: [
+            Copper: 5
+        ]
+    }
+
+    {
+        Position3: {0, 0.5, 0}
+        Box: {0.35, 1, 0.35}
+        Rgba: {30, 30, 30, 255}
+    }
+}
+
+prefab Depot : PoweredBuilding {
+    Building: {
+        can_doze: true
+        footprint: {1, 1}
+    }
+
+    Power: {
+        demand: 50
+        conductor: true
+    }
+
+    PlayerStorage: {
+        capacity: 1000
+    }
+
+    Recipe: {
+        inputs: [
+            Iron: 50
+            Copper: 0
+        ]
+    }
+
+    Gltf: {storageGltf}
+    Scale3: {2, 2, 2}
+}
+
+prefab Habitat : PoweredBuilding {
+    Building: {
+        can_doze: true
+        footprint: {1, 1}
+    }
+
+    Power: {
+        demand: 50
+        conductor: true
+    }
+
+    Recipe: {
+        inputs: [
+            Iron: 100
+            Copper: 50
+        ]
+    }
+
+    Gltf: {$habitatGltf}
+    Scale3: {2, 2, 2}
+}
+
+prefab Corridor {
+    Gltf: {corridorGltf}
+    Scale3: {2, 2, 2}
+}
+
+prefab Drill :  PoweredBuilding, effects.DrillEmitter {
+    Building: {
+        can_doze: true
+        footprint: {1, 1}
+        requires: [
+            environment.IronOre, 
+            environment.CopperOre,
+            environment.Graphite,
+            environment.ChemicalDeposit
+        ]
+    }
+
+    StorageDesc: {
+        kind: Source
+        capacity: 100
+    }
+
+    Storage: {}
+    Miner: {}
+
+    Power: {
+        demand: 100
+    }
+
+    Recipe: {
+        inputs: [
+            Iron: 100
+        ]
+    }
+
+    Gltf: {drillGltf}
+    Scale3: {2, 2, 2}
+}
+
+prefab Burner : effects.SmokeEmitter {
+    Building: {
+        can_doze: true
+        footprint: {1, 1}
+    }
+
+    Power: {
+        demand: 500
+    }
+
+    StorageDesc: {
+        kind: Sink
+        capacity: 200
+    }
+
+    Factory: {
+        recipe: GreenHouseGassRecipe
+        output_mode: Vent // other option: Store
+    }
+
+    Recipe: {
+        inputs: [
+            Iron: 250
+            Copper: 0
+        ]
+    }
+
+    Gltf: {burnerGltf}
+    Tint: {0, 0, 0, 128}
+    Scale3: {4, 4, 4}
+}
+
+@tree Parent
+prefab Biome : PoweredBuilding, effects.BiomeEmitter {
+    Building: {
+        can_doze: true
+        footprint: {3, 3}
+    }
+
+    Power: {
+        demand: 10
+        conductor: true
+    }
+
+    StorageDesc: {
+        kind: Factory
+        capacity: 200
+    }
+
+    Factory: {
+        recipe: SeedsRecipe
+        output_mode: Store
+    }
+
+    Recipe: {
+        inputs: [
+            Iron: 200
+            Copper: 300
+        ]
+    }
+
+    {
+        Position3: {}
+        Gltf: {domeGltf}
+    }
+    {
+        Position3: {}
+        Gltf: {farmGltf}
+    }
+
+    Scale3: {6, 6, 6}
+}
+
+fn createDrone(parent: entity) -> entity {
+    new _ : cfg.units.Drone {
+        (ChildOf, scene.drones)
+        biome.logistics.Carrier: { home: parent }
+    }
+}
+
+dronePadBuildingRule {}
+
+prefab DronePad {
+    Building: {
+        can_doze: true
+        footprint: {1, 1}
+
+        spawn: {
+            prefab: createDrone,
+            position: {0, 1, 0}
+            rotation: {}
+        }
+
+        rule: dronePadBuildingRule
+    }
+
+    Recipe: {
+        inputs: [
+            Iron: 100
+            Copper: 50
+        ]
+    }
+
+    Power: {
+        demand: 25
+        conductor: true
+    }
+
+    Scale3: {2, 2, 2}
+    Gltf: {droneLandingPadGltf}
+}
+
+dronePadBuildingRule {
+    BuildingRule3x1: {
+        left: [Base, Depot, DronePad]
+        rotate: true
+    }
+}
+
+// Rules
+
+BuildingRule2x1 (
+    left: [ElectricityPole]
+    right: [ElectricityPole]
+    out: ElectricityWire
+    rotate: true
+    follow_slope: true
+)
+
+BuildingRule2x1 (
+    left: [ElectricityPole]
+    right: [Base, DronePad, Depot, Habitat, Biome, Solar, Drill]
+    out: ElectricalConnection
+    rotate: true
+)
+
+BuildingRule2x1 (
+    left: [Base, DronePad]
+    right: [Base, DronePad]
+    out: BaseDroneConnection
+    rotate: true
+    follow_slope: true
+)
+
+BuildingRule2x1 (
+    top: [Base]
+    bottom: [Habitat, Depot, Biome]
+    out: Corridor
+)
+
+BuildingRule2x1 (
+    top: [Habitat, Depot, Biome]
+    bottom: [Base]
+    out: Corridor
+)
+
+BuildingRule2x1 (
+    left: [Habitat, Depot, Biome]
+    right: [Habitat, Depot, Biome]
+    out: Corridor
+    rotate: true
+)
+

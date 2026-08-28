@@ -1,0 +1,67 @@
+using flecs.engine.*
+
+include sky
+
+view {
+    geometry { GeometryBatch }
+    skybox { SkyBoxBatch }
+
+    heightFog { 
+        HeightFog: { 
+            density: 0 
+            atmosphere: sky.atmosphere
+        } 
+    }
+
+    sunShafts {
+        SunShafts: {}
+    }
+
+    ssao { 
+        SSAO: { radius: 0.5 }
+    }
+
+    bloom { 
+        Bloom: {} 
+    }
+
+    autoExposure {
+        AutoExposure: {
+            min_log_luma: -16,
+            low_percentile: 0,
+            min_brightness: 0.01,
+            max_brightness: 0.3
+        }
+    }
+
+    tonyMcMapFace {
+        Tony: { auto_exposure: autoExposure }
+    }
+
+    gammaCorrect { GammaCorrect }
+
+    RenderView: {
+        camera: camera,
+        atmosphere: sky.atmosphere,
+        ambient_intensity: 0.5,
+        screen_px_threshold: 10,
+        shadow: {
+            enabled: true,
+            map_size: 4096,
+            max_range: 400,
+            bias: 0.0001
+        },
+        effects: [
+            { enabled: true,  effect: ssao },
+            { enabled: true,  effect: heightFog },
+            { enabled: false, effect: sunShafts },
+            { enabled: true,  effect: bloom },
+            { enabled: true,  effect: autoExposure },
+            { enabled: true,  effect: tonyMcMapFace },
+            { enabled: false, effect: gammaCorrect }
+        ]
+    }
+    RenderBatchSet: {
+        batches: [ geometry, skybox ]
+    }
+}

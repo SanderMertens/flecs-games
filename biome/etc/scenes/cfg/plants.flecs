@@ -1,0 +1,129 @@
+module cfg.plants
+
+include resources
+
+using flecs.script
+using flecs.engine.*
+using biome.*
+using cfg.resources
+
+const mossGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/grass.glb"
+const grassGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/grass_large.glb"
+const treeGltf = "etc/assets/kenney/nature-kit/Models/GLTF format/tree_default.glb"
+
+Recipe MossRecipe(
+    inputs: [GreenHouseGass: 1]
+    outputs: [Nutrients: 5]
+    craft_time: 1000
+)
+
+Recipe GrassRecipe(
+    inputs: [GreenHouseGass: 1]
+    outputs: [Nutrients: 10]
+    craft_time: 2500
+)
+
+Recipe TreesRecipe(
+    inputs: [GreenHouseGass: 1]
+    outputs: [O2: 2, Nutrients: 5]
+    craft_time: 1500
+)
+
+prefab Moss {
+    Plant: {
+        min_temperature: -5
+        max_temperature: 40
+        min_moisture: 0.15
+        min_fertility: 0.05
+        resilience: 2000
+        spread: 200
+        dominance: 1
+        max_neighbors: 8
+    }
+
+    StorageDesc: {
+        kind: Sink
+        capacity: 10
+    }
+
+    Factory: {
+        recipe: MossRecipe
+        input_mode: Capture
+        output_mode: Vent
+    }
+
+    Recipe: {
+        inputs: [
+            Seeds: 1
+        ]
+    }
+
+    Gltf: {mossGltf}
+    Scale3: {2, 2, 2}
+}
+
+prefab Grass {
+    Plant: {
+        min_temperature: -5
+        max_temperature: 40
+        min_moisture: 0.1
+        min_fertility: 0.25
+        resilience: 1200
+        spread: 600
+        dominance: 2
+        max_neighbors: 6
+    }
+
+    StorageDesc: {
+        kind: Sink
+        capacity: 10
+    }
+
+    Factory: {
+        recipe: GrassRecipe
+        input_mode: Capture
+        output_mode: Vent
+    }
+
+    Recipe: {
+        inputs: [
+            Seeds: 2
+        ]
+    }
+
+    Gltf: {grassGltf}
+    Scale3: {2.5, 2.5, 2.5}
+}
+
+prefab Trees {
+    Plant: {
+        min_temperature: 0
+        max_temperature: 40
+        min_moisture: 0.01
+        min_fertility: 0.45
+        resilience: 900
+        spread: 900
+        dominance: 3
+        max_neighbors: 4
+    }
+
+    StorageDesc: {
+        kind: Sink
+        capacity: 10
+    }
+
+    Factory: {
+        recipe: TreesRecipe
+        input_mode: Capture
+        output_mode: Vent
+    }
+
+    Recipe: {
+        inputs: [
+            Seeds: 5
+        ]
+    }
+
+    Gltf: {treeGltf}
+    Scale3: {3, 3, 3}
+}

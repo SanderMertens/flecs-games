@@ -1,0 +1,147 @@
+include cfg/sky
+include cfg/view
+include cfg/resources
+include cfg/buildings
+include cfg/plants
+include cfg/environment
+include player
+include hud
+include agent_scratchpad
+
+using biome
+using flecs.engine.*
+using flecs.script
+using cfg
+
+camera {
+    Position3: {0, 36.877, 156.68}
+    LookAt: {0, 36.361, 155.828}
+    CameraController: {terrain: terrain.Terrain, clearance: 2}
+    Camera: {
+        far_: 4000
+    }
+}
+
+scene.drones {}
+
+$ {
+    terrain.Terrain: {
+        width: 256 // tiles
+        height: 256
+        sample_kind: Linear
+        color_update_frames: 240
+        colors: {
+            initial: {120, 96, 74, 230}
+            rock: {125, 125, 125, 255}
+            sand: {178, 142, 104, 255}
+            wet_soil: {58, 43, 31, 255}
+            vegetation: {50, 70, 15, 255}
+            dry_ice: {130, 130, 130, 255}
+            ice: {235, 240, 245, 255}
+        }
+        scale: 100
+        octaves: 5
+        warp_octaves: 3
+        warp: 1.2
+        ridge_freq: 2.2
+        ridge_octaves: 3
+        ridge_mix: 0.3
+        height_offset: 0.7
+        height_gain: 3
+        height_base: 0.1
+        max_height: 30 // meters, lowlands
+        river_freq: 1.4
+        river_octaves: 4
+        river_width: 0.03
+        river_depth: 4
+        ocean_scale: 30
+        ocean_amount: 0.35
+        ocean_shore_width: 0.04
+        ocean_depth: 32
+        water_level: -2
+        ground_moisture: 0
+        water_moisture_range_tiles: 7
+        fertility_decay: 0.000005
+    }
+
+    weather.Weather: {
+        pressure: 101325
+        gravity: 9.80665
+        greenhouse_gas: 0
+        radiative_cooling: 0.05
+        stellar_heating: 0.024
+        temperature: -1
+    }
+}
+
+scene.drones {}
+
+scene.terrain {
+    terrain.Scatter(
+        prefab: [
+            environment.IronOreAssets.A
+            environment.IronOreAssets.B
+            environment.IronOreAssets.C
+            environment.IronOreAssets.D
+            environment.IronOreAssets.E
+            environment.IronOreAssets.F
+        ]
+
+        count: 250
+        min_height: 0
+        position_variance: {1, 1}
+        rotation_variance: {y: 2 * math.PI}
+        cluster: 0
+    )
+
+    terrain.Scatter(
+        prefab: [
+            environment.CopperOreAssets.A
+            environment.CopperOreAssets.B
+            environment.CopperOreAssets.C
+            environment.CopperOreAssets.D
+            environment.CopperOreAssets.E
+            environment.CopperOreAssets.F
+        ]
+
+        count: 200
+        min_height: 0
+        position_variance: {1, 1}
+        rotation_variance: {y: 2 * math.PI}
+        cluster: 0
+    )
+
+    terrain.Scatter(
+        prefab: [
+            environment.GraphiteAssets.A
+            environment.GraphiteAssets.B
+            environment.GraphiteAssets.C
+            environment.GraphiteAssets.D
+            environment.GraphiteAssets.E
+            environment.GraphiteAssets.F
+        ]
+
+        count: 250
+        min_height: 0
+        position_variance: {1, 1}
+        rotation_variance: {y: 2 * math.PI}
+        cluster: 0.1
+    )
+
+    terrain.Scatter(
+        prefab: [
+            environment.ChemicalsAssets.A
+            environment.ChemicalsAssets.B
+            environment.ChemicalsAssets.C
+            environment.ChemicalsAssets.D
+            environment.ChemicalsAssets.E
+            environment.ChemicalsAssets.F
+        ]
+
+        count: 150
+        min_height: 0
+        position_variance: {1, 1}
+        rotation_variance: {y: 2 * math.PI}
+        cluster: 0.1
+    )
+}
